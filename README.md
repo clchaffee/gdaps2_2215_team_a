@@ -6,7 +6,7 @@ _This README contains basic information about the project and its artifacts. If 
 ## Team Members
 - MEMBER1
 - MEMBER2
-- MEMBER3
+- Colby
 - MEMBER4
 - MEMBER5
 
