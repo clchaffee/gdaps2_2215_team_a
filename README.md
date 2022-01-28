@@ -5,6 +5,7 @@ _This README contains basic information about the project and its artifacts. If 
 
 ## Team Members
 - ANNALEE DOROZYNSKI
+- Nicholas DiGiovanni
 - MEMBER2
 - MEMBER3
 - MEMBER4
