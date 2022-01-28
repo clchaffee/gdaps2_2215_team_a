@@ -1,9 +1,12 @@
-# Team **YOUR_TEAM_NAME**
+# Team **Real Gamers**
 ## IGME-106-SECTION Spring 2022
 
 _This README contains basic information about the project and its artifacts. If kept up to date, it will act as a primary dashboard for the project._
 
 ## Team Members
+- Conrad Chaffee
+- ANNALEE DOROZYNSKI
+- Nicholas DiGiovanni
 - Colby
 - MEMBER2
 - MEMBER3
