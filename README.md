@@ -4,13 +4,11 @@
 _This README contains basic information about the project and its artifacts. If kept up to date, it will act as a primary dashboard for the project._
 
 ## Team Members
+- Peter Catalano
 - Conrad Chaffee
 - Annalee Dorozynski
 - Nicholas DiGiovanni
-- MEMBER2
-- MEMBER3
-- MEMBER4
-- MEMBER5
+- Colby Cormier
 
 ## Repo Organization
 - [game/](game/) - Contains the main MonoGame project. Notes about how to run the game are in [game/README.md](game/README.md).
