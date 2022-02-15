@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Strike_12
 {
+    //enum for gamestates
     enum GameState
     {
         Menu,
@@ -41,8 +42,6 @@ namespace Strike_12
 
             titleFont = Content.Load<SpriteFont>("Title");
             displayFont = Content.Load<SpriteFont>("Display");
-
-            // TODO: use this.Content to load your game content here
         }
 
         protected override void Update(GameTime gameTime)
@@ -99,8 +98,6 @@ namespace Strike_12
 
             prevKbState = kbState;
 
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
@@ -142,8 +139,6 @@ namespace Strike_12
             }
 
             _spriteBatch.End();
-
-            // TODO: Add your drawing code here
 
             base.Draw(gameTime);
         }
