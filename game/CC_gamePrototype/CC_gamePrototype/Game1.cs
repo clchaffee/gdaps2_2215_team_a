@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace CC_gamePrototype
 {
@@ -8,6 +10,10 @@ namespace CC_gamePrototype
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        // Temp player assets
+        private Texture2D playerSprites;
+        private Player player;
 
         public Game1()
         {
@@ -18,7 +24,6 @@ namespace CC_gamePrototype
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
 
             base.Initialize();
         }
@@ -27,7 +32,12 @@ namespace CC_gamePrototype
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // Load the player sprite sheet
+            playerSprites = Content.Load<Texture2D>("playerSpriteSheet");
+
+            // Initialize the player with the asset loaded in
+            player = new Player(playerSprites, GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -35,7 +45,8 @@ namespace CC_gamePrototype
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            // Temp player update call
+            player.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -44,7 +55,12 @@ namespace CC_gamePrototype
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+
+            // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
+            player.Draw(_spriteBatch, playerSprites);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
