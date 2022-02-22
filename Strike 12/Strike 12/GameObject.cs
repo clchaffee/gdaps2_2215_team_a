@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 /// <summary>
 /// Author: Copious Cats 
 /// Purpose: This is an abstract class that the different 
@@ -21,7 +24,12 @@ namespace Strike_12
         // ----- | Methods | -----
 
         // Abstract Update(GameTime gameTime):
+        public abstract void Update(GameTime gameTime);
 
         // Draw(spriteBatch sb):
+        public void Draw(SpriteBatch sb)
+        {
+            // TODO: (GameObject) Logic Needed
+        }
     }
 }
