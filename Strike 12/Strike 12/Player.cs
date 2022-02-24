@@ -36,7 +36,8 @@ namespace Strike_12
         private int moveSpeed = 12;
         private int gravity = 10;
         private bool grounded;
-        private int jumpLength = 20;
+        private int jumpLength = 5;
+        private int jumpModifier = 0;
 
         // Input Fields
         private KeyboardState currentKBState;
@@ -95,9 +96,10 @@ namespace Strike_12
                     }
 
                     // If the player presses W, switch them to the jump state
-                    if (currentKBState.IsKeyDown(Keys.W) && grounded == true)
+                    if (currentKBState.IsKeyDown(Keys.W) && previousKBState.IsKeyUp(Keys.W) && grounded == true)
                     {
                         jumpLength = 5;
+                        jumpModifier = 0;
                         previousPlayerState = playerState;
                         playerState = PlayerStates.jump;
                     }
@@ -120,9 +122,10 @@ namespace Strike_12
                     }
 
                     // If the player presses W, switch them to the jump state
-                    if (currentKBState.IsKeyDown(Keys.W) && grounded == true)
+                    if (currentKBState.IsKeyDown(Keys.W) && previousKBState.IsKeyUp(Keys.W) && grounded == true)
                     {
                         jumpLength = 5;
+                        jumpModifier = 0;
                         previousPlayerState = playerState;
                         playerState = PlayerStates.jump;
                     }
@@ -146,9 +149,10 @@ namespace Strike_12
                     }
 
                     // If the player presses W, switch them to the jump state
-                    if (currentKBState.IsKeyDown(Keys.W) && grounded == true)
+                    if (currentKBState.IsKeyDown(Keys.W) && previousKBState.IsKeyUp(Keys.W) && grounded == true)
                     {
                         jumpLength = 5;
+                        jumpModifier = 0;
                         previousPlayerState = playerState;
                         playerState = PlayerStates.jump;
                     }
@@ -172,8 +176,11 @@ namespace Strike_12
                     }
 
                     // If the player presses W, switch them to the jump state
-                    if (currentKBState.IsKeyDown(Keys.W) && grounded == true)
+                    if (currentKBState.IsKeyDown(Keys.W) && previousKBState.IsKeyUp(Keys.W) && grounded == true)
                     {
+                        jumpLength = 5;
+                        jumpModifier = 0;
+                        previousPlayerState = playerState;
                         playerState = PlayerStates.jump;
                     }
 
@@ -184,9 +191,9 @@ namespace Strike_12
 
                     if (jumpLength > 0)
                     {
-                        position.Y -= 50;
+                        position.Y -= (60 - 10 * jumpModifier);
                     }
-                    else if (jumpLength < 0 || (currentKBState.IsKeyUp(Keys.W) && previousKBState.IsKeyDown(Keys.W)))
+                    else if (jumpLength < 0)
                     {
                         playerState = previousPlayerState;
                     }
@@ -194,15 +201,16 @@ namespace Strike_12
                     if (currentKBState.IsKeyDown(Keys.A) && !CheckLeftCollision(platformPos))
                     {
                         // ...allow the player to move by the constant movespeed
-                        position.X -= moveSpeed;
+                        position.X -= moveSpeed + 5;
                     }
 
                     if (currentKBState.IsKeyDown(Keys.D) && !CheckRightCollision(platformPos))
                     {
                         // ...allow the player to move by the constant movespeed
-                        position.X += moveSpeed;
+                        position.X += moveSpeed + 5;
                     }
 
+                    jumpModifier += 1;
                     jumpLength -= 1;
 
                     break;
