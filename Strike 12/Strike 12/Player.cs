@@ -34,7 +34,7 @@ namespace Strike_12
         private PlayerStates previousPlayerState;
         private Texture2D playerSprite;
         private int moveSpeed = 12;
-        private int gravity = 5;
+        private int gravity = 10;
         private int jumpSpeed = 50;
         private bool grounded;
         private int jumpLength = 5;
@@ -190,17 +190,17 @@ namespace Strike_12
                 // If the player is jumping
                 case PlayerStates.jump:
 
-                    //Conrad's thoughts on jumping
-                    //if (grounded && (currentKBState.IsKeyUp(Keys.W) && previousKBState.IsKeyDown(Keys.W)))
-                    //{
-                    //    position.Y -= jumpSpeed;
-                    //    grounded = false;
-                    //}
-                    //else if (!grounded)
-                    //{
-                    //    position.Y -= jumpSpeed;
-                    //    jumpSpeed -= gravity;
-                    //}
+                    /*Conrad's thoughts on jumping
+                    if (grounded && (currentKBState.IsKeyUp(Keys.W) && previousKBState.IsKeyDown(Keys.W)))
+                    {
+                        position.Y -= jumpSpeed;
+                        grounded = false;
+                    }
+                    else if (!grounded)
+                    {
+                        position.Y -= jumpSpeed;
+                        jumpSpeed -= gravity;
+                    }*/
 
                     if (jumpLength > 0)
                     {
