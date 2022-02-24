@@ -24,6 +24,11 @@ namespace Strike_12
         private SpriteFont titleFont;
         private SpriteFont displayFont;
 
+        // Temp player assets
+        private Texture2D playerSprites;
+        private Player player;
+        private Rectangle platformPosition;
+
         //sets the default state as the menu
         GameState state = GameState.Menu;
 
@@ -58,6 +63,26 @@ namespace Strike_12
             //different fonts
             titleFont = Content.Load<SpriteFont>("Title");
             displayFont = Content.Load<SpriteFont>("Display");
+
+            // Load the player sprite sheet
+            playerSprites = Content.Load<Texture2D>("playerSpriteSheet");
+
+            // Temp platform location
+            platformPosition = new Rectangle(
+                    150,
+                    450,
+                    playerSprites.Width,
+                    playerSprites.Height);
+
+            // Initialize the player with the asset loaded in
+            player = new Player
+                (playerSprites,
+                new Rectangle(
+                GraphicsDevice.Viewport.Width / 2,
+                GraphicsDevice.Viewport.Height / 2,
+                playerSprites.Width,
+                playerSprites.Height),
+                platformPosition);
         }
 
         /// <summary>
@@ -100,7 +125,11 @@ namespace Strike_12
 
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
-                    timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
+
+                    // Temp player update call
+                    player.Update(gameTime);
+
+                    /*timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
                     if (timer >= 4)
                     {
                         //win 
@@ -109,7 +138,8 @@ namespace Strike_12
                     {
                         timer = 0;
                         state = GameState.Shop;
-                    }
+                    }*/
+
                     break;
 
                 //if enter is pressed in the shop, returns to arena; if space is pressed brings up the menu
@@ -172,6 +202,16 @@ namespace Strike_12
                         new Vector2(100, 400), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
                        new Vector2(10, 10), Color.Black);
+
+                    // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
+                    player.Draw(_spriteBatch, playerSprites);
+
+                    // Temp platforms
+                    _spriteBatch.Draw(
+                        playerSprites,
+                        platformPosition,
+                        Color.White);
+
                     break;
 
                 //text for shop screen
