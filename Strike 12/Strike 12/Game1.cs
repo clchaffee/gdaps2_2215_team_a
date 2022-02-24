@@ -80,8 +80,8 @@ namespace Strike_12
                 new Rectangle(
                 GraphicsDevice.Viewport.Width / 2,
                 GraphicsDevice.Viewport.Height / 2,
-                playerSprites.Width,
-                playerSprites.Height),
+                128,
+                128),
                 platformPosition);
         }
 
