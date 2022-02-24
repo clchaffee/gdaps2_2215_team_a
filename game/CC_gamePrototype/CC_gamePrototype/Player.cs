@@ -64,7 +64,7 @@ namespace CC_gamePrototype
                 case PlayerStates.faceRight:
 
                     // If the player is pressing D, switch the state to move right
-                    if (currentKBState.IsKeyDown(Keys.D) && !CheckRightCollision(platformPos))
+                    if (currentKBState.IsKeyDown(Keys.D))
                     {
                         playerState = PlayerStates.moveRight;
                     }
@@ -81,7 +81,7 @@ namespace CC_gamePrototype
                 case PlayerStates.faceLeft:
 
                     // If the player is pressing A, move the player to the left
-                    if (currentKBState.IsKeyDown(Keys.A) && !CheckLeftCollision(platformPos))
+                    if (currentKBState.IsKeyDown(Keys.A))
                     {
                         playerState = PlayerStates.moveLeft;
                     }
@@ -211,8 +211,8 @@ namespace CC_gamePrototype
         {
             return (position.Left - moveSpeed < check.Right &&
                     position.Left > check.Right &&
-                    position.Top < check.Top &&
-                    position.Bottom > check.Bottom);
+                    position.Top < check.Bottom &&
+                    position.Bottom > check.Top);
         }
 
     }
