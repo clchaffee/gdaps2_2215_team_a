@@ -129,7 +129,7 @@ namespace Strike_12
                     // Temp player update call
                     player.Update(gameTime);
 
-                    /*timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
+                    timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
                     if (timer >= 4)
                     {
                         //win 
@@ -138,7 +138,7 @@ namespace Strike_12
                     {
                         timer = 0;
                         state = GameState.Shop;
-                    }*/
+                    }
 
                     break;
 
