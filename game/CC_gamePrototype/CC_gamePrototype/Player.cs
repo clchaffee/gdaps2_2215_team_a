@@ -64,7 +64,7 @@ namespace CC_gamePrototype
                 case PlayerStates.faceRight:
 
                     // If the player is pressing D, switch the state to move right
-                    if (currentKBState.IsKeyDown(Keys.D) && !CheckSidewaysCollision(platformPos))
+                    if (currentKBState.IsKeyDown(Keys.D) && !CheckRightCollision(platformPos))
                     {
                         playerState = PlayerStates.moveRight;
                     }
@@ -81,9 +81,9 @@ namespace CC_gamePrototype
                 case PlayerStates.faceLeft:
 
                     // If the player is pressing A, move the player to the left
-                    if (currentKBState.IsKeyDown(Keys.A) && !CheckSidewaysCollision(platformPos))
+                    if (currentKBState.IsKeyDown(Keys.A) && !CheckLeftCollision(platformPos))
                     {
-                        position.X -= moveSpeed;
+                        playerState = PlayerStates.moveLeft;
                     }
 
                     // If the player presses D, move the player to face right
@@ -97,7 +97,7 @@ namespace CC_gamePrototype
                 // If the player is moving left
                 case PlayerStates.moveLeft:
 
-                    if (currentKBState.IsKeyDown(Keys.A))
+                    if (currentKBState.IsKeyDown(Keys.A) && !CheckLeftCollision(platformPos))
                     {
                         position.X -= moveSpeed;
                     }
@@ -111,7 +111,7 @@ namespace CC_gamePrototype
                 // If the player is moving right
                 case PlayerStates.moveRight:
 
-                    if (currentKBState.IsKeyDown(Keys.D))
+                    if (currentKBState.IsKeyDown(Keys.D) && !CheckRightCollision(platformPos))
                     {
                         position.X += moveSpeed;
                     }
@@ -122,27 +122,6 @@ namespace CC_gamePrototype
 
                     break;
             }
-
-            /*Temporary collision detection, implemented so that the player can jump successfully
-            if (Rectangle.Intersect(position, platformPos) == Rectangle.Empty)
-            {
-                if (position.Bottom + gravity > platformPos.Top)
-                {
-                    while (position.Bottom >= platformPos.Top)
-                    {
-                        position.Y += 1;
-                    }
-                }
-                else
-                {
-                    position.Y += gravity;
-                }
-            }
-            else if (position.Bottom == platformPos.Top &&
-                     Rectangle.Intersect(position, platformPos) != Rectangle.Empty)
-            {
-                position.Y += 0;
-            }*/
 
             if (CheckDownwardCollision(platformPos))
             {
@@ -220,14 +199,17 @@ namespace CC_gamePrototype
                     position.Right > check.Left);
         }
 
-        public bool CheckSidewaysCollision(Rectangle check)
+        public bool CheckRightCollision(Rectangle check)
         {
             return (position.Right + moveSpeed > check.Left &&
                     position.Left < check.Right &&
                     position.Top < check.Bottom &&
-                    position.Bottom > check.Top)
-                    ||
-                   (position.Left - moveSpeed < check.Right &&
+                    position.Bottom > check.Top);
+        }
+
+        public bool CheckLeftCollision(Rectangle check)
+        {
+            return (position.Left - moveSpeed < check.Right &&
                     position.Left > check.Right &&
                     position.Top < check.Top &&
                     position.Bottom > check.Bottom);
