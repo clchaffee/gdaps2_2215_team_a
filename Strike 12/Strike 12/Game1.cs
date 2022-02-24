@@ -48,7 +48,9 @@ namespace Strike_12
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            _graphics.PreferredBackBufferHeight = 992;
+            _graphics.PreferredBackBufferWidth = 1216;
+            _graphics.ApplyChanges();
 
             base.Initialize();
         }
