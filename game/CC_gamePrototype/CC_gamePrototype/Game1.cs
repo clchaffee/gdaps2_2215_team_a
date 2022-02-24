@@ -14,6 +14,7 @@ namespace CC_gamePrototype
         // Temp player assets
         private Texture2D playerSprites;
         private Player player;
+        private Rectangle platformPosition;
 
         public Game1()
         {
@@ -38,6 +39,12 @@ namespace CC_gamePrototype
             // Initialize the player with the asset loaded in
             player = new Player(playerSprites, GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
 
+            // Temp platform location
+            platformPosition = new Rectangle(
+                    150,
+                    450,
+                    playerSprites.Width,
+                    playerSprites.Height);
         }
 
         protected override void Update(GameTime gameTime)
@@ -46,7 +53,7 @@ namespace CC_gamePrototype
                 Exit();
 
             // Temp player update call
-            player.Update(gameTime);
+            player.Update(gameTime, platformPosition);
 
             base.Update(gameTime);
         }
@@ -59,6 +66,12 @@ namespace CC_gamePrototype
 
             // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
             player.Draw(_spriteBatch, playerSprites);
+
+            // Temp platforms
+            _spriteBatch.Draw(
+                playerSprites, 
+                platformPosition, 
+                Color.White);
 
             _spriteBatch.End();
 
