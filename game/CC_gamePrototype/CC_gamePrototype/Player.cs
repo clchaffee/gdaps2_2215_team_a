@@ -131,6 +131,15 @@ namespace CC_gamePrototype
                     break;
             }
 
+            // Jump clause
+            if (currentKBState.IsKeyDown(Keys.W))
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    position.Y += 5 - i;
+                }
+            }
+
             // Temporary gravity calculations, this should be moved into wherever the collision detection is being
             // handeled
             // If the player is colliding with a platform in the downward direction (aka, moving into a platform)...
@@ -195,6 +204,16 @@ namespace CC_gamePrototype
 
                 // If the player is moving right
                 case PlayerStates.moveRight:
+
+                    spriteBatch.Draw(
+                         playerTexture,
+                         position,
+                         new Rectangle(1 * 128, 128, 128, 128),
+                         Color.White);
+
+                    break;
+
+                case PlayerStates.jump:
 
                     spriteBatch.Draw(
                          playerTexture,
