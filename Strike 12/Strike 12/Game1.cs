@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace Strike_12
 {
@@ -28,6 +30,9 @@ namespace Strike_12
         //keyboard States
         KeyboardState kbState;
         KeyboardState prevKbState = Keyboard.GetState();
+
+        //variables
+        double timer = 0;
 
         public Game1()
         {
@@ -95,8 +100,14 @@ namespace Strike_12
 
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
+                    timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
+                    if (timer >= 4)
+                    {
+                        //win 
+                    }
                     if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
                     {
+                        timer = 0;
                         state = GameState.Shop;
                     }
                     break;
@@ -159,6 +170,8 @@ namespace Strike_12
                         new Vector2(150, 200), Color.Black);
                     _spriteBatch.DrawString(displayFont, "Press Space to go to the shop page (happens upon character death)",
                         new Vector2(100, 400), Color.Black);
+                    _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
+                       new Vector2(10, 10), Color.Black);
                     break;
 
                 //text for shop screen
