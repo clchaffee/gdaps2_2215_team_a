@@ -13,19 +13,10 @@ namespace Strike_12
 {
     abstract class GameObject
     {
-        // ----- | Fields | -----
-
-        // ----- | Constructor | -----
-
-        // Paramatarized Constructor
-
-        // ----- | Property | -----
-
-        // ----- | Methods | -----
 
         //fields for position and image
         public Texture2D texture;
-        public Rectangle position = new Rectangle();
+        public Rectangle position;
 
         //property
         protected Rectangle Position
@@ -46,11 +37,8 @@ namespace Strike_12
         // Draw(spriteBatch sb):
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(texture, Position, Color.White);
+            sb.Draw(texture, position, Color.White);
         }
-
-        //Animation manager moved here?
-
 
     }
 }
