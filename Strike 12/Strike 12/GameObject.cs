@@ -13,15 +13,23 @@ namespace Strike_12
 {
     abstract class GameObject
     {
-        // ----- | Fields | -----
 
-        // ----- | Constructor | -----
+        //fields for position and image
+        public Texture2D texture;
+        public Rectangle position;
 
-        // Paramatarized Constructor
+        //property
+        protected Rectangle Position
+        {
+            get { return position; }
+        }
 
-        // ----- | Property | -----
-
-        // ----- | Methods | -----
+        //constructor
+        protected GameObject(Texture2D texture, Rectangle position)
+        {
+            this.texture = texture;
+            this.position = position;
+        }
 
         // Abstract Update(GameTime gameTime):
         public abstract void Update(GameTime gameTime);
@@ -29,7 +37,8 @@ namespace Strike_12
         // Draw(spriteBatch sb):
         public void Draw(SpriteBatch sb)
         {
-            // TODO: (GameObject) Logic Needed
+            sb.Draw(texture, position, Color.White);
         }
+
     }
 }
