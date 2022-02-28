@@ -27,9 +27,6 @@ namespace Strike_12
     class Player : GameObject
     {
         // ----- | Fields | -----
-        public KeyboardState kbState; // Currently, I wrote the player logic using currentKBState, but I didn't want
-                                       // to delete this randomly in case anyone prefers this convention
-        //parameters for size and position for the player not currently decided
 
         private PlayerStates playerState = PlayerStates.faceRight;
         private PlayerStates previousPlayerState;
