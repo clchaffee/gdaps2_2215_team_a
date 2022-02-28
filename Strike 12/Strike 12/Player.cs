@@ -50,8 +50,8 @@ namespace Strike_12
 
 
         // ----- | Constructor | -----
-        public Player(Texture2D texture, Rectangle position, Rectangle platformPos)
-            :base(texture, position)
+        public Player(Texture2D texture, Rectangle position, Rectangle platformPos, int windowHeight, int windowWidth)
+            :base(texture, position, windowHeight, windowWidth)
         {
             // This platformPos is completely temporary, as it is required to test the collisions currently in place
             platformPosition = platformPos;
