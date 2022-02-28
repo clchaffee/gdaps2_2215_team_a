@@ -31,6 +31,11 @@ namespace Strike_12
         private Player player;
         private Rectangle platformPosition;
 
+        // Temp enemy assets
+        private Enemy enemy;
+        private Texture2D enemySprites;
+        
+
         //sets the default state as the menu
         GameState state = GameState.Menu;
 
@@ -131,6 +136,7 @@ namespace Strike_12
 
                     // Temp player update call
                     player.Update(gameTime);
+                    enemy.Update(gameTime);
 
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
                     if (timer >= 4)
@@ -140,6 +146,14 @@ namespace Strike_12
                     if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
                     {
                         timer = 0;
+                        state = GameState.Shop;
+                    }
+                    if (enemy.CheckCollision(enemy, player))
+                    {
+                        player.Health -= 1;
+                    }
+                    if (player.Health == 0)
+                    {
                         state = GameState.Shop;
                     }
 
@@ -208,6 +222,8 @@ namespace Strike_12
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
+
+                    enemy.Draw(_spriteBatch);
 
                     // Temp platforms
                     _spriteBatch.Draw(
