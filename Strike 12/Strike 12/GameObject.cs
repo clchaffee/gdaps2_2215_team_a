@@ -22,19 +22,18 @@ namespace Strike_12
         Vector2 grav = new Vector2(10, 10);
 
         //property
-        protected Rectangle Position
+        protected Rectangle Size
         {
             get { return size; }
         }
 
         //constructor
-        protected GameObject(Texture2D texture, Rectangle position, int windowWidth, int windowHeight)
+        protected GameObject(Texture2D texture, Rectangle size, int windowWidth, int windowHeight)
         {
             this.texture = texture;
-            this.size = position;
+            this.size = size;
             this.windowWidth = windowWidth;
             this.windowHeight = windowHeight;
-            
             //position = new Rectangle((int)grav.X, (int)grav.Y, 10, 10);
         }
 
@@ -42,7 +41,7 @@ namespace Strike_12
         public abstract void Update(GameTime gameTime);
 
         // Draw(spriteBatch sb):
-        public void Draw(SpriteBatch sb)
+        public virtual void Draw(SpriteBatch sb)
         {
             sb.Draw(texture, size, Color.White);
         }
@@ -105,7 +104,7 @@ namespace Strike_12
 
         }
 
-
+        
 
 
 
