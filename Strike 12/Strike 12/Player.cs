@@ -94,7 +94,7 @@ namespace Strike_12
                 {
                     playerState = PlayerStates.faceRight;
                 }
-                else
+                else if (previousPlayerState == PlayerStates.moveLeft)
                 {
                     playerState = PlayerStates.faceLeft;
                 }
@@ -134,11 +134,11 @@ namespace Strike_12
 
         public void Draw(SpriteBatch spriteBatch, Texture2D playerTexture)
         {
-            spriteBatch.Draw(
+            /*spriteBatch.Draw(
                         playerTexture,
                         position,
                         new Rectangle(1 * 128, 128, 128, 128),
-                        Color.White);
+                        Color.White);*/
 
             // Player state switch
             switch (playerState)
@@ -148,7 +148,7 @@ namespace Strike_12
                     spriteBatch.Draw(
                         playerTexture,
                         size,
-                        new Rectangle(1 * 128, 128, 128, 128),
+                        new Rectangle(0 * 128, 0, 128, 128),
                         Color.White);
                     break;
 
@@ -157,7 +157,7 @@ namespace Strike_12
                     spriteBatch.Draw(
                         playerTexture,
                         size,
-                        new Rectangle(2 * 128, 128, 128, 128),
+                        new Rectangle(3 * 128, 0, 128, 128),
                         Color.White);
                     break;
 
@@ -166,7 +166,7 @@ namespace Strike_12
                     spriteBatch.Draw(
                         playerTexture,
                         size,
-                        new Rectangle(2 * 128, 128, 128, 128),
+                        new Rectangle(4 * 128, 0, 128, 128),
                         Color.White);
                     break;
 
@@ -175,7 +175,7 @@ namespace Strike_12
                     spriteBatch.Draw(
                          playerTexture,
                          size,
-                         new Rectangle(1 * 128, 128, 128, 128),
+                         new Rectangle(1 * 128, 0, 128, 128),
                          Color.White);
                     break;
 
@@ -184,7 +184,15 @@ namespace Strike_12
                     spriteBatch.Draw(
                          playerTexture,
                          size,
-                         new Rectangle(1 * 128, 128, 128, 128),
+                         new Rectangle(5 * 128, 0, 128, 128),
+                         Color.White);
+                    break;
+
+                case PlayerStates.jumpRight:
+                    spriteBatch.Draw(
+                         playerTexture,
+                         size,
+                         new Rectangle(2 * 128, 0, 128, 128),
                          Color.White);
                     break;
             }
