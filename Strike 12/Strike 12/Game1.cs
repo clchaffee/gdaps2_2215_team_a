@@ -86,7 +86,7 @@ namespace Strike_12
                 GraphicsDevice.Viewport.Height / 2,
                 128,
                 128),
-                platformPosition,
+                new Vector2(0, 0),
                 windowHeight,
                 windowWidth);
         }

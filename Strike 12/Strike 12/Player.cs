@@ -28,35 +28,34 @@ namespace Strike_12
         // ----- | Fields | -----
         private KeyboardState kbState; // Currently, I wrote the player logic using currentKBState, but I didn't want
                                        // to delete this randomly in case anyone prefers this convention
-        //parameters for size and position for the player not currently decided
+                                       //parameters for size and position for the player not currently decided
 
         private PlayerStates playerState = PlayerStates.faceRight;
         private PlayerStates previousPlayerState;
         private Texture2D playerSprite;
         private int moveSpeed = 12;
-        private int gravity = 10;
-        private int jumpSpeed = 50;
-        private bool grounded;
-        private int jumpLength = 5;
-        private int jumpModifier = 0;
+
+        // Gravity Fields
+        protected Vector2 position;
+        protected Vector2 velocity;
+        protected bool isGrounded;
 
         // Input Fields
         private KeyboardState currentKBState;
         private KeyboardState previousKBState;
 
         // Location Fields
-        private Rectangle playerPosition;
+        private Rectangle playerSize;
         private Rectangle platformPosition;
 
-
         // ----- | Constructor | -----
-        public Player(Texture2D texture, Rectangle position, Rectangle platformPos, int windowHeight, int windowWidth)
-            :base(texture, position, windowHeight, windowWidth)
+        public Player(Texture2D texture, Rectangle size, Vector2 pos, int windowHeight, int windowWidth)
+            : base(texture, size, windowHeight, windowWidth)
         {
             // This platformPos is completely temporary, as it is required to test the collisions currently in place
-            platformPosition = platformPos;
+            position = pos;
             playerSprite = texture;
-            playerPosition = position; 
+            playerSize = size;
         }
 
         // -- Methods Overriden from parent class
@@ -78,156 +77,59 @@ namespace Strike_12
             // Gather the current state of the keyboard
             currentKBState = Keyboard.GetState();
 
-            // Player state switch
-            switch (playerState)
+
+            // Left Movement 
+            if (currentKBState.IsKeyDown(Keys.D))
             {
-                // If the player is facing right
-                case PlayerStates.faceRight:
-
-                    // If the player is pressing D, switch the state to move right
-                    if (currentKBState.IsKeyDown(Keys.D))
-                    {
-                        playerState = PlayerStates.moveRight;
-                    }
-
-                    // If the player is pressing A, switch the state to face left
-                    if (currentKBState.IsKeyDown(Keys.A))
-                    {
-                        playerState = PlayerStates.faceLeft;
-                    }
-
-                    // If the player presses W, switch them to the jump state
-                    if (currentKBState.IsKeyDown(Keys.W) && previousKBState.IsKeyUp(Keys.W) && grounded == true)
-                    {
-                        jumpLength = 5;
-                        jumpModifier = 0;
-                        previousPlayerState = playerState;
-                        playerState = PlayerStates.jump;
-                    }
-
-                    break;
-
-                // If the player is facing left
-                case PlayerStates.faceLeft:
-
-                    // If the player is pressing A, move the player to the left
-                    if (currentKBState.IsKeyDown(Keys.A))
-                    {
-                        playerState = PlayerStates.moveLeft;
-                    }
-
-                    // If the player presses D, move the player to face right
-                    if (currentKBState.IsKeyDown(Keys.D))
-                    {
-                        playerState = PlayerStates.faceRight;
-                    }
-
-                    // If the player presses W, switch them to the jump state
-                    if (currentKBState.IsKeyDown(Keys.W) && previousKBState.IsKeyUp(Keys.W) && grounded == true)
-                    {
-                        jumpLength = 5;
-                        jumpModifier = 0;
-                        previousPlayerState = playerState;
-                        playerState = PlayerStates.jump;
-                    }
-
-                    break;
-
-                // If the player is moving left
-                case PlayerStates.moveLeft:
-
-                    // If the player presses A, and the player is not colliding with an object, and will not be
-                    // colliding with an object...
-                    if (currentKBState.IsKeyDown(Keys.A) && !CheckLeftCollision(platformPos))
-                    {
-                        // ...allow the player to move by the constant movespeed
-                        position.X -= moveSpeed;
-                    }
-                    else
-                    {
-                        // If they stop moving, put them in the faceleft state
-                        playerState = PlayerStates.faceLeft;
-                    }
-
-                    // If the player presses W, switch them to the jump state
-                    if (currentKBState.IsKeyDown(Keys.W) && previousKBState.IsKeyUp(Keys.W) && grounded == true)
-                    {
-                        jumpLength = 5;
-                        jumpModifier = 0;
-                        previousPlayerState = playerState;
-                        playerState = PlayerStates.jump;
-                    }
-
-                    break;
-
-                // If the player is moving right
-                case PlayerStates.moveRight:
-
-                    // If the player presses D, and the player is not colliding with an object, and will not be
-                    // colliding with an object...
-                    if (currentKBState.IsKeyDown(Keys.D) && !CheckRightCollision(platformPos))
-                    {
-                        // ...allow the player to move by the constant movespeed
-                        position.X += moveSpeed;
-                    }
-                    else
-                    {
-                        // If they stop moving, put them in the faceright state
-                        playerState = PlayerStates.faceRight;
-                    }
-
-                    // If the player presses W, switch them to the jump state
-                    if (currentKBState.IsKeyDown(Keys.W) && previousKBState.IsKeyUp(Keys.W) && grounded == true)
-                    {
-                        jumpLength = 5;
-                        jumpModifier = 0;
-                        previousPlayerState = playerState;
-                        playerState = PlayerStates.jump;
-                    }
-
-                    break;
-
-                // If the player is jumping
-                case PlayerStates.jump:
-
-                    /*Conrad's thoughts on jumping
-                    if (grounded && (currentKBState.IsKeyUp(Keys.W) && previousKBState.IsKeyDown(Keys.W)))
-                    {
-                        position.Y -= jumpSpeed;
-                        grounded = false;
-                    }
-                    else if (!grounded)
-                    {
-                        position.Y -= jumpSpeed;
-                        jumpSpeed -= gravity;
-                    }*/
-
-                    if (jumpLength > 0)
-                    {
-                        position.Y -= (60 - 10 * jumpModifier);
-                    }
-                    else if (jumpLength < 0)
-                    {
-                        playerState = previousPlayerState;
-                    }
-
-                    if (currentKBState.IsKeyDown(Keys.A) && !CheckLeftCollision(platformPos))
-                    {
-                        // ...allow the player to move by the constant movespeed
-                        position.X -= moveSpeed + 5;
-                    }
-
-                    if (currentKBState.IsKeyDown(Keys.D) && !CheckRightCollision(platformPos))
-                    {
-                        // ...allow the player to move by the constant movespeed
-                        position.X += moveSpeed + 5;
-                    }
-
-                    jumpModifier += 1;
-                    jumpLength -= 1;
-
-                    break;
+                playerState = PlayerStates.moveRight;
             }
+            else if (!currentKBState.IsKeyDown(Keys.D))
+            {
+                playerState = PlayerStates.faceRight;
+            }
+
+            // Right movement
+            if (currentKBState.IsKeyDown(Keys.A))
+            {
+                playerState = PlayerStates.moveLeft;
+            }
+            else if (!currentKBState.IsKeyDown(Keys.A))
+            {
+                playerState = PlayerStates.faceLeft;
+            }
+
+            // If the player is no longer pressing A, switch back to the facing left state
+            if (currentKBState.IsKeyDown(Keys.W))
+            {
+                playerState = PlayerStates.jump;
+            }
+
+            // Move the player based on the current velocity
+            velocity.X += moveSpeed;
+
+            /*if (jumpLength > 0)
+            {
+                position.Y -= (60 - 10 * jumpModifier);
+            }
+            else if (jumpLength < 0)
+            {
+                playerState = previousPlayerState;
+            }
+
+            if (currentKBState.IsKeyDown(Keys.A) && !CheckLeftCollision(platformPos))
+            {
+                // ...allow the player to move by the constant movespeed
+                position.X -= moveSpeed + 5;
+            }
+
+            if (currentKBState.IsKeyDown(Keys.D) && !CheckRightCollision(platformPos))
+            {
+                // ...allow the player to move by the constant movespeed
+                position.X += moveSpeed + 5;
+            }
+
+            jumpModifier += 1;
+            jumpLength -= 1;
 
             // Temporary gravity calculations, this should be moved into wherever the collision detection is being
             // handeled
@@ -241,7 +143,7 @@ namespace Strike_12
                     position.Y += 1;
                 }
 
-                grounded = true;
+                isGrounded = true;
             }
             // If the player is not colliding or will not be colliding with a platform
             else
@@ -250,12 +152,12 @@ namespace Strike_12
                 if (playerState != PlayerStates.jump)
                 {
                     position.Y += gravity;
-                    grounded = false;
+                    isGrounded = false;
                 }
             }
 
             // Save the previous keyboard input
-            previousKBState = Keyboard.GetState();
+            previousKBState = Keyboard.GetState();*/
         }
 
         public void Draw(SpriteBatch spriteBatch, Texture2D playerTexture)
@@ -322,7 +224,7 @@ namespace Strike_12
 
         // Temp collision checking
         // In theory, this should be moved to the game object manager class in order to elminiate the need for
-        // the player to check each individual object that it could possibly collide with each frame
+        /* the player to check each individual object that it could possibly collide with each frame
         public bool CheckDownwardCollision(Rectangle check)
         {
             return (position.Bottom + gravity > check.Top &&
@@ -344,7 +246,7 @@ namespace Strike_12
                     position.Left > check.Right &&
                     position.Top < check.Bottom &&
                     position.Bottom > check.Top);
-        }
+        }*/
 
 
     }
