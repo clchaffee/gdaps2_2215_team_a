@@ -15,20 +15,20 @@ namespace Strike_12
     {
 
         //fields for position and image
-        public Texture2D texture;
-        public Rectangle position;
+        protected Texture2D texture;
+        protected Rectangle size;
 
         //property
-        protected Rectangle Position
+        protected Rectangle Size
         {
-            get { return position; }
+            get { return size; }
         }
 
         //constructor
-        protected GameObject(Texture2D texture, Rectangle position)
+        protected GameObject(Texture2D texture, Rectangle size)
         {
             this.texture = texture;
-            this.position = position;
+            this.size = size;
         }
 
         // Abstract Update(GameTime gameTime):
@@ -37,7 +37,7 @@ namespace Strike_12
         // Draw(spriteBatch sb):
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(texture, position, Color.White);
+            sb.Draw(texture, size, Color.White);
         }
 
     }
