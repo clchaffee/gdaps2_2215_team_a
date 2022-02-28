@@ -34,6 +34,7 @@ namespace Strike_12
         private float moveSpeed = 5f;
         public int windowWidth;
         public int windowHeight;
+        private int health = 10;
 
         //fields for gravity
         protected Vector2 position;
@@ -43,6 +44,13 @@ namespace Strike_12
         // Input Fields
         public KeyboardState currentKBState;
         private KeyboardState previousKBState;
+
+        public int Health
+        {
+            get { return health; }
+            set { health = value; }
+        }
+
 
         // Location Fields
         //private Rectangle platformPosition;
