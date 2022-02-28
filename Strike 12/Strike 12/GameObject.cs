@@ -42,7 +42,7 @@ namespace Strike_12
         public abstract void Update(GameTime gameTime);
 
         // Draw(spriteBatch sb):
-        public void Draw(SpriteBatch sb)
+        public virtual void Draw(SpriteBatch sb)
         {
             sb.Draw(texture, position, Color.White);
         }
