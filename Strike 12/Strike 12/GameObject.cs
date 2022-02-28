@@ -34,7 +34,6 @@ namespace Strike_12
             this.position = position;
             this.windowWidth = windowWidth;
             this.windowHeight = windowHeight;
-            
             //position = new Rectangle((int)grav.X, (int)grav.Y, 10, 10);
         }
 
@@ -42,7 +41,7 @@ namespace Strike_12
         public abstract void Update(GameTime gameTime);
 
         // Draw(spriteBatch sb):
-        public void Draw(SpriteBatch sb)
+        public virtual void Draw(SpriteBatch sb)
         {
             sb.Draw(texture, position, Color.White);
         }
@@ -105,7 +104,7 @@ namespace Strike_12
 
         }
 
-
+        
 
 
 
