@@ -23,6 +23,8 @@ namespace Strike_12
         private SpriteBatch _spriteBatch;
         private SpriteFont titleFont;
         private SpriteFont displayFont;
+        private int windowWidth = 1216;
+        private int windowHeight = 992;
 
         // Temp player assets
         private Texture2D playerSprites;
@@ -48,8 +50,8 @@ namespace Strike_12
 
         protected override void Initialize()
         {
-            _graphics.PreferredBackBufferHeight = 992;
-            _graphics.PreferredBackBufferWidth = 1216;
+            _graphics.PreferredBackBufferHeight = windowHeight;
+            _graphics.PreferredBackBufferWidth = windowWidth;
             _graphics.ApplyChanges();
 
             base.Initialize();
