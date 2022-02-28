@@ -75,6 +75,7 @@ namespace Strike_12
 
             // Load the player sprite sheet
             playerSprites = Content.Load<Texture2D>("playerSpriteSheet");
+            enemySprites = Content.Load<Texture2D>("enemySpriteSheet");
 
             // Temp platform location
             platformPosition = new Rectangle(
@@ -91,6 +92,13 @@ namespace Strike_12
                 new Vector2(
                 GraphicsDevice.Viewport.Width / 2,
                 GraphicsDevice.Viewport.Height / 2));
+
+            /*
+            enemy = new Enemy
+                (enemySprites, new Rectangle(
+                    (100), (GraphicsDevice.Viewport.Height / 2), 128, 128),
+                    windowWidth, windowHeight);
+            */
         }
 
         /// <summary>
@@ -136,7 +144,7 @@ namespace Strike_12
 
                     // Temp player update call
                     player.Update(gameTime);
-                    enemy.Update(gameTime);
+                    //enemy.Update(gameTime);
 
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
                     if (timer >= 4)
@@ -148,10 +156,12 @@ namespace Strike_12
                         timer = 0;
                         state = GameState.Shop;
                     }
+                    /*
                     if (enemy.CheckCollision(enemy, player))
                     {
                         player.Health -= 1;
                     }
+                    */
                     if (player.Health == 0)
                     {
                         state = GameState.Shop;
@@ -223,7 +233,7 @@ namespace Strike_12
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
 
-                    enemy.Draw(_spriteBatch);
+                    //enemy.Draw(_spriteBatch, enemySprites);
 
                     // Temp platforms
                     _spriteBatch.Draw(

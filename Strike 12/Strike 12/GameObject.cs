@@ -59,22 +59,22 @@ namespace Strike_12
             this.windowWidth = windowWidth;
 
             //if hits bottom of screen, returns true
-            if ((size.Y - size.Height) <= windowHeight)
+            if ((size.Y - size.Height) < windowHeight)
             {
                return true;
             }
             //if hits top of screen, returns true
-            if ((size.Y) >= windowHeight)
+            else if ((size.Y) > windowHeight)
             {
                 return true;
             }
             //if hits right of screen, returns true
-            if ((size.X + size.Width) >= windowWidth)
+            else if ((size.X + size.Width) > windowWidth)
             {
                 return true;
             }
             //if hits left of screen, returns true
-            if ((size.X) <= windowWidth)
+            else if ((size.X) < windowWidth)
             {
                 return true;
             }

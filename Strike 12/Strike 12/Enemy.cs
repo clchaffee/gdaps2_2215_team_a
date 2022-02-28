@@ -19,8 +19,7 @@ namespace Strike_12
     }
 
     /// <summary>
-    /// basic Enemy class
-    /// changes states depending on which way 
+    /// basic patrol style Enemy
     /// </summary>
     class Enemy : GameObject
     {
@@ -28,13 +27,16 @@ namespace Strike_12
         int speed = 3;  //temp speed variable, will be changed
         private EnemyStates enemyState = EnemyStates.moveRight;
 
+        private Texture2D enemySprite;
+
         // ----- | Constructor | -----
 
         // Paramatarized Constructor
-        public Enemy(Texture2D texture, Rectangle position, int windowWidth, int windowHeight)
-            : base(texture, position, windowWidth, windowHeight)
+        public Enemy(Texture2D texture, Rectangle size, int windowWidth, int windowHeight)
+            : base(texture, size, windowWidth, windowHeight)
         {
-            this.size = position;
+            this.enemySprite = texture;
+            this.size = size;
             this.windowWidth = windowWidth;
             this.windowHeight = windowHeight;
         }
@@ -43,6 +45,11 @@ namespace Strike_12
 
         // ----- | Methods | -----
         // -- Methods Overriden from parent class
+        /// <summary>
+        /// changes direction od speed when bounces against the wall
+        /// and updates sprite acordingly
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
             if (Bounce(windowWidth, windowHeight) == true)
@@ -50,6 +57,7 @@ namespace Strike_12
                 speed *= -1;
             }
             
+            //changes state based on which direction enemy is moving
             if (speed < 0)
             {
                 enemyState = EnemyStates.moveLeft;
@@ -58,17 +66,33 @@ namespace Strike_12
             {
                 enemyState = EnemyStates.moveRight;
             }
-            position.X += speed;
+            size.X += speed;
         }
 
-        public override void Draw(SpriteBatch sb)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sb"></param>
+        public void Draw(SpriteBatch spriteBatch, Texture2D enemyTexture)
         {
             switch (enemyState)
             {
                 case EnemyStates.moveLeft:
+                    spriteBatch.Draw(
+                        enemyTexture,
+                        size,
+                        new Rectangle(4 * 128, 0, 128, 128),
+                        Color.White);
                     break;
+
                 case EnemyStates.moveRight:
+                    spriteBatch.Draw(
+                         enemyTexture,
+                         size,
+                         new Rectangle(1 * 128, 0, 128, 128),
+                         Color.White);
                     break;
+
                 default:
                     break;
             }
