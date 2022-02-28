@@ -82,6 +82,7 @@ namespace Strike_12
             player = new Player
                 (playerSprites, new Rectangle (
                     (GraphicsDevice.Viewport.Width / 2),(GraphicsDevice.Viewport.Height / 2),128,128),
+                    windowWidth,windowHeight,
                 new Vector2(
                 GraphicsDevice.Viewport.Width / 2,
                 GraphicsDevice.Viewport.Height / 2));

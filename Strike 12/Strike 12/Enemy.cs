@@ -26,7 +26,7 @@ namespace Strike_12
         public Enemy(Texture2D texture, Rectangle position, int windowWidth, int windowHeight)
             : base(texture, position, windowWidth, windowHeight)
         {
-            this.position = position;
+            this.size = position;
             this.windowWidth = windowWidth;
             this.windowHeight = windowHeight;
         }
@@ -41,7 +41,7 @@ namespace Strike_12
             {
                 speed *= -1;
             }
-            position.X += speed;
+            size.X += speed;
         }
 
         public override void Draw(SpriteBatch sb)

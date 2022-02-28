@@ -35,6 +35,8 @@ namespace Strike_12
         private PlayerStates previousPlayerState;
         private Texture2D playerSprite;
         private float moveSpeed = 5f;
+        public int windowWidth;
+        public int windowHeight;
 
         //fields for gravity
         protected Vector2 position;
@@ -50,13 +52,16 @@ namespace Strike_12
 
 
         // ----- | Constructor | -----
-        public Player(Texture2D texture, Rectangle size, Vector2 position) : base(texture, size)
+        public Player(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, 
+            Vector2 position) : base(texture, size, windowWidth, windowHeight)
             
         {
             // This platformPos is completely temporary, as it is required to test the collisions currently in place
             this.playerSprite = texture;
             this.position = position;
             this.size = size;
+            this.windowHeight = windowHeight;
+            this.windowWidth = windowWidth;
             isGrounded = false;
         }
 
