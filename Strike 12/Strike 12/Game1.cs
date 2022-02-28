@@ -73,22 +73,19 @@ namespace Strike_12
 
             // Temp platform location
             platformPosition = new Rectangle(
-                    150,
-                    450,
+                    500,
+                    912,
                     playerSprites.Width,
                     playerSprites.Height);
 
             // Initialize the player with the asset loaded in
             player = new Player
-                (playerSprites,
-                new Rectangle(
+                (playerSprites, new Rectangle (
+                    (GraphicsDevice.Viewport.Width / 2),(GraphicsDevice.Viewport.Height / 2),128,128),
+                    windowWidth,windowHeight,
+                new Vector2(
                 GraphicsDevice.Viewport.Width / 2,
-                GraphicsDevice.Viewport.Height / 2,
-                128,
-                128),
-                platformPosition,
-                windowHeight,
-                windowWidth);
+                GraphicsDevice.Viewport.Height / 2));
         }
 
         /// <summary>
