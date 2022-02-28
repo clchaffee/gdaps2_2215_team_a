@@ -11,14 +11,22 @@ using Microsoft.Xna.Framework.Input;
 /// </summary>
 namespace Strike_12
 {
-    //temp
-    enum EnemyState { }
+    //temp states of the player
+    enum EnemyStates 
+    { 
+        moveLeft,
+        moveRight
+    }
 
+    /// <summary>
+    /// basic Enemy class
+    /// changes states depending on which way 
+    /// </summary>
     class Enemy : GameObject
     {
         // ----- | Fields | -----
-         
-        int speed = 3;
+        int speed = 3;  //temp speed variable, will be changed
+        private EnemyStates enemyState = EnemyStates.moveRight;
 
         // ----- | Constructor | -----
 
@@ -41,12 +49,29 @@ namespace Strike_12
             {
                 speed *= -1;
             }
+            
+            if (speed < 0)
+            {
+                enemyState = EnemyStates.moveLeft;
+            }
+            else
+            {
+                enemyState = EnemyStates.moveRight;
+            }
             position.X += speed;
         }
 
         public override void Draw(SpriteBatch sb)
         {
-            base.Draw(sb);
+            switch (enemyState)
+            {
+                case EnemyStates.moveLeft:
+                    break;
+                case EnemyStates.moveRight:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
