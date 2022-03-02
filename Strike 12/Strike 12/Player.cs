@@ -112,11 +112,13 @@ namespace Strike_12
             else
             {
                 velocity.X = 0f;
-                if (previousPlayerState == PlayerStates.moveRight) 
+                if (isGrounded && (previousPlayerState == PlayerStates.moveRight ||
+                    previousPlayerState == PlayerStates.jumpRight)) 
                 {
                     playerState = PlayerStates.faceRight;
                 }
-                else if (previousPlayerState == PlayerStates.moveLeft)
+                else if (isGrounded && (previousPlayerState == PlayerStates.moveLeft ||
+                    previousPlayerState == PlayerStates.jumpLeft))
                 {
                     playerState = PlayerStates.faceLeft;
                 }
@@ -127,6 +129,14 @@ namespace Strike_12
                 position.Y -= 15f;
                 velocity.Y = -5f;
                 isGrounded = false;
+                if (previousPlayerState == PlayerStates.faceRight)
+                {
+                    playerState = PlayerStates.jumpRight;
+                }
+                else if (previousPlayerState == PlayerStates.faceLeft)
+                {
+                    playerState = PlayerStates.jumpLeft;
+                }
             }
 
             if (!isGrounded)
