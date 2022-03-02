@@ -14,8 +14,8 @@ namespace Strike_12
         // ----- | Fields | -----
 
         // File Reader Fields
-        StreamWriter input;
         StreamReader output;
+        char[,] levelLayout;
 
         // ----- | Constructor | -----
 
@@ -23,14 +23,51 @@ namespace Strike_12
 
         // ----- | Methods | -----
 
+        // TODO: test to see if the load method works
         // Load(int levelNum): takes in an int to and searches for a level to load up.
+        public  void Load(int levelNum)
+        {
+            string fileName = string.Format("..//Levels//Level{0}", levelNum);
+            string[] arenaSize = new string[2];
+            string line;
+            int count = -1;
 
-        // NOTE: file format will have a number at the end so it is simple to
-        // load in different level designs within the program
+            try
+            {
+                // Attempt to open up the StreamReader
+                output = new StreamReader(fileName);
 
-        // Example: Level1.txt, Level2.txt
+                while ((line = output.ReadLine()) != null)
+                {
+                    if (count == -1)
+                    {
+                        // At the first line get the size of the 2D array and initialize it
+                        arenaSize = line.Split(',');
+                        levelLayout = new char[int.Parse(arenaSize[0]), int.Parse(arenaSize[1])];
+                    }
+                    else
+                    {
+                        // For each line of the array loop through it and fill it
+                        for (int i = 0; i < int.Parse(arenaSize[0]); i++)
+                        {
+                            levelLayout[i, count] = line[i];
+                        }
+                    }
 
-        // TODO: Figure out the layout of the file for the Level Editor.
+                    count++;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            // If StreamReader exists then close it
+            if (output != null)
+            {
+                output.Close();
+            }
+        }
 
 
     }
