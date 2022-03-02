@@ -32,8 +32,9 @@ namespace Strike_12
         private Rectangle platformPosition;
 
         // Temp enemy assets
-        private Enemy enemy;
         private Texture2D enemySprites;
+        private Enemy enemy;
+        
         
 
         //sets the default state as the menu
@@ -93,12 +94,12 @@ namespace Strike_12
                 GraphicsDevice.Viewport.Width / 2,
                 GraphicsDevice.Viewport.Height / 2));
 
-            /*
+            
             enemy = new Enemy
                 (enemySprites, new Rectangle(
                     (100), (GraphicsDevice.Viewport.Height / 2), 128, 128),
                     windowWidth, windowHeight);
-            */
+            
         }
 
         /// <summary>
@@ -142,9 +143,9 @@ namespace Strike_12
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
 
-                    // Temp player update call
+                    // Temp player and enemy update call
                     player.Update(gameTime);
-                    //enemy.Update(gameTime);
+                    enemy.Update(gameTime);
 
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
                     if (timer >= 4)
@@ -232,8 +233,7 @@ namespace Strike_12
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
-
-                    //enemy.Draw(_spriteBatch, enemySprites);
+                    enemy.Draw(_spriteBatch, enemySprites);
 
                     // Temp platforms
                     _spriteBatch.Draw(

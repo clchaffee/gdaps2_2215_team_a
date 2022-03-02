@@ -24,13 +24,13 @@ namespace Strike_12
     class Enemy : GameObject
     {
         // ----- | Fields | -----
-        int speed = 3;  //temp speed variable, will be changed
-        private EnemyStates enemyState = EnemyStates.moveRight;
-
+        private EnemyStates enemyState;
         private Texture2D enemySprite;
 
-        // ----- | Constructor | -----
+        private int moveSpeed = 5; //temp speed variable, can be changed
 
+
+        // ----- | Constructor | -----
         // Paramatarized Constructor
         public Enemy(Texture2D texture, Rectangle size, int windowWidth, int windowHeight)
             : base(texture, size, windowWidth, windowHeight)
@@ -39,6 +39,8 @@ namespace Strike_12
             this.size = size;
             this.windowWidth = windowWidth;
             this.windowHeight = windowHeight;
+
+            enemyState = EnemyStates.moveRight;
         }
 
         // ----- | Property | -----
@@ -52,13 +54,14 @@ namespace Strike_12
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            if (Bounce(windowWidth, windowHeight) == true)
+            size.X += moveSpeed;
+
+            if (size.X > windowWidth - 128 || size.X < 0)
             {
-                speed *= -1;
+                moveSpeed = -1 * moveSpeed;
             }
-            
-            //changes state based on which direction enemy is moving
-            if (speed < 0)
+
+            if (moveSpeed < 0)
             {
                 enemyState = EnemyStates.moveLeft;
             }
@@ -66,8 +69,6 @@ namespace Strike_12
             {
                 enemyState = EnemyStates.moveRight;
             }
-            
-            size.X += speed;
         }
 
         /// <summary>
