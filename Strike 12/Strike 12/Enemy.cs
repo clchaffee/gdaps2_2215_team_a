@@ -66,6 +66,7 @@ namespace Strike_12
             {
                 enemyState = EnemyStates.moveRight;
             }
+            
             size.X += speed;
         }
 
