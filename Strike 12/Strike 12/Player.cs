@@ -146,15 +146,11 @@ namespace Strike_12
                 velocity.Y += 0.15f * i;
             }
 
-            //if the player is on the ground resets Y velocity
-            if (isGrounded)
-            {
-                velocity.Y = 0f;
-            }
-
-            if (position.Y + playerSprite.Height >=700) //placeholder value for collision
+            //if the player is in contact with the floor, sets to grounded and resets Y velocity
+            if (position.Y + playerSprite.Height >=905) //placeholder value for collision
             {
                 isGrounded = true;
+                velocity.Y = 0f;
             }
             
             //updates position based on velocity and the size rectangle

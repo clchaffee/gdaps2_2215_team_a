@@ -46,8 +46,16 @@ namespace Strike_12
         }
 
         //collision detection
-        protected virtual bool CheckCollision(GameObject collider, GameObject collided)
+        protected virtual bool CheckCollision(string side, GameObject collider, GameObject collided)
         {
+            if (side == "bottom")
+            {
+                return collider.size.Bottom == collided.size.Top;
+            }
+            else if (side == "left" || side == "right")
+            {
+
+            }
             return (collider.size.Intersects(collided.size));
         }
 
