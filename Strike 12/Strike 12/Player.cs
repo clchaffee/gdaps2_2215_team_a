@@ -88,12 +88,26 @@ namespace Strike_12
             if (currentKBState.IsKeyDown(Keys.A))
             {
                 velocity.X = -moveSpeed;
-                playerState = PlayerStates.moveLeft;
+                if (!isGrounded)
+                {
+                    playerState = PlayerStates.jumpLeft;
+                }
+                else
+                {
+                    playerState = PlayerStates.moveLeft;
+                }
             }
             else if (currentKBState.IsKeyDown(Keys.D))
             {
                 velocity.X = moveSpeed;
-                playerState = PlayerStates.moveRight;
+                if (!isGrounded)
+                {
+                    playerState = PlayerStates.jumpRight;
+                }
+                else
+                {
+                    playerState = PlayerStates.moveRight;
+                }
             }
             else
             {
@@ -136,6 +150,7 @@ namespace Strike_12
             size.X = (int)position.X;
             size.Y = (int)position.Y;
             previousPlayerState = playerState;
+            previousKBState = kbState;
         }
         
 
