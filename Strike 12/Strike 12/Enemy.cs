@@ -61,6 +61,7 @@ namespace Strike_12
                 moveSpeed = -1 * moveSpeed;
             }
 
+            //flips sprite based on neg or pos speed
             if (moveSpeed < 0)
             {
                 enemyState = EnemyStates.moveLeft;
