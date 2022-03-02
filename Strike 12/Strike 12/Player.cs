@@ -27,16 +27,14 @@ namespace Strike_12
     class Player : GameObject
     {
         // ----- | Fields | -----
-        private KeyboardState kbState; // Currently, I wrote the player logic using currentKBState, but I didn't want
-                                       // to delete this randomly in case anyone prefers this convention
         //parameters for size and position for the player not currently decided
 
-        private PlayerStates playerState = PlayerStates.faceRight;
+        private PlayerStates playerState;
         private PlayerStates previousPlayerState;
         private Texture2D playerSprite;
         private float moveSpeed = 5f;
-        public int windowWidth;
-        public int windowHeight;
+        private int windowWidth;
+        private int windowHeight;
         private int health = 10;
 
         //fields for gravity
@@ -45,7 +43,7 @@ namespace Strike_12
         protected bool isGrounded;
 
         // Input Fields
-        public KeyboardState currentKBState;
+        public KeyboardState kbState;
         private KeyboardState previousKBState;
 
         public int Health
@@ -54,22 +52,18 @@ namespace Strike_12
             set { health = value; }
         }
 
-
-        // Location Fields
-        //private Rectangle platformPosition;
-
         // ----- | Constructor | -----
         public Player(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, 
             Vector2 position) : base(texture, size, windowWidth, windowHeight)
             
         {
-            // This platformPos is completely temporary, as it is required to test the collisions currently in place
             this.playerSprite = texture;
             this.position = position;
             this.size = size;
             this.windowHeight = windowHeight;
             this.windowWidth = windowWidth;
             isGrounded = false;
+            playerState = PlayerStates.faceRight;
         }
 
         // -- Methods Overriden from parent class
@@ -83,9 +77,11 @@ namespace Strike_12
         /// </summary>
         public override void Update(GameTime gameTime)
         {
-            currentKBState = Keyboard.GetState();
+            //sets current keyboard state
+            kbState = Keyboard.GetState();
 
-            if (currentKBState.IsKeyDown(Keys.A))
+            //if A is pressed, moves player left, changes player state depending on if jumping or not.
+            if (kbState.IsKeyDown(Keys.A))
             {
                 velocity.X = -moveSpeed;
                 if (!isGrounded)
@@ -97,7 +93,8 @@ namespace Strike_12
                     playerState = PlayerStates.moveLeft;
                 }
             }
-            else if (currentKBState.IsKeyDown(Keys.D))
+            //if D is pressed, moves player right, changes player state depending on if jumping or not.
+            else if (kbState.IsKeyDown(Keys.D))
             {
                 velocity.X = moveSpeed;
                 if (!isGrounded)
@@ -109,6 +106,7 @@ namespace Strike_12
                     playerState = PlayerStates.moveRight;
                 }
             }
+            //otherwise x velocity is zero (doesn't move left or right) and updates player state accordingly.
             else
             {
                 velocity.X = 0f;
@@ -124,7 +122,8 @@ namespace Strike_12
                 }
             }
 
-            if (currentKBState.IsKeyDown(Keys.W) && isGrounded == true)
+            //if W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
+            if (kbState.IsKeyDown(Keys.W) && isGrounded == true)
             {
                 position.Y -= 15f;
                 velocity.Y = -5f;
@@ -139,6 +138,7 @@ namespace Strike_12
                 }
             }
 
+            //if the player is no longer on the ground, applies gravity
             if (!isGrounded)
             {
                 float i = 1;
@@ -146,6 +146,7 @@ namespace Strike_12
                 velocity.Y += 0.15f * i;
             }
 
+            //if the player is on the ground resets Y velocity
             if (isGrounded)
             {
                 velocity.Y = 0f;
@@ -155,14 +156,18 @@ namespace Strike_12
             {
                 isGrounded = true;
             }
-
+            
+            //updates position based on velocity and the size rectangle
             position += velocity;
             size.X = (int)position.X;
             size.Y = (int)position.Y;
+
+            //sets previous player and kb states
             previousPlayerState = playerState;
             previousKBState = kbState;
         }
         
+
 
 
         public void Draw(SpriteBatch spriteBatch, Texture2D playerTexture)
@@ -221,6 +226,7 @@ namespace Strike_12
                          Color.White);
                     break;
 
+                //if the player is jumping right
                 case PlayerStates.jumpRight:
                     spriteBatch.Draw(
                          playerTexture,

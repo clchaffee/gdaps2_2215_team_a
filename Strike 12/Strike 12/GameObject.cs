@@ -15,11 +15,10 @@ namespace Strike_12
     {
 
         //fields for position and image
-        public Texture2D texture;
-        public Rectangle size;
-        public int windowWidth;
-        public int windowHeight;
-        Vector2 grav = new Vector2(10, 10);
+        protected Texture2D texture;
+        protected Rectangle size;
+        protected int windowWidth;
+        protected int windowHeight;
 
         //property
         protected Rectangle Size
@@ -41,19 +40,19 @@ namespace Strike_12
         public abstract void Update(GameTime gameTime);
 
         // Draw(spriteBatch sb):
-        public virtual void Draw(SpriteBatch sb)
+        protected virtual void Draw(SpriteBatch sb)
         {
             sb.Draw(texture, size, Color.White);
         }
 
         //collision detection
-        public bool CheckCollision(GameObject collider, GameObject collided)
+        protected virtual bool CheckCollision(GameObject collider, GameObject collided)
         {
             return (collider.size.Intersects(collided.size));
         }
 
         //makes a game object bounce when hitting the wall or ground
-        public bool Bounce(int windowWidth, int windowHeight)
+        protected bool Bounce(int windowWidth, int windowHeight)
         {
             this.windowHeight = windowHeight;
             this.windowWidth = windowWidth;
@@ -85,7 +84,7 @@ namespace Strike_12
         }
 
         //screen wraps the character 
-        public bool ScreenWrap()
+        protected bool ScreenWrap()
         {
             if (size.X + size.Width >= windowWidth)
             {
