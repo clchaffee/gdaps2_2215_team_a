@@ -32,10 +32,11 @@ namespace Strike_12
         private PlayerStates playerState;
         private PlayerStates previousPlayerState;
         private Texture2D playerSprite;
-        private float moveSpeed = 5f;
+        private float moveSpeed = 10f;
         private int windowWidth;
         private int windowHeight;
         private int health = 10;
+        private float gravityMultiplier = 1f;
 
         //fields for gravity
         protected Vector2 position;
@@ -143,9 +144,22 @@ namespace Strike_12
             //if W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
             if (kbState.IsKeyDown(Keys.W) && isGrounded == true)
             {
+                //position.Y -= 15f;
+                //velocity.Y = -5f;
+
+                position.Y -= 60f;
+                velocity.Y = -20f;
+
+                float j = 1;
+
+                // Test One: Compounded jump values
+                /* Jump velocity: sqrt(2Hg)
+
                 position.Y -= 15f;
-                velocity.Y = -5f;
+                velocity.Y = Math.sqrt(2)f;*/
+
                 isGrounded = false;
+
                 if (previousPlayerState == PlayerStates.faceRight)
                 {
                     playerState = PlayerStates.jumpRight;
@@ -159,15 +173,32 @@ namespace Strike_12
             //if the player is no longer on the ground, applies gravity
             if (!isGrounded)
             {
-                float i = 1;
+                // While the gravity multipler is under a specified value, add to it
+                if (gravityMultiplier < 5)
+                {
+                    gravityMultiplier += 1f;
+                }
 
-                velocity.Y += 0.15f * i;
+                // If the player is falling, lower their movespeed to allow for precise landing
+                if (velocity.Y <= 10 && velocity.Y >= 0)
+                {
+                    moveSpeed += 0.3f;
+                }
+                else if (velocity.Y > 0)
+                {
+                    moveSpeed = 8.7f;
+                }
+
+                // Update the player's Y velocity according to the multiplier
+                velocity.Y += 0.15f * gravityMultiplier;
             }
 
             //if the player is in contact with the floor, sets to grounded and resets Y velocity
             if (position.Y + playerSprite.Height >=905) //placeholder value for collision
             {
                 isGrounded = true;
+                gravityMultiplier = 1f;
+                moveSpeed = 10f;
                 velocity.Y = 0f;
             }
             
