@@ -97,7 +97,7 @@ namespace Strike_12
             
             enemy = new Enemy
                 (enemySprites, new Rectangle(
-                    (100), (777), 128, 128),
+                    (100), (750), 128, 128),
                     windowWidth, windowHeight);
 
         }
@@ -157,17 +157,18 @@ namespace Strike_12
                         timer = 0;
                         state = GameState.Shop;
                     }
-                    
+
                     if (enemy.CheckCollision("left", enemy, player) || enemy.CheckCollision("right", enemy, player))
                     {
                         player.Health -= 1;
+                        player.TakeDamage(gameTime);
                     }
                     else if(enemy.CheckCollision("top", enemy, player))
                     {
                         //has to make the player jump when they hit the top
                     }
                     
-                    if (player.Health == 0)
+                    if (player.Health <= 0)
                     {
                         state = GameState.Shop;
                     }

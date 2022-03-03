@@ -66,12 +66,23 @@ namespace Strike_12
             playerState = PlayerStates.faceRight;
         }
 
-        /*
-        public bool InvincibleFrames(GameTime gameTime)
+
+        //how to wait after taking damage?
+        public bool TakeDamage(GameTime gameTime)
         {
-            if()
+            int timeCount = 2000;
+            int i;
+
+            for (i = gameTime.ElapsedGameTime.Milliseconds; i < timeCount;)
+            {             
+                return false;
+            }
+            
+            return true;
+            
         }
-        */
+
+
 
         // -- Methods Overriden from parent class
 
