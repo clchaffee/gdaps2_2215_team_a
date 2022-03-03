@@ -97,9 +97,9 @@ namespace Strike_12
             
             enemy = new Enemy
                 (enemySprites, new Rectangle(
-                    (100), (GraphicsDevice.Viewport.Height / 2), 128, 128),
+                    (100), (777), 128, 128),
                     windowWidth, windowHeight);
-            
+
         }
 
         /// <summary>
@@ -157,12 +157,16 @@ namespace Strike_12
                         timer = 0;
                         state = GameState.Shop;
                     }
-                    /*
-                    if (enemy.CheckCollision(enemy, player))
+                    
+                    if (enemy.CheckCollision("left", enemy, player) || enemy.CheckCollision("right", enemy, player))
                     {
                         player.Health -= 1;
                     }
-                    */
+                    else if(enemy.CheckCollision("top", enemy, player))
+                    {
+                        //has to make the player jump when they hit the top
+                    }
+                    
                     if (player.Health == 0)
                     {
                         state = GameState.Shop;
@@ -230,6 +234,8 @@ namespace Strike_12
                         new Vector2(100, 400), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
                        new Vector2(10, 10), Color.Black);
+                    _spriteBatch.DrawString(displayFont, $"\nTime Passed: {player.Health}",
+                       new Vector2(10, 20), Color.Black);
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
