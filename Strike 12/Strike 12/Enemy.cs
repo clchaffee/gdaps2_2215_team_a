@@ -11,42 +11,94 @@ using Microsoft.Xna.Framework.Input;
 /// </summary>
 namespace Strike_12
 {
-    //temp
-    enum EnemyState { }
+    //temp states of the player
+    enum EnemyStates 
+    { 
+        moveLeft,
+        moveRight
+    }
 
+    /// <summary>
+    /// basic patrol style Enemy
+    /// </summary>
     class Enemy : GameObject
     {
         // ----- | Fields | -----
-         
-        int speed = 3;
+        private EnemyStates enemyState;
+        private Texture2D enemySprite;
+
+        private int moveSpeed = 5; //temp speed variable, can be changed
+
 
         // ----- | Constructor | -----
-
         // Paramatarized Constructor
-        public Enemy(Texture2D texture, Rectangle position, int windowWidth, int windowHeight)
-            : base(texture, position, windowWidth, windowHeight)
+        public Enemy(Texture2D texture, Rectangle size, int windowWidth, int windowHeight)
+            : base(texture, size, windowWidth, windowHeight)
         {
-            this.size = position;
+            this.enemySprite = texture;
+            this.size = size;
             this.windowWidth = windowWidth;
             this.windowHeight = windowHeight;
+
+            enemyState = EnemyStates.moveRight;
         }
 
         // ----- | Property | -----
 
         // ----- | Methods | -----
         // -- Methods Overriden from parent class
+        /// <summary>
+        /// changes direction od speed when bounces against the wall
+        /// and updates sprite acordingly
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            if (Bounce(windowWidth, windowHeight) == true)
+            size.X += moveSpeed;
+
+            if (size.X > windowWidth - 128 || size.X < 0)
             {
-                speed *= -1;
+                moveSpeed = -1 * moveSpeed;
             }
-            size.X += speed;
+
+            //flips sprite based on neg or pos speed
+            if (moveSpeed < 0)
+            {
+                enemyState = EnemyStates.moveLeft;
+            }
+            else
+            {
+                enemyState = EnemyStates.moveRight;
+            }
         }
 
-        public override void Draw(SpriteBatch sb)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sb"></param>
+        public void Draw(SpriteBatch spriteBatch, Texture2D enemyTexture)
         {
-            base.Draw(sb);
+            switch (enemyState)
+            {
+                case EnemyStates.moveLeft:
+                    spriteBatch.Draw(
+                        enemyTexture,
+                        size,
+                        new Rectangle(4 * 128, 0, 128, 128),
+                        Color.White);
+                    break;
+
+                case EnemyStates.moveRight:
+                    spriteBatch.Draw(
+                         enemyTexture,
+                         size,
+                         new Rectangle(1 * 128, 0, 128, 128),
+                         Color.White);
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }
