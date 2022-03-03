@@ -37,6 +37,7 @@ namespace Strike_12
         private int windowHeight;
         private int health = 10;
         private float gravityMultiplier = 1f;
+        private int iCounter = 0;
 
         //fields for gravity
         protected Vector2 position;
@@ -68,18 +69,26 @@ namespace Strike_12
         }
 
 
-        //how to wait after taking damage?
+        /// <summary>
+        /// if the counter reaches 60, aka after 60 frames have passes (1 second), returns true,
+        /// indicating the player is able to take damage again
+        /// if returns true, the player is able to be damaged
+        /// if returns false, the player cannot be hit
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <returns></returns>
         public bool TakeDamage(GameTime gameTime)
         {
-            int timeCount = 2000;
-            int i;
-
-            for (i = gameTime.ElapsedGameTime.Milliseconds; i < timeCount;)
-            {             
+            iCounter++;
+            if(iCounter == 60)
+            {
+                iCounter = 0;
+                return true;
+            }
+            else
+            {
                 return false;
             }
-            
-            return true;
             
         }
 

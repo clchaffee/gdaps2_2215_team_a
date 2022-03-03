@@ -158,10 +158,11 @@ namespace Strike_12
                         state = GameState.Shop;
                     }
 
-                    if (enemy.CheckCollision("left", enemy, player) || enemy.CheckCollision("right", enemy, player))
+                    if (enemy.CheckCollision("left", enemy, player) || enemy.CheckCollision("right", enemy, player)
+                        && player.TakeDamage(gameTime) == true)
                     {
                         player.Health -= 1;
-                        player.TakeDamage(gameTime);
+                        
                     }
                     else if(enemy.CheckCollision("top", enemy, player))
                     {

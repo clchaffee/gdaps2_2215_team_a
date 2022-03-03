@@ -48,6 +48,7 @@ namespace Strike_12
         //collision detection
         public virtual bool CheckCollision(string side, GameObject collider, GameObject collided)
         {
+            
             if (side == "bottom")
             {
                 return collider.size.Bottom == collided.size.Top;
