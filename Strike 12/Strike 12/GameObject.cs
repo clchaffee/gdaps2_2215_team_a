@@ -46,7 +46,7 @@ namespace Strike_12
         }
 
         //collision detection
-        protected virtual bool CheckCollision(string side, GameObject collider, GameObject collided)
+        public virtual bool CheckCollision(string side, GameObject collider, GameObject collided)
         {
             if (side == "bottom")
             {

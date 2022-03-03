@@ -66,6 +66,13 @@ namespace Strike_12
             playerState = PlayerStates.faceRight;
         }
 
+        /*
+        public bool InvincibleFrames(GameTime gameTime)
+        {
+            if()
+        }
+        */
+
         // -- Methods Overriden from parent class
 
         /// <summary>
@@ -163,9 +170,7 @@ namespace Strike_12
             previousKBState = kbState;
         }
         
-
-
-
+        //draw
         public void Draw(SpriteBatch spriteBatch, Texture2D playerTexture)
         {
             /*spriteBatch.Draw(
