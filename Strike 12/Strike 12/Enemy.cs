@@ -76,7 +76,7 @@ namespace Strike_12
         /// 
         /// </summary>
         /// <param name="sb"></param>
-        public void Draw(SpriteBatch spriteBatch, Texture2D enemyTexture)
+        public override void Draw(SpriteBatch spriteBatch, Texture2D enemyTexture)
         {
             switch (enemyState)
             {

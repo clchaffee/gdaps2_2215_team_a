@@ -29,13 +29,13 @@ namespace Strike_12
         // Temp player assets
         private Texture2D playerSprites;
         private Player player;
-        private Rectangle platformPosition;
 
         // Temp enemy assets
         private Texture2D enemySprites;
         private Enemy enemy;
-        
-        
+
+        private Texture2D tileSprites;
+        private Tile tile;
 
         //sets the default state as the menu
         GameState state = GameState.Menu;
@@ -77,13 +77,10 @@ namespace Strike_12
             // Load the player sprite sheet
             playerSprites = Content.Load<Texture2D>("playerSpriteSheet");
             enemySprites = Content.Load<Texture2D>("enemySpriteSheet");
+            tileSprites = Content.Load<Texture2D>("tempTile");
 
-            // Temp platform location
-            platformPosition = new Rectangle(
-                    500,
-                    912,
-                    playerSprites.Width,
-                    playerSprites.Height);
+            tile = new Tile(tileSprites, new Rectangle(500, 905, 128, 128),
+                GraphicsDevice.Viewport.Width,GraphicsDevice.Viewport.Height);
 
             // Initialize the player with the asset loaded in
             player = new Player
@@ -148,6 +145,16 @@ namespace Strike_12
                     enemy.Update(gameTime);
 
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
+
+                    if (player.CheckCollision("Ground", player, tile)) 
+                    {
+                        player.IsGrounded = true;
+                    }
+                    else
+                    {
+                        player.IsGrounded = false;
+                    }
+
                     if (timer >= 4)
                     {
                         //win 
@@ -158,7 +165,7 @@ namespace Strike_12
                         state = GameState.Shop;
                     }
 
-                    if (enemy.CheckCollision("left", enemy, player) || enemy.CheckCollision("right", enemy, player)
+                    if (enemy.CheckCollision("Enemy", enemy, player)
                         && player.TakeDamage(gameTime) == true)
                     {
                         player.Health -= 1;
@@ -236,18 +243,14 @@ namespace Strike_12
                         new Vector2(100, 400), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
                        new Vector2(10, 10), Color.Black);
-                    _spriteBatch.DrawString(displayFont, $"\nTime Passed: {player.Health}",
-                       new Vector2(10, 20), Color.Black);
+                    _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
+                       new Vector2(10, 25), Color.Black);
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
                     enemy.Draw(_spriteBatch, enemySprites);
 
-                    // Temp platforms
-                    _spriteBatch.Draw(
-                        playerSprites,
-                        platformPosition,
-                        Color.White);
+                    tile.Draw(_spriteBatch, tileSprites);
 
                     break;
 

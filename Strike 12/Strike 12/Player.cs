@@ -54,6 +54,12 @@ namespace Strike_12
             set { health = value; }
         }
 
+        public bool IsGrounded
+        {
+            get { return isGrounded; }
+            set { isGrounded = value; }
+        }
+
         // ----- | Constructor | -----
         public Player(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, 
             Vector2 position) : base(texture, size, windowWidth, windowHeight)
@@ -80,7 +86,7 @@ namespace Strike_12
         public bool TakeDamage(GameTime gameTime)
         {
             iCounter++;
-            if(iCounter == 60)
+            if(iCounter == 20)
             {
                 iCounter = 0;
                 return true;
@@ -153,27 +159,16 @@ namespace Strike_12
             //if W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
             if (kbState.IsKeyDown(Keys.W) && isGrounded == true)
             {
-                //position.Y -= 15f;
-                //velocity.Y = -5f;
-
                 position.Y -= 60f;
                 velocity.Y = -20f;
 
-                float j = 1;
-
-                // Test One: Compounded jump values
-                /* Jump velocity: sqrt(2Hg)
-
-                position.Y -= 15f;
-                velocity.Y = Math.sqrt(2)f;*/
-
                 isGrounded = false;
 
-                if (previousPlayerState == PlayerStates.faceRight)
+                if (previousPlayerState == PlayerStates.faceRight || previousPlayerState == PlayerStates.jumpRight)
                 {
                     playerState = PlayerStates.jumpRight;
                 }
-                else if (previousPlayerState == PlayerStates.faceLeft)
+                else if (previousPlayerState == PlayerStates.faceLeft || previousPlayerState == PlayerStates.jumpLeft)
                 {
                     playerState = PlayerStates.jumpLeft;
                 }
@@ -203,9 +198,9 @@ namespace Strike_12
             }
 
             //if the player is in contact with the floor, sets to grounded and resets Y velocity
-            if (position.Y + playerSprite.Height >=905) //placeholder value for collision
+            if (IsGrounded) //placeholder value for collision
             {
-                isGrounded = true;
+                position.Y = 905 - playerSprite.Height;
                 gravityMultiplier = 1f;
                 moveSpeed = 10f;
                 velocity.Y = 0f;
@@ -222,14 +217,8 @@ namespace Strike_12
         }
         
         //draw
-        public void Draw(SpriteBatch spriteBatch, Texture2D playerTexture)
+        public override void Draw(SpriteBatch spriteBatch, Texture2D playerTexture)
         {
-            /*spriteBatch.Draw(
-                        playerTexture,
-                        position,
-                        new Rectangle(1 * 128, 128, 128, 128),
-                        Color.White);*/
-
             // Player state switch
             switch (playerState)
             {
