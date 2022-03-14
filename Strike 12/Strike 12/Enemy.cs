@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 /// </summary>
 namespace Strike_12
 {
-    //temp states of the player
+    //temp states of the enemy
     enum EnemyStates 
     { 
         moveLeft,
@@ -19,7 +19,8 @@ namespace Strike_12
     }
 
     /// <summary>
-    /// basic patrol style Enemy
+    /// basic patrol style Enemy that moves left and right across the screen,
+    /// changing direction when it bounces against the wall (game window)
     /// </summary>
     class Enemy : GameObject
     {
@@ -28,7 +29,6 @@ namespace Strike_12
         private Texture2D enemySprite;
 
         private int moveSpeed = 5; //temp speed variable, can be changed
-
 
         // ----- | Constructor | -----
         // Paramatarized Constructor
@@ -73,11 +73,12 @@ namespace Strike_12
         }
 
         /// <summary>
-        /// 
+        /// changes enemy sprite based on which direction it is going
         /// </summary>
         /// <param name="sb"></param>
         public override void Draw(SpriteBatch spriteBatch, Texture2D enemyTexture)
         {
+            //different appearance depending on game state
             switch (enemyState)
             {
                 case EnemyStates.moveLeft:
