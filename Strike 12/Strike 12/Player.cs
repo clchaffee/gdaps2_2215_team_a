@@ -33,8 +33,6 @@ namespace Strike_12
         private PlayerStates previousPlayerState;
         private Texture2D playerSprite;
         private float moveSpeed = 10f;
-        private int windowWidth;
-        private int windowHeight;
         private int health = 10;
         private float gravityMultiplier = 1f;
         private int iCounter = 0;
@@ -276,6 +274,15 @@ namespace Strike_12
                          Color.White);
                     break;
             }
+        }
+
+        public override void Reset()
+        {
+            position.X = windowWidth / 2 - size.Width / 2;
+            position.Y = windowHeight / 2 - size.Height / 2;
+            Health = 10;
+            velocity.X = 0f;
+            velocity.Y = 0f;
         }
     }
 }
