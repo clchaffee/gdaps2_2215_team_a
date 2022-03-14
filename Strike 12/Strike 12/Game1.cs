@@ -108,6 +108,10 @@ namespace Strike_12
                     eStartX, eStartY, 128, 128),
                     windowWidth, windowHeight);
 
+            /* -- LEVEL LOADING --
+            editor = new LevelEditor();
+            editor.Load(1);*/
+
         }
 
         /// <summary>
