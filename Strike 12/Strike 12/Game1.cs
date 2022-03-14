@@ -155,10 +155,6 @@ namespace Strike_12
                         player.IsGrounded = false;
                     }
 
-                    if (timer >= 4)
-                    {
-                        //win 
-                    }
                     if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
                     {
                         timer = 0;
@@ -270,5 +266,9 @@ namespace Strike_12
             _spriteBatch.End();
             base.Draw(gameTime);
         }
+
+        //need reset method to reset the following:
+        //time, player and enemy position, player health
+        
     }
 }
