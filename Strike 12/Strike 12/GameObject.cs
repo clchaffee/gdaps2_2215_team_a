@@ -46,17 +46,27 @@ namespace Strike_12
         }
 
         //collision detection
-        public virtual bool CheckCollision(string side, GameObject collider, GameObject collided)
+        public virtual bool CheckCollision(string type, GameObject collider, GameObject collided)
         {
-            if (side == "bottom")
-            {
-                return collider.size.Bottom == collided.size.Top;
-            }
-            else if (side == "left" || side == "right")
-            {
 
+            if (type == "Enemy")
+            {
+                return collider.Size.Intersects(collided.Size);
             }
-            return (collider.size.Intersects(collided.size));
+            else if (type == "Wall")
+            {
+                return collider.Size.Left == collided.Size.Right
+                    || collider.Size.Right == collided.Size.Left;
+            }
+            else if (type == "Ground")
+            {
+                return collider.Size.Bottom == collided.Size.Top
+                    || collider.Size.Intersects(collided.Size);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         //makes a game object bounce when hitting the wall or ground
@@ -111,8 +121,9 @@ namespace Strike_12
 
         }
 
-        
 
+        public abstract void Draw(SpriteBatch spriteBatch, Texture2D Texture);
+        
 
 
 
