@@ -34,8 +34,9 @@ namespace Strike_12
         // Temp enemy assets
         private Texture2D enemySprites;
         private Enemy enemy;
-        
-        
+
+        // Level fields
+        private LevelEditor editor;
 
         //sets the default state as the menu
         GameState state = GameState.Menu;
@@ -99,6 +100,10 @@ namespace Strike_12
                 (enemySprites, new Rectangle(
                     (100), (777), 128, 128),
                     windowWidth, windowHeight);
+
+            /* -- LEVEL LOADING --
+            editor = new LevelEditor();
+            editor.Load(1);*/
 
         }
 
