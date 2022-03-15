@@ -33,7 +33,6 @@ namespace Strike_12
             this.size = size;
             this.windowWidth = windowWidth;
             this.windowHeight = windowHeight;
-            //position = new Rectangle((int)grav.X, (int)grav.Y, 10, 10);
         }
 
         // Abstract Update(GameTime gameTime):
@@ -123,11 +122,8 @@ namespace Strike_12
 
 
         public abstract void Draw(SpriteBatch spriteBatch, Texture2D Texture);
-        
 
-
-
-
+        public virtual void Reset() { }
 
     }
 }

@@ -29,10 +29,16 @@ namespace Strike_12
         // Temp player assets
         private Texture2D playerSprites;
         private Player player;
+        private int pStartX;
+        private int pStartY;
+
 
         // Temp enemy assets
         private Texture2D enemySprites;
         private Enemy enemy;
+        private int eStartX;
+        private int eStartY;
+
 
         // Level Assets
         private LevelEditor editor;
@@ -81,13 +87,18 @@ namespace Strike_12
             enemySprites = Content.Load<Texture2D>("enemySpriteSheet");
             tileSprites = Content.Load<Texture2D>("tempTile");
 
+            pStartX = (GraphicsDevice.Viewport.Width / 2);
+            pStartY = (GraphicsDevice.Viewport.Height / 2);
+
+            eStartX = 100;
+            eStartY = 750;
+
             tile = new Tile(tileSprites, new Rectangle(500, 905, 128, 128),
                 GraphicsDevice.Viewport.Width,GraphicsDevice.Viewport.Height);
 
             // Initialize the player with the asset loaded in
             player = new Player
-                (playerSprites, new Rectangle (
-                    (GraphicsDevice.Viewport.Width / 2),(GraphicsDevice.Viewport.Height / 2),128,128),
+                (playerSprites, new Rectangle (pStartX, pStartY, 128, 128),
                     windowWidth,windowHeight,
                 new Vector2(
                 GraphicsDevice.Viewport.Width / 2,
@@ -96,7 +107,7 @@ namespace Strike_12
             
             enemy = new Enemy
                 (enemySprites, new Rectangle(
-                    (100), (750), 128, 128),
+                    eStartX, eStartY, 128, 128),
                     windowWidth, windowHeight);
 
             // -- LEVEL LOADING --
@@ -186,6 +197,8 @@ namespace Strike_12
 
                 //if enter is pressed in the shop, returns to arena; if space is pressed brings up the menu
                 case GameState.Shop:
+                    player.Reset();
+                    enemy.Reset();
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
                     {
                         state = GameState.Arena;
@@ -274,6 +287,8 @@ namespace Strike_12
 
         //need reset method to reset the following:
         //time, player and enemy position, player health
+
+
         
     }
 }

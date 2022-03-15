@@ -102,5 +102,12 @@ namespace Strike_12
                     break;
             }
         }
+
+        public override void Reset()
+        {
+            size.X = 100;
+            size.Y = 750;
+            moveSpeed = 5;
+        }
     }
 }
