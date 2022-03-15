@@ -16,6 +16,7 @@ namespace Strike_12
         // File Reader Fields
         StreamReader output;
         char[,] levelLayout;
+        string fileName;
 
         // ----- | Constructor | -----
 
@@ -27,7 +28,7 @@ namespace Strike_12
         // Load(int levelNum): takes in an int to and searches for a level to load up.
         public  void Load(int levelNum)
         {
-            string fileName = string.Format("..//Levels//Level{0}.txt", levelNum);
+            fileName = string.Format("..//Levels//Level{0}.txt", levelNum);
             string[] arenaSize = new string[2];
             string line;
             int count = -1;
@@ -48,14 +49,14 @@ namespace Strike_12
                     else
                     {
                         // For each line of the array loop through it and fill it
-                        for (int i = 0; i < levelLayout.GetLength(0) - 1; i++)
+                        for (int i = 0; i < levelLayout.GetLength(0); i++)
                         {
-                            line = output.ReadLine();
-
-                            for (int j = 0; j < levelLayout.GetLength(1) - 1; i++)
+                            for (int j = 0; j < levelLayout.GetLength(1); j++)
                             {
-                                levelLayout[i, j] = line[i];
+                                levelLayout[i, j] = line[j];
                             }
+
+                            line = output.ReadLine();
                         }
                     }
 
@@ -73,7 +74,5 @@ namespace Strike_12
                 output.Close();
             }
         }
-
-
     }
 }

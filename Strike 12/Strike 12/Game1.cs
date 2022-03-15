@@ -34,6 +34,8 @@ namespace Strike_12
         private Texture2D enemySprites;
         private Enemy enemy;
 
+        // Level Assets
+        private LevelEditor editor;
         private Texture2D tileSprites;
         private Tile tile;
 
@@ -97,9 +99,9 @@ namespace Strike_12
                     (100), (750), 128, 128),
                     windowWidth, windowHeight);
 
-            /* -- LEVEL LOADING --
+            // -- LEVEL LOADING --
             editor = new LevelEditor();
-            editor.Load(1);*/
+            editor.Load(1);
 
         }
 
@@ -116,7 +118,6 @@ namespace Strike_12
 
             //gets keyboard state for each frame
             kbState = Keyboard.GetState();
-
             
             //switch statement for specific key presses in the different states states
             switch (state)
