@@ -77,9 +77,16 @@ namespace Strike_12
                                 //levelLayout[i, j] = line[j];
                                 switch (line[j])
                                 {
+                                    case 'g':
+                                        tileLayout[i, j] = new Tile(tileSprites,
+                                                                    new Rectangle(64 * i, 64 * j, 64, 64),
+                                                                    windowWidth,
+                                                                    windowHeight,
+                                                                    "ground");
+                                        break;
                                     case 'w':
                                         tileLayout[i, j] = new Tile(tileSprites, 
-                                                                    new Rectangle(128 * i, 128 * j, 128, 128),
+                                                                    new Rectangle(64 * i, 64 * j, 64, 64),
                                                                     windowWidth,
                                                                     windowHeight,
                                                                     "wall");
@@ -87,7 +94,7 @@ namespace Strike_12
 
                                     case 'x':
                                         tileLayout[i, j] = new Tile(tileSprites,
-                                                                    new Rectangle(128 * i, 128 * j, 128, 128),
+                                                                    new Rectangle(64 * i, 64 * j, 64, 64),
                                                                     windowWidth,
                                                                     windowHeight,
                                                                     "temp");
@@ -130,6 +137,9 @@ namespace Strike_12
                     {
                         switch (tileLayout[i, j].Type)
                         {
+                            case "ground":
+                                _spriteBatch.Draw(tileTexture, tileLayout[i, j].Size, Color.White);
+                                break;
                             case "wall":
                                 _spriteBatch.Draw(tileTexture, tileLayout[i, j].Size, Color.White);
                                 break;

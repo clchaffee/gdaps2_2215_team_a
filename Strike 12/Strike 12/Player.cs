@@ -61,6 +61,11 @@ namespace Strike_12
             set { isGrounded = value; }
         }
 
+        public Rectangle Size
+        {
+            get { return size;}
+        }
+
         // ----- | Constructor | -----
         public Player(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, 
             Vector2 position) : base(texture, size, windowWidth, windowHeight)
@@ -236,7 +241,7 @@ namespace Strike_12
                 // Update the player's Y velocity according to the multiplier
                 velocity.Y += 0.15f * gravityMultiplier;
 
-                // Air Dash
+                /* Air Dash
                 if (kbState.IsKeyDown(Keys.Enter) && !previousKBState.IsKeyDown(Keys.Enter) && dashCounter > 0)
                 {
                     dashDirection = playerState;
@@ -245,10 +250,13 @@ namespace Strike_12
                     velocity.X = 0;
                     size.X += 0;
                     size.Y += 0;
-                }
+                }*/
             }
             else if (isGrounded)
             {
+                position.Y = windowHeight - 192;
+                gravityMultiplier = 1f;
+                moveSpeed = 10f;
                 dashCounter = 20;
                 velocity.Y = 0;
             }
