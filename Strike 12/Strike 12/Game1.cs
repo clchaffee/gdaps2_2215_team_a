@@ -23,17 +23,14 @@ namespace Strike_12
         private SpriteBatch _spriteBatch;
         private SpriteFont titleFont;
         private SpriteFont displayFont;
-        //private int windowWidth = 1216;
-        //private int windowHeight = 992;
-        private int windowWidth = 2560;
-        private int windowHeight = 1920;
+        private int windowWidth = 2304;
+        private int windowHeight = 1984;
 
         // Temp player assets
         private Texture2D playerSprites;
         private Player player;
         private int pStartX;
         private int pStartY;
-
 
         // Temp enemy assets
         private Texture2D enemySprites;
