@@ -21,7 +21,7 @@ namespace Strike_12
         faceLeft,
         faceRight,
         jumpLeft,
-        jumpRight
+        jumpRight,
     }
 
     class Player : GameObject

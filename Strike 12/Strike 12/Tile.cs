@@ -10,19 +10,26 @@ namespace Strike_12
     {
         private Texture2D texture;
         private Rectangle size;
+        private string tileType;
 
-        public Rectangle Size()
+        public Rectangle Size
         {
-            return this.size;
+            get { return this.size; }
         }
 
-        public Tile(Texture2D texture, Rectangle size, int windowWidth, int windowHeight)
+        public string Type
+        {
+            get { return tileType; }
+        }
+
+        public Tile(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, string type)
             : base(texture, size, windowWidth, windowHeight)
         {
             this.texture = texture;
             this.size = size;
             this.windowWidth = windowWidth;
             this.windowHeight = windowHeight;
+            this.tileType = type;
         }
 
 

@@ -23,8 +23,10 @@ namespace Strike_12
         private SpriteBatch _spriteBatch;
         private SpriteFont titleFont;
         private SpriteFont displayFont;
-        private int windowWidth = 1216;
-        private int windowHeight = 992;
+        //private int windowWidth = 1216;
+        //private int windowHeight = 992;
+        private int windowWidth = 2560;
+        private int windowHeight = 1920;
 
         // Temp player assets
         private Texture2D playerSprites;
@@ -85,7 +87,7 @@ namespace Strike_12
             // Load the player sprite sheet
             playerSprites = Content.Load<Texture2D>("playerSpriteSheet");
             enemySprites = Content.Load<Texture2D>("enemySpriteSheet");
-            tileSprites = Content.Load<Texture2D>("tempTile");
+            tileSprites = Content.Load<Texture2D>("tileSpriteSheet");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height / 2);
@@ -94,7 +96,7 @@ namespace Strike_12
             eStartY = 750;
 
             tile = new Tile(tileSprites, new Rectangle(500, 905, 128, 128),
-                GraphicsDevice.Viewport.Width,GraphicsDevice.Viewport.Height);
+                GraphicsDevice.Viewport.Width,GraphicsDevice.Viewport.Height, "wall");
 
             // Initialize the player with the asset loaded in
             player = new Player
@@ -112,7 +114,7 @@ namespace Strike_12
 
             // -- LEVEL LOADING --
             editor = new LevelEditor();
-            editor.Load(1);
+            editor.Load(1, tileSprites, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
         }
 
@@ -251,6 +253,10 @@ namespace Strike_12
 
                 //text for arena screen
                 case GameState.Arena:
+
+                    // Draw the tiles
+                    editor.Draw(_spriteBatch, tileSprites);
+
                     _spriteBatch.DrawString(titleFont, "Filler for Arena",
                         new Vector2(150, 200), Color.Black);
                     _spriteBatch.DrawString(displayFont, "Press Space to go to the shop page (happens upon character death)",
