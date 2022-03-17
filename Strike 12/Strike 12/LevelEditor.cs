@@ -48,7 +48,7 @@ namespace Strike_12
         // Load(int levelNum): takes in an int to and searches for a level to load up.
         public void Load(int levelNum, Texture2D tileSprites, int windowWidth, int windowHeight)
         {
-            fileName = string.Format("..//Levels//Level{0}.txt", levelNum);
+            fileName = string.Format("..//..//..//Levels//Level{0}.txt", levelNum);
             string[] arenaSize = new string[2];
             string line;
             int count = -1;
