@@ -15,7 +15,9 @@ namespace Strike_12
     enum EnemyStates 
     { 
         moveLeft,
-        moveRight
+        moveRight,
+        airLeft,
+        airRight
     }
 
     /// <summary>
@@ -29,6 +31,13 @@ namespace Strike_12
         private Texture2D enemySprite;
 
         private int moveSpeed = 5; //temp speed variable, can be changed
+
+        //fields for gravity
+        protected Vector2 position;
+        protected Vector2 velocity;
+        protected bool isGrounded;
+        protected bool hasGravity = true; // temp value, will be fully implimented later
+        private float gravityMultiplier = 1f;
 
         // ----- | Constructor | -----
         // Paramatarized Constructor
@@ -71,6 +80,22 @@ namespace Strike_12
             {
                 enemyState = EnemyStates.moveRight;
             }
+
+            // ============= Gravity Section =============
+
+            // If this enemy has gravity and they are not grounded
+            if (hasGravity && !isGrounded)
+            {
+                // While the gravity multipler is under a specified value, add to it
+                if (gravityMultiplier < 5)
+                {
+                    gravityMultiplier += 1f;
+                }
+
+                // Update the player's Y velocity according to the multiplier
+                velocity.Y += 0.15f * gravityMultiplier;
+            }
+
         }
 
         /// <summary>
