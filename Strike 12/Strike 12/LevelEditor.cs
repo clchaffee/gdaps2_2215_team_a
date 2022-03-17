@@ -22,6 +22,22 @@ namespace Strike_12
         Tile[,] tileLayout;
         string fileName;
 
+        // ----- | Properties | -----
+        public Tile this[int i, int j]
+        {
+            get { return tileLayout[i, j]; }
+        }
+
+        public int LayoutHeight
+        {
+            get { return levelLayout.GetLength(0); }
+        }
+
+        public int LayoutWidth
+        {
+            get { return levelLayout.GetLength(1); }
+        }
+
         // ----- | Constructor | -----
 
         // ----- | Properties | -----
@@ -30,7 +46,7 @@ namespace Strike_12
 
         // TODO: test to see if the load method works
         // Load(int levelNum): takes in an int to and searches for a level to load up.
-        public  void Load(int levelNum, Texture2D tileSprites, int windowWidth, int windowHeight)
+        public void Load(int levelNum, Texture2D tileSprites, int windowWidth, int windowHeight)
         {
             fileName = string.Format("..//Levels//Level{0}.txt", levelNum);
             string[] arenaSize = new string[2];

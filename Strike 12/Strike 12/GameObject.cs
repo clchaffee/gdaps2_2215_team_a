@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 /// <summary>
 /// Author: Copious Cats 
 /// Purpose: This is an abstract class that the different 
@@ -52,10 +53,23 @@ namespace Strike_12
             {
                 return collider.Size.Intersects(collided.Size);
             }
-            else if (type == "Wall")
+            else if (type == "wall")
             {
-                return collider.Size.Left == collided.Size.Right
-                    || collider.Size.Right == collided.Size.Left;
+                /*return collider.Size.Left == collided.Size.Right
+                    || collider.Size.Right == collided.Size.Left
+                    || collider.Size.Bottom == collided.Size.Top
+                    || collider.Size.Intersects(collided.Size);*/
+
+                /*return (collider.size.Bottom >= collided.size.Top) &&
+                       (collider.size.Left - collider.texture.Width >=
+                        collided.size.Left &&
+                        collider.size.Right + collider.texture.Width <= collided.size.Right);*/
+
+                return (collider.size.Bottom >= collided.size.Top) &&
+                       (collider.size.Left <=
+                        collided.size.Right &&
+                        collider.size.Right >= collided.size.Left) &&
+                       (collider.size.Top <= collided.size.Bottom);
             }
             else if (type == "Ground")
             {

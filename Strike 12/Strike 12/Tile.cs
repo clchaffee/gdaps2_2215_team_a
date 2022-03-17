@@ -39,7 +39,7 @@ namespace Strike_12
 
         public override void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
-            spriteBatch.Draw(texture, new Rectangle(500, 905, 128, 128), Color.White);
+            spriteBatch.Draw(texture, size, Color.White);
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Strike_12
         faceRight,
         jumpLeft,
         jumpRight,
+        airdash
     }
 
     class Player : GameObject
@@ -31,10 +32,12 @@ namespace Strike_12
 
         private PlayerStates playerState;
         private PlayerStates previousPlayerState;
+        private PlayerStates dashDirection;
         private Texture2D playerSprite;
         private float moveSpeed = 10f;
         private int health = 10;
         private float gravityMultiplier = 1f;
+        private int dashCounter = 20;
         private int iCounter = 0;
 
         //fields for gravity
@@ -96,9 +99,7 @@ namespace Strike_12
             
         }
 
-
-
-        // -- Methods Overriden from parent class
+        // -- Methods Overriden from parent class -- 
 
         /// <summary>
         /// For testing purposes, I have been using this update method, as our collision detection testing currently
@@ -111,6 +112,46 @@ namespace Strike_12
         {
             //sets current keyboard state
             kbState = Keyboard.GetState();
+
+            // If the player is in the airdash state,
+            if (playerState == PlayerStates.airdash)
+            {
+                if (dashCounter > 0)
+                {
+                    if (kbState.IsKeyDown(Keys.W))
+                    {
+                        size.Y -= 20;
+                        position.Y -= 20f;
+                        dashCounter--;
+                        return;
+                    }
+                    else if (kbState.IsKeyDown(Keys.A))
+                    {
+                        size.X -= 20;
+                        position.X -= 20f;
+                        dashCounter--;
+                        return;
+                    }
+                    else if (kbState.IsKeyDown(Keys.S))
+                    {
+                        size.Y += 20;
+                        position.Y += 20f;
+                        dashCounter--;
+                        return;
+                    }
+                    else if (kbState.IsKeyDown(Keys.D))
+                    {
+                        size.X += 20;
+                        position.X += 20f;
+                        dashCounter--;
+                        return;
+                    }
+                }
+                else
+                {
+                    playerState = dashDirection;
+                }
+            }
 
             //if A is pressed, moves player left, changes player state depending on if jumping or not.
             if (kbState.IsKeyDown(Keys.A))
@@ -175,6 +216,7 @@ namespace Strike_12
             //if the player is no longer on the ground, applies gravity
             if (!isGrounded)
             {
+
                 // While the gravity multipler is under a specified value, add to it
                 if (gravityMultiplier < 5)
                 {
@@ -193,17 +235,24 @@ namespace Strike_12
 
                 // Update the player's Y velocity according to the multiplier
                 velocity.Y += 0.15f * gravityMultiplier;
-            }
 
-            //if the player is in contact with the floor, sets to grounded and resets Y velocity
-            if (IsGrounded) //placeholder value for collision
-            {
-                position.Y = 905 - playerSprite.Height;
-                gravityMultiplier = 1f;
-                moveSpeed = 10f;
-                velocity.Y = 0f;
+                // Air Dash
+                if (kbState.IsKeyDown(Keys.Enter) && !previousKBState.IsKeyDown(Keys.Enter) && dashCounter > 0)
+                {
+                    dashDirection = playerState;
+                    playerState = PlayerStates.airdash;
+                    velocity.Y = 0;
+                    velocity.X = 0;
+                    size.X += 0;
+                    size.Y += 0;
+                }
             }
-            
+            else if (isGrounded)
+            {
+                dashCounter = 20;
+                velocity.Y = 0;
+            }
+                
             //updates position based on velocity and the size rectangle
             position += velocity;
             size.X = (int)position.X;
@@ -267,6 +316,14 @@ namespace Strike_12
 
                 //if the player is jumping right
                 case PlayerStates.jumpRight:
+                    spriteBatch.Draw(
+                         playerTexture,
+                         size,
+                         new Rectangle(2 * 128, 0, 128, 128),
+                         Color.White);
+                    break;
+
+                case PlayerStates.airdash:
                     spriteBatch.Draw(
                          playerTexture,
                          size,

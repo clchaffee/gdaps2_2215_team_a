@@ -95,7 +95,7 @@ namespace Strike_12
             eStartX = 100;
             eStartY = 750;
 
-            tile = new Tile(tileSprites, new Rectangle(500, 905, 128, 128),
+            tile = new Tile(tileSprites, new Rectangle(GraphicsDevice.Viewport.Width/2, GraphicsDevice.Viewport.Height/2 + 128, 128, 128),
                 GraphicsDevice.Viewport.Width,GraphicsDevice.Viewport.Height, "wall");
 
             // Initialize the player with the asset loaded in
@@ -158,19 +158,21 @@ namespace Strike_12
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
 
-                    // Temp player and enemy update call
-                    player.Update(gameTime);
-                    enemy.Update(gameTime);
-
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
-                    if (player.CheckCollision("Ground", player, tile)) 
+                    // Checking collisons
+                    for (int i = 0; i < editor.LayoutHeight; i++)
                     {
-                        player.IsGrounded = true;
-                    }
-                    else
-                    {
-                        player.IsGrounded = false;
+                        for (int j = 0; j < editor.LayoutWidth; j++)
+                        {
+                            if (editor[i, j] != null)
+                            {
+                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]))
+                                {
+                                    player.IsGrounded = true;
+                                }
+                            }                             
+                        }
                     }
 
                     if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
@@ -194,6 +196,10 @@ namespace Strike_12
                     {
                         state = GameState.Shop;
                     }
+
+                     // Temp player and enemy update call
+                    player.Update(gameTime);
+                    enemy.Update(gameTime);
 
                     break;
 
