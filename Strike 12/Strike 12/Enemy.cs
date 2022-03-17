@@ -15,7 +15,9 @@ namespace Strike_12
     enum EnemyStates 
     { 
         moveLeft,
-        moveRight
+        moveRight,
+        airLeft,
+        airRight
     }
 
     /// <summary>
@@ -29,6 +31,13 @@ namespace Strike_12
         private Texture2D enemySprite;
 
         private int moveSpeed = 5; //temp speed variable, can be changed
+
+        //fields for gravity
+        protected Vector2 position;
+        protected Vector2 velocity;
+        protected bool isGrounded;
+        protected bool hasGravity = true; // temp value, will be fully implimented later
+        private float gravityMultiplier = 1f;
 
         // ----- | Constructor | -----
         // Paramatarized Constructor
