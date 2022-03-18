@@ -49,7 +49,7 @@ namespace Strike_12
         public virtual bool CheckCollision(string type, GameObject collider, GameObject collided)
         {
 
-            if (type == "Enemy")
+            if (type == "enemy")
             {
                 return collider.Size.Intersects(collided.Size);
             }
@@ -71,7 +71,7 @@ namespace Strike_12
                         collider.size.Right >= collided.size.Left) &&
                        (collider.size.Top <= collided.size.Bottom);
             }
-            else if (type == "Ground")
+            else if (type == "ground")
             {
                 return collider.Size.Bottom == collided.Size.Top
                     || collider.Size.Intersects(collided.Size);
