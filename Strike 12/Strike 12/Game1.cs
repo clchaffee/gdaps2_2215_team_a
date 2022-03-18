@@ -179,7 +179,8 @@ namespace Strike_12
                         {
                             if (editor[i, j] != null)
                             {
-                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i, j].Type == "ground")
+                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) 
+                                    && (editor[i, j].Type == "ground" || editor[i, j].Type == "platform"))
                                 {
                                     player.PlatformPosY = editor[i, j].Size.Y;
                                     player.PlatformPosX = editor[i, j].Size.X;
@@ -187,12 +188,8 @@ namespace Strike_12
                                 }
                                 if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i, j].Type == "wall")
                                 {
-
+                                    player.WallPosX = editor[i, j].Size.X;
                                     player.Collided = true;
-                                }
-                                else
-                                {
-                                    player.Collided = false;
                                 }
                             }
                         }
@@ -203,6 +200,12 @@ namespace Strike_12
                     {
                         timer = 0;
                         state = GameState.Shop;
+                    }
+
+                    //checks if player fell in a pit
+                    if (player.Size.Y > windowHeight)
+                    {
+                        player.Health = 0;
                     }
 
                         //collision for each enemy in the Enemy class

@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Strike_12
 {
+    /// <summary>
+    /// class to hold tile information
+    /// </summary>
     class Tile : GameObject, ICollidable 
     {
         private Texture2D texture;
@@ -22,6 +25,7 @@ namespace Strike_12
             get { return tileType; }
         }
 
+        //constructor
         public Tile(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, string type)
             : base(texture, size, windowWidth, windowHeight)
         {

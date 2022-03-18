@@ -45,38 +45,27 @@ namespace Strike_12
             sb.Draw(texture, size, Color.White);
         }
 
-        //collision detection
+        //collision detection checks type and returns true or false if there was collision
         public virtual bool CheckCollision(string type, GameObject collider, GameObject collided)
         {
-
-            if (type == "enemy")
+            switch(type)
             {
-                return collider.Size.Intersects(collided.Size);
+                case "enemy":
+                    return collider.Size.Intersects(collided.Size);
+                    break;
+                case "wall":
+                    return collider.Size.Intersects(collided.Size);
+                    break;
+                case "ground":
+                    return collider.Size.Intersects(collided.Size);
+                    break;
+                case "platform":
+                    return collider.Size.Intersects(collided.Size);
+                    break;
+                default:
+                    return false;
+                    break;
             }
-            
-            if (type == "wall")
-            {
-                /*return collider.Size.Left == collided.Size.Right
-                    || collider.Size.Right == collided.Size.Left
-                    || collider.Size.Bottom == collided.Size.Top
-                    || collider.Size.Intersects(collided.Size);*/
-
-                /*return (collider.size.Bottom >= collided.size.Top) &&
-                       (collider.size.Left - collider.texture.Width >=
-                        collided.size.Left &&
-                        collider.size.Right + collider.texture.Width <= collided.size.Right);*/
-
-                return (collider.Size.Intersects(collided.Size));
-            }
-            
-            if (type == "ground")
-            {
-
-                return collider.Size.Intersects(collided.Size);
-
-            }
-
-            return false;
         }
 
         //makes a game object bounce when hitting the wall or ground

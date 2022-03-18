@@ -45,7 +45,11 @@ namespace Strike_12
         protected Vector2 position;
         protected Vector2 velocity;
         protected bool isGrounded;
+
         protected bool collided;
+        protected bool leftCollided;
+        protected bool rightCollided;
+        protected Rectangle wallPos;
 
         // Input Fields
         public KeyboardState kbState;
@@ -67,6 +71,12 @@ namespace Strike_12
         {
             get { return platformPos.X; }
             set { platformPos.X = value; }
+        }
+
+        public int WallPosX
+        {
+            get { return wallPos.X; }
+            set { wallPos.X = value; }
         }
 
         public bool IsGrounded
@@ -108,7 +118,7 @@ namespace Strike_12
         public bool TakeDamage(GameTime gameTime)
         {
             iCounter++;
-            if(iCounter == 20)
+            if(iCounter == 10)
             {
                 iCounter = 0;
                 return true;
@@ -175,7 +185,7 @@ namespace Strike_12
             }
 
             //if A is pressed, moves player left, changes player state depending on if jumping or not.
-            if (kbState.IsKeyDown(Keys.A))
+            if (kbState.IsKeyDown(Keys.A) && leftCollided == false)
             {
                 velocity.X = -moveSpeed;
                 if (!isGrounded && previousPlayerState != PlayerStates.moveLeft)
@@ -188,7 +198,7 @@ namespace Strike_12
                 }
             }
             //if D is pressed, moves player right, changes player state depending on if jumping or not.
-            else if (kbState.IsKeyDown(Keys.D))
+            else if (kbState.IsKeyDown(Keys.D) && rightCollided == false)
             {
                 velocity.X = moveSpeed;
                 if (!isGrounded && previousPlayerState != PlayerStates.moveRight)
@@ -265,7 +275,7 @@ namespace Strike_12
                 velocity.Y += 0.15f * gravityMultiplier;
 
                 // Air Dash
-                if (kbState.IsKeyDown(Keys.Enter) && !previousKBState.IsKeyDown(Keys.Enter) && dashCounter > 0)
+                if (kbState.IsKeyDown(Keys.Up) && !previousKBState.IsKeyDown(Keys.Up) && dashCounter > 0)
                 {
                     dashDirection = playerState;
                     playerState = PlayerStates.airdash;
@@ -276,10 +286,35 @@ namespace Strike_12
                 }
             }
 
+            //checks for if the player is above a platform or ground, and resets grounded to false
             if (platformPos.Y >= size.Y && (platformPos.X < size.X || platformPos.X > size.X + 128))
             {
                 IsGrounded = false;
             }
+
+
+            //wall collision detection works on the left but not the right.
+            if (wallPos.X + 64 < size.X)
+            {
+                leftCollided = false;
+            }
+            else
+            {
+                leftCollided = true;
+            }
+
+
+            if (wallPos.X > size.X)
+            {
+                rightCollided = true;
+            }
+            else
+            {
+                rightCollided = false;
+            }
+
+            
+
 
             //updates position based on velocity and the size rectangle
             position += velocity;
