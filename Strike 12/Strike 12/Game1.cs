@@ -95,7 +95,7 @@ namespace Strike_12
             enemySprites = Content.Load<Texture2D>("enemySpriteSheet");
 
             //other assests
-            tileSprites = Content.Load<Texture2D>("tileSpriteSheet");
+            tileSprites = Content.Load<Texture2D>("brick");
             titleScreen = Content.Load<Texture2D>("Logo (1)");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
