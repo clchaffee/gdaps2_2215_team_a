@@ -72,7 +72,7 @@ namespace Strike_12
             _graphics.PreferredBackBufferWidth = windowWidth;
             _graphics.ApplyChanges();
             eManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
-            rng.Next(300, windowWidth - 300);
+
 
 
             base.Initialize();
@@ -218,10 +218,16 @@ namespace Strike_12
                         enemy.Update(gameTime);
                     }
 
+                    if (eManager.Enemies.Count == 0)
+                    {
+                        enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 192), rng.Next(1200, windowHeight - 192), 128, 128), windowWidth, windowHeight);
+                        eManager.SpawnEnemy(enemy);
+                    }
+
                     eManager.Count++;
                     if (eManager.Count/60 >= waveLength)
                     {
-                        enemy = new Enemy(enemySprites, new Rectangle(rng.Next(300, windowWidth - 300), rng.Next(300, windowHeight - 300), 128, 128), windowWidth, windowHeight);
+                        enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 192), rng.Next(1200, windowHeight - 192), 128, 128), windowWidth, windowHeight);
                         eManager.SpawnEnemy(enemy);
                         waveDelta /= 1.5;
                         waveLength += waveDelta;
@@ -234,6 +240,7 @@ namespace Strike_12
                 case GameState.Shop:
                     eManager.Enemies.Clear();
                     waveLength = 10;
+                    waveDelta = 10;
                     eManager.Count = 0;
                     player.Reset();
                     foreach (Enemy enemy in eManager.Enemies)

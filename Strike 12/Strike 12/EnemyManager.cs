@@ -31,8 +31,8 @@ namespace Strike_12
             this.wWidth = wWidth;
             this.wHeight = wHeight;
             this.size = size;
-            size.X = rng.Next(300, wWidth - 300);
-            size.Y = rng.Next(300, wHeight - 300);
+            size.X = rng.Next(64, wWidth - 64);
+            size.Y = rng.Next(500, wHeight - 64);
             this.sprite = sprite;
         }
         
