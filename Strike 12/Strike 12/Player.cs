@@ -236,7 +236,7 @@ namespace Strike_12
                 // Update the player's Y velocity according to the multiplier
                 velocity.Y += 0.15f * gravityMultiplier;
 
-                // Air Dash
+                /* Air Dash
                 if (kbState.IsKeyDown(Keys.Enter) && !previousKBState.IsKeyDown(Keys.Enter) && dashCounter > 0)
                 {
                     dashDirection = playerState;
@@ -245,7 +245,7 @@ namespace Strike_12
                     velocity.X = 0;
                     size.X += 0;
                     size.Y += 0;
-                }
+                }*/
             }
             else if (isGrounded)
             {

@@ -28,14 +28,14 @@ namespace Strike_12
             get { return tileLayout[i, j]; }
         }
 
-        public int LayoutHeight
+        public int LayoutColumns
         {
-            get { return levelLayout.GetLength(0); }
+            get { return tileLayout.GetLength(1); }
         }
 
-        public int LayoutWidth
+        public int LayoutRows
         {
-            get { return levelLayout.GetLength(1); }
+            get { return tileLayout.GetLength(0); }
         }
 
         // ----- | Constructor | -----
@@ -64,22 +64,21 @@ namespace Strike_12
                     {
                         // At the first line get the size of the 2D array and initialize it
                         arenaSize = line.Split(',');
-                        levelLayout = new char[int.Parse(arenaSize[0]), int.Parse(arenaSize[1])];
-                        tileLayout = new Tile[levelLayout.GetLength(0), levelLayout.GetLength(1)];
+                        //levelLayout = new char[int.Parse(arenaSize[0]), int.Parse(arenaSize[1])];
+                        tileLayout = new Tile[int.Parse(arenaSize[1]), int.Parse(arenaSize[0])];
                     }
                     else
                     {
                         // For each line of the array loop through it and fill it
-                        for (int i = 0; i < levelLayout.GetLength(0); i++)
+                        for (int i = 0; i < tileLayout.GetLength(0); i++)
                         {
-                            for (int j = 0; j < levelLayout.GetLength(1); j++)
+                            for (int j = 0; j < tileLayout.GetLength(1); j++)
                             {
-                                //levelLayout[i, j] = line[j];
                                 switch (line[j])
                                 {
                                     case 'w':
                                         tileLayout[i, j] = new Tile(tileSprites, 
-                                                                    new Rectangle(128 * i, 128 * j, 128, 128),
+                                                                    new Rectangle(128 * j, 128 * i, 128, 128),
                                                                     windowWidth,
                                                                     windowHeight,
                                                                     "wall");
@@ -87,10 +86,18 @@ namespace Strike_12
 
                                     case 'x':
                                         tileLayout[i, j] = new Tile(tileSprites,
-                                                                    new Rectangle(128 * i, 128 * j, 128, 128),
+                                                                    new Rectangle(128 * j, 128 * i, 128, 128),
                                                                     windowWidth,
                                                                     windowHeight,
                                                                     "temp");
+                                        break;
+
+                                    case 'g':
+                                        tileLayout[i, j] = new Tile(tileSprites,
+                                                                    new Rectangle(128 * j, 128 * i, 128, 128),
+                                                                    windowWidth,
+                                                                    windowHeight,
+                                                                    "ground");
                                         break;
 
                                     default:
@@ -135,6 +142,10 @@ namespace Strike_12
                                 break;
 
                             case "temp":
+                                _spriteBatch.Draw(tileTexture, tileLayout[i, j].Size, Color.White);
+                                break;
+
+                            case "ground":
                                 _spriteBatch.Draw(tileTexture, tileLayout[i, j].Size, Color.White);
                                 break;
 
