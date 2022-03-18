@@ -78,7 +78,7 @@ namespace Strike_12
                                 {
                                     case 'w':
                                         tileLayout[i, j] = new Tile(tileSprites, 
-                                                                    new Rectangle(128 * j, 128 * i, 128, 128),
+                                                                    new Rectangle(64 * j, 64 * i, 64, 64),
                                                                     windowWidth,
                                                                     windowHeight,
                                                                     "wall");
@@ -86,7 +86,7 @@ namespace Strike_12
 
                                     case 'x':
                                         tileLayout[i, j] = new Tile(tileSprites,
-                                                                    new Rectangle(128 * j, 128 * i, 128, 128),
+                                                                    new Rectangle(64 * j, 64 * i, 64, 64),
                                                                     windowWidth,
                                                                     windowHeight,
                                                                     "temp");
@@ -94,7 +94,7 @@ namespace Strike_12
 
                                     case 'g':
                                         tileLayout[i, j] = new Tile(tileSprites,
-                                                                    new Rectangle(128 * j, 128 * i, 128, 128),
+                                                                    new Rectangle(64 * j, 64 * i, 64, 64),
                                                                     windowWidth,
                                                                     windowHeight,
                                                                     "ground");

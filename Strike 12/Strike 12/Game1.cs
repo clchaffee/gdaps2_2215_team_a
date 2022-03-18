@@ -23,10 +23,8 @@ namespace Strike_12
         private SpriteBatch _spriteBatch;
         private SpriteFont titleFont;
         private SpriteFont displayFont;
-        //private int windowWidth = 1216;
-        //private int windowHeight = 992;
-        private int windowWidth = 2560;
-        private int windowHeight = 1920;
+        private int windowWidth = 2304;
+        private int windowHeight = 1984;
         Random rng = new Random();
 
         // Temp player assets
@@ -180,7 +178,7 @@ namespace Strike_12
                         {
                             if (editor[i, j] != null)
                             {
-                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]))
+                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i,j].Type == "ground")
                                 {
                                     player.IsGrounded = true;
                                 }
