@@ -10,6 +10,7 @@ namespace Strike_12
     class EnemyManager
     {
         public List<Enemy> Enemies { get; set; }//= new List<Enemy>()
+        public double Count { get; set; }
         Texture2D sprite;
         Rectangle size;
         int wWidth;
@@ -22,6 +23,7 @@ namespace Strike_12
         public void Initialize()
         {
             Enemies = new List<Enemy>();
+            Count = 0;
         }
 
         public EnemyManager(Texture2D sprite, Rectangle size, int wWidth, int wHeight)

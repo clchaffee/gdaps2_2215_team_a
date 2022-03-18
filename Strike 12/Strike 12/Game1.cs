@@ -42,6 +42,7 @@ namespace Strike_12
         private int eStartY;
         Rectangle eSize;
         private double waveLength = 10;
+        private double waveDelta = 10;
         private EnemyManager eManager;
 
 
@@ -73,6 +74,8 @@ namespace Strike_12
             _graphics.PreferredBackBufferWidth = windowWidth;
             _graphics.ApplyChanges();
             eManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
+            rng.Next(300, windowWidth - 300);
+
 
             base.Initialize();
         }
@@ -96,9 +99,8 @@ namespace Strike_12
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height / 2);
 
-            eStartX = rng.Next(300,windowWidth-300);
-            eStartY = rng.Next(300, windowHeight - 300);
-            eSize = new Rectangle(eStartX, eStartY, 128, 128);
+
+            eSize = new Rectangle(rng.Next(300, windowWidth - 300), rng.Next(300, windowHeight - 300), 128, 128);
 
             tile = new Tile(tileSprites, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 + 128, 128, 128),
                 GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, "wall");
@@ -144,6 +146,8 @@ namespace Strike_12
             {
                 //if enter is pressed in menu, starts the game; if space is pressed opens the control screen
                 case GameState.Menu:
+
+                    eManager.Count = 0;
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
                     {
                         state = GameState.Arena;
@@ -165,7 +169,7 @@ namespace Strike_12
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
 
-                    
+
                     eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -215,10 +219,14 @@ namespace Strike_12
                     {
                         enemy.Update(gameTime);
                     }
-                    if (gameTime.TotalGameTime.TotalSeconds >= waveLength)
+
+                    eManager.Count++;
+                    if (eManager.Count/60 >= waveLength)
                     {
+                        enemy = new Enemy(enemySprites, new Rectangle(rng.Next(300, windowWidth - 300), rng.Next(300, windowHeight - 300), 128, 128), windowWidth, windowHeight);
                         eManager.SpawnEnemy(enemy);
-                        waveLength += waveLength + waveLength / 2;
+                        waveDelta /= 1.5;
+                        waveLength += waveDelta;
                     }
 
 
@@ -226,6 +234,9 @@ namespace Strike_12
 
                 //if enter is pressed in the shop, returns to arena; if space is pressed brings up the menu
                 case GameState.Shop:
+                    eManager.Enemies.Clear();
+                    waveLength = 10;
+                    eManager.Count = 0;
                     player.Reset();
                     foreach (Enemy enemy in eManager.Enemies)
                     {
@@ -291,9 +302,9 @@ namespace Strike_12
                     _spriteBatch.DrawString(displayFont, "Press Space to go to the shop page (happens upon character death)",
                         new Vector2(100, 400), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
-                       new Vector2(10, 10), Color.Black);
+                       new Vector2(100, 150), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
-                       new Vector2(10, 25), Color.Black);
+                       new Vector2(100, 100), Color.Black);
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
