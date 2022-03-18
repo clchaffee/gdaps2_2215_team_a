@@ -193,13 +193,16 @@ namespace Strike_12
                         state = GameState.Shop;
                     }
 
-                    //collision for each enemy in the Enemy class
-                    foreach (Enemy enemy in eManager.Enemies)
+                        //collision for each enemy in the Enemy class
+                        foreach (Enemy enemy in eManager.Enemies)
                     {
-                        if (enemy.CheckCollision("Enemy", enemy, player)
-                            && player.TakeDamage(gameTime) == true)
+                        if (enemy.CheckCollision("enemy", enemy, player))
                         {
-                            player.Health -= 1;
+
+                            if(player.TakeDamage(gameTime))
+                            {
+                                player.Health -= 1;
+                            }
 
                         }
                         else if (enemy.CheckCollision("top", enemy, player))
@@ -247,6 +250,7 @@ namespace Strike_12
                     waveLength = 10;
                     waveDelta = 10;
                     eManager.Count = 0;
+                    timer = 0;
                     player.Reset();
                     foreach (Enemy enemy in eManager.Enemies)
                     {
