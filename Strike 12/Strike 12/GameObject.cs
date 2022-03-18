@@ -53,8 +53,7 @@ namespace Strike_12
             {
                 return collider.Size.Intersects(collided.Size);
             }
-
-            if (type == "wall")
+            else if (type == "wall")
             {
                 /*return collider.Size.Left == collided.Size.Right
                     || collider.Size.Right == collided.Size.Left
@@ -72,12 +71,15 @@ namespace Strike_12
                         collider.size.Right >= collided.size.Left) &&
                        (collider.size.Top <= collided.size.Bottom);
             }
-            if (type == "ground")
+            else if (type == "Ground")
             {
-                return collider.Size.Intersects(collided.Size);
+                return collider.Size.Bottom == collided.Size.Top
+                    || collider.Size.Intersects(collided.Size);
             }
-
-            return false;
+            else
+            {
+                return false;
+            }
         }
 
         //makes a game object bounce when hitting the wall or ground

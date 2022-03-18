@@ -61,11 +61,6 @@ namespace Strike_12
             set { isGrounded = value; }
         }
 
-        public Rectangle Size
-        {
-            get { return size;}
-        }
-
         // ----- | Constructor | -----
         public Player(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, 
             Vector2 position) : base(texture, size, windowWidth, windowHeight)
@@ -254,9 +249,6 @@ namespace Strike_12
             }
             else if (isGrounded)
             {
-                position.Y = windowHeight - 192;
-                gravityMultiplier = 1f;
-                moveSpeed = 10f;
                 dashCounter = 20;
                 velocity.Y = 0;
             }

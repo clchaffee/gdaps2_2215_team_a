@@ -163,13 +163,9 @@ namespace Strike_12
                         {
                             if (editor[i, j] != null)
                             {
-                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i, j].Type == "ground")
+                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]))
                                 {
                                     player.IsGrounded = true;
-                                }
-                                else if (!player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i, j].Type == "ground")
-                                {
-                                    player.IsGrounded = false;
                                 }
                             }                             
                         }
