@@ -39,11 +39,13 @@ namespace Strike_12
         private float gravityMultiplier = 1f;
         private int dashCounter = 20;
         private int iCounter = 0;
+        private Rectangle platformPos;
 
         //fields for gravity
         protected Vector2 position;
         protected Vector2 velocity;
         protected bool isGrounded;
+        protected bool collided;
 
         // Input Fields
         public KeyboardState kbState;
@@ -55,11 +57,30 @@ namespace Strike_12
             set { health = value; }
         }
 
+        public int PlatformPosY
+        {
+            get { return platformPos.Y; }
+            set { platformPos.Y = value; }
+        }
+
+        public int PlatformPosX
+        {
+            get { return platformPos.X; }
+            set { platformPos.X = value; }
+        }
+
         public bool IsGrounded
         {
             get { return isGrounded; }
             set { isGrounded = value; }
         }
+
+        public bool Collided
+        {
+            get { return collided; }
+            set { collided = value; }
+        }
+        
 
         // ----- | Constructor | -----
         public Player(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, 
@@ -157,7 +178,7 @@ namespace Strike_12
             if (kbState.IsKeyDown(Keys.A))
             {
                 velocity.X = -moveSpeed;
-                if (!isGrounded)
+                if (!isGrounded && previousPlayerState != PlayerStates.moveLeft)
                 {
                     playerState = PlayerStates.jumpLeft;
                 }
@@ -170,7 +191,7 @@ namespace Strike_12
             else if (kbState.IsKeyDown(Keys.D))
             {
                 velocity.X = moveSpeed;
-                if (!isGrounded)
+                if (!isGrounded && previousPlayerState != PlayerStates.moveRight)
                 {
                     playerState = PlayerStates.jumpRight;
                 }
@@ -213,10 +234,17 @@ namespace Strike_12
                 }
             }
 
-            //if the player is no longer on the ground, applies gravity
-            if (!isGrounded)
+            if (isGrounded)
             {
-
+                position.Y = platformPos.Y - playerSprite.Height;
+                gravityMultiplier = 1f;
+                moveSpeed = 10f;
+                dashCounter = 20;
+                velocity.Y = 0;
+            }
+            //if the player is no longer on the ground, applies gravity
+            else if (!isGrounded)
+            {
                 // While the gravity multipler is under a specified value, add to it
                 if (gravityMultiplier < 5)
                 {
@@ -247,12 +275,13 @@ namespace Strike_12
                     size.Y += 0;
                 }*/
             }
-            else if (isGrounded)
+
+            if (platformPos.Y >= size.Y && (platformPos.X < size.X || platformPos.X > size.X + 128))
             {
-                dashCounter = 20;
-                velocity.Y = 0;
+                IsGrounded = false;
             }
-                
+
+
             //updates position based on velocity and the size rectangle
             position += velocity;
             size.X = (int)position.X;

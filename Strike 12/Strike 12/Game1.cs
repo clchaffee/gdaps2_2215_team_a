@@ -89,7 +89,7 @@ namespace Strike_12
             // Load the player sprite sheet
             playerSprites = Content.Load<Texture2D>("playerSpriteSheet");
             enemySprites = Content.Load<Texture2D>("enemySpriteSheet");
-            tileSprites = Content.Load<Texture2D>("tileSpriteSheet");
+            tileSprites = Content.Load<Texture2D>("brick");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height / 2);
@@ -97,9 +97,6 @@ namespace Strike_12
             eStartX = rng.Next(300,windowWidth-300);
             eStartY = rng.Next(300, windowHeight - 300);
             eSize = new Rectangle(eStartX, eStartY, 128, 128);
-
-            tile = new Tile(tileSprites, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 + 128, 128, 128),
-                GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, "wall");
 
             // Initialize the player with the asset loaded in
             player = new Player
@@ -170,13 +167,24 @@ namespace Strike_12
                     // Checking collisons
                     for (int i = 0; i < editor.LayoutRows; i++)
                     {
-                        for (int j = 0; j < editor.LayoutRows; j++)
+                        for (int j = 0; j < editor.LayoutColumns; j++)
                         {
                             if (editor[i, j] != null)
                             {
-                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i,j].Type == "ground")
+                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i, j].Type == "ground")
                                 {
+                                    player.PlatformPosY = editor[i, j].Size.Y;
+                                    player.PlatformPosX = editor[i, j].Size.X;
                                     player.IsGrounded = true;
+                                }
+                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i, j].Type == "wall")
+                                {
+
+                                    player.Collided = true;
+                                }
+                                else
+                                {
+                                    player.Collided = false;
                                 }
                             }
                         }
@@ -299,8 +307,6 @@ namespace Strike_12
                     {
                         enemy.Draw(_spriteBatch, enemySprites);
                     }
-
-                    tile.Draw(_spriteBatch, tileSprites);
 
                     break;
 

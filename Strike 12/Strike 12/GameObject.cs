@@ -22,7 +22,7 @@ namespace Strike_12
         protected int windowHeight;
 
         //property
-        protected Rectangle Size
+        public Rectangle Size
         {
             get { return size; }
         }
@@ -53,7 +53,8 @@ namespace Strike_12
             {
                 return collider.Size.Intersects(collided.Size);
             }
-            else if (type == "wall")
+            
+            if (type == "wall")
             {
                 /*return collider.Size.Left == collided.Size.Right
                     || collider.Size.Right == collided.Size.Left
@@ -65,21 +66,17 @@ namespace Strike_12
                         collided.size.Left &&
                         collider.size.Right + collider.texture.Width <= collided.size.Right);*/
 
-                return (collider.size.Bottom >= collided.size.Top) &&
-                       (collider.size.Left <=
-                        collided.size.Right &&
-                        collider.size.Right >= collided.size.Left) &&
-                       (collider.size.Top <= collided.size.Bottom);
+                return (collider.Size.Intersects(collided.Size));
             }
-            else if (type == "ground")
+            
+            if (type == "ground")
             {
-                return collider.Size.Bottom == collided.Size.Top
-                    || collider.Size.Intersects(collided.Size);
+
+                return collider.Size.Intersects(collided.Size);
+
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         //makes a game object bounce when hitting the wall or ground
