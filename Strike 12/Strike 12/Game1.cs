@@ -23,8 +23,8 @@ namespace Strike_12
         private SpriteBatch _spriteBatch;
         private SpriteFont titleFont;
         private SpriteFont displayFont;
-        private int windowWidth = 2304;
-        private int windowHeight = 1984;
+        private int windowWidth = 1664;
+        private int windowHeight = 960;
         Random rng = new Random();
         private Texture2D titleScreen;
 
@@ -107,7 +107,7 @@ namespace Strike_12
 
             // Initialize the player with the asset loaded in
             player = new Player
-                (playerSprites, new Rectangle(pStartX, pStartY, 128, 128),
+                (playerSprites, new Rectangle(pStartX, pStartY, 64, 128),
                     windowWidth, windowHeight,
                 new Vector2(
                 GraphicsDevice.Viewport.Width / 2,
@@ -116,7 +116,7 @@ namespace Strike_12
             //eSize.X = rng.Next(300, windowWidth - 300);
             //eSize.Y = rng.Next(300, windowHeight - 300);
             eManager.Initialize();
-            enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 192), rng.Next(1200, windowHeight - 192), 128, 128), windowWidth, windowHeight);
+            enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
             eManager.SpawnEnemy(enemy);
 
 
@@ -259,7 +259,7 @@ namespace Strike_12
                     //if the count of the list is zero (empty), will automatically add one to it
                     if (eManager.Enemies.Count == 0)
                     {
-                        enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 192), rng.Next(1200, windowHeight - 192), 128, 128), windowWidth, windowHeight);
+                        enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
                         eManager.SpawnEnemy(enemy);
                     }
 
@@ -268,7 +268,7 @@ namespace Strike_12
                     //if the count divided by 60 if equal to or greater than the wave length, adds another to the list
                     if (eManager.Count/60 >= waveLength)
                     {
-                        enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 192), rng.Next(1200, windowHeight - 192), 128, 128), windowWidth, windowHeight);
+                        enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
                         eManager.SpawnEnemy(enemy);
                         waveDelta /= 1.5;
                         waveLength += waveDelta;

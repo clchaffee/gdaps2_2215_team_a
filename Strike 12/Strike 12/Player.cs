@@ -34,7 +34,7 @@ namespace Strike_12
         private PlayerStates previousPlayerState;
         private PlayerStates dashDirection;
         private Texture2D playerSprite;
-        private float moveSpeed = 10f;
+        private float moveSpeed = 8f;
         private int health = 10;
         private float gravityMultiplier = 1f;
         private int dashCounter = 20;
@@ -162,21 +162,21 @@ namespace Strike_12
                         dashCounter--;
                         return;
                     }
-                    else if (kbState.IsKeyDown(Keys.A))
+                    else if (kbState.IsKeyDown(Keys.A) && leftCollided == false)
                     {
                         size.X -= 20;
                         position.X -= 20f;
                         dashCounter--;
                         return;
                     }
-                    else if (kbState.IsKeyDown(Keys.S))
+                    else if (kbState.IsKeyDown(Keys.S) && IsGrounded == false)
                     {
                         size.Y += 20;
                         position.Y += 20f;
                         dashCounter--;
                         return;
                     }
-                    else if (kbState.IsKeyDown(Keys.D))
+                    else if (kbState.IsKeyDown(Keys.D) && rightCollided == false)
                     {
                         size.X += 20;
                         position.X += 20f;
@@ -293,11 +293,12 @@ namespace Strike_12
             }
 
             //checks for if the player is above a platform or ground, and resets grounded to false
-            if (platformPos.Y >= size.Y && (platformPos.X < size.X || platformPos.X > size.X + 128))
+            if (platformPos.Y >= size.Y && (platformPos.X < size.X || platformPos.X > size.X + 64))
             {
                 IsGrounded = false;
             }
 
+            //checks if collided with wall
             if (rightCollided)
             {
                 rightCollided = false;
@@ -397,9 +398,9 @@ namespace Strike_12
         {
             position.X = windowWidth / 2 - size.Width / 2;
             position.Y = windowHeight / 2 - size.Height / 2;
-            Health = 10;
             velocity.X = 0f;
             velocity.Y = 0f;
+            Health = 10;
         }
     }
 }
