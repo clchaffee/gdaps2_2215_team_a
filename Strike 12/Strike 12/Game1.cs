@@ -186,10 +186,28 @@ namespace Strike_12
                                     player.PlatformPosX = editor[i, j].Size.X;
                                     player.IsGrounded = true;
                                 }
-                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i, j].Type == "wall")
+                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i, j].Type == "leftWall")
                                 {
                                     player.WallPosX = editor[i, j].Size.X;
-                                    player.Collided = true;
+                                    if (player.Size.X-64>editor[i, j].Size.X)
+                                    {
+                                        player.LeftCollided = false;
+                                    }
+                                    else
+                                    {
+                                        player.LeftCollided = true;
+                                    }
+                                }
+                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i, j].Type == "rightWall")
+                                {
+                                    if (editor[i, j].Size.X > player.Size.X + 128)
+                                    {
+                                        player.RightCollided = false;
+                                    }
+                                    else
+                                    {
+                                        player.RightCollided = true;
+                                    }
                                 }
                             }
                         }

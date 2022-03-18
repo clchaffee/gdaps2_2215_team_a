@@ -53,7 +53,8 @@ namespace Strike_12
                 case "enemy":
                     return collider.Size.Intersects(collided.Size);
                     break;
-                case "wall":
+                case "leftWall":
+                case "rightWall":
                     return collider.Size.Intersects(collided.Size);
                     break;
                 case "ground":

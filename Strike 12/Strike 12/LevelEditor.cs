@@ -76,12 +76,20 @@ namespace Strike_12
                             {
                                 switch (line[j])
                                 {
-                                    case 'w':
+                                    case 'l':
                                         tileLayout[i, j] = new Tile(tileSprites, 
                                                                     new Rectangle(64 * j, 64 * i, 64, 64),
                                                                     windowWidth,
                                                                     windowHeight,
-                                                                    "wall");
+                                                                    "leftWall");
+                                        break;
+
+                                    case 'r':
+                                        tileLayout[i, j] = new Tile(tileSprites,
+                                                                    new Rectangle(64 * j, 64 * i, 64, 64),
+                                                                    windowWidth,
+                                                                    windowHeight,
+                                                                    "rightWall");
                                         break;
 
                                     case 'x':
@@ -143,7 +151,11 @@ namespace Strike_12
                     {
                         switch (tileLayout[i, j].Type)
                         {
-                            case "wall":
+                            case "leftWall":
+                                _spriteBatch.Draw(tileTexture, tileLayout[i, j].Size, Color.White);
+                                break;
+
+                            case "rightWall":
                                 _spriteBatch.Draw(tileTexture, tileLayout[i, j].Size, Color.White);
                                 break;
 

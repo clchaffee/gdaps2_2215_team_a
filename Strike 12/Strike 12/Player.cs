@@ -85,12 +85,18 @@ namespace Strike_12
             set { isGrounded = value; }
         }
 
-        public bool Collided
+        public bool LeftCollided
         {
-            get { return collided; }
-            set { collided = value; }
+            get { return leftCollided; }
+            set { leftCollided = value; }
         }
-        
+
+        public bool RightCollided
+        {
+            get { return rightCollided; }
+            set { rightCollided = value; }
+        }
+
 
         // ----- | Constructor | -----
         public Player(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, 
@@ -292,27 +298,18 @@ namespace Strike_12
                 IsGrounded = false;
             }
 
-
-            //wall collision detection works on the left but not the right.
-            if (wallPos.X + 64 < size.X)
-            {
-                leftCollided = false;
-            }
-            else
-            {
-                leftCollided = true;
-            }
-
-
-            if (wallPos.X > size.X)
-            {
-                rightCollided = true;
-            }
-            else
+            if (rightCollided)
             {
                 rightCollided = false;
             }
+            
+            if (leftCollided)
+            {
+                leftCollided = false;
+            }
 
+
+            
             
 
 
