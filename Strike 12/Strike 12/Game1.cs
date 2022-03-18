@@ -93,15 +93,14 @@ namespace Strike_12
             // Load the player sprite sheet
             playerSprites = Content.Load<Texture2D>("playerSpriteSheet");
             enemySprites = Content.Load<Texture2D>("enemySpriteSheet");
+
+            //other assests
             tileSprites = Content.Load<Texture2D>("tileSpriteSheet");
             titleScreen = Content.Load<Texture2D>("Logo (1)");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height / 2);
-
-
-            eSize = new Rectangle(rng.Next(300, windowWidth - 300), rng.Next(300, windowHeight - 300), 128, 128);
-
+            
             tile = new Tile(tileSprites, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 + 128, 128, 128),
                 GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, "wall");
 
@@ -116,9 +115,8 @@ namespace Strike_12
             //eSize.X = rng.Next(300, windowWidth - 300);
             //eSize.Y = rng.Next(300, windowHeight - 300);
             eManager.Initialize();
-            enemy = new Enemy(enemySprites, eSize, windowWidth, windowHeight);
+            enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 192), rng.Next(1200, windowHeight - 192), 128, 128), windowWidth, windowHeight);
             eManager.SpawnEnemy(enemy);
-
 
 
             // -- LEVEL LOADING --
@@ -144,7 +142,8 @@ namespace Strike_12
             //switch statement for specific key presses in the different states states
             switch (state)
             {
-                //if enter is pressed in menu, starts the game; if space is pressed opens the control screen
+                //if enter is pressed in menu, starts the game
+                //if space is pressed opens the control screen
                 case GameState.Menu:
 
                     eManager.Count = 0;
@@ -169,7 +168,6 @@ namespace Strike_12
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
 
-
                     eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -188,12 +186,14 @@ namespace Strike_12
                         }
                     }
 
+                    //if space is pressed, go to shop
                     if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
                     {
                         timer = 0;
                         state = GameState.Shop;
                     }
 
+                    //collision for each enemy in the Enemy class
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         if (enemy.CheckCollision("Enemy", enemy, player)
@@ -207,7 +207,7 @@ namespace Strike_12
                         //has to make the player jump when they hit the top
                         }
                     }
-
+                    //if the player has no more health, go to shop
                     if (player.Health <= 0)
                     {
                         state = GameState.Shop;
@@ -220,13 +220,16 @@ namespace Strike_12
                         enemy.Update(gameTime);
                     }
 
+                    //if the count of the list is zero (empty), will automatically add one to it
                     if (eManager.Enemies.Count == 0)
                     {
                         enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 192), rng.Next(1200, windowHeight - 192), 128, 128), windowWidth, windowHeight);
                         eManager.SpawnEnemy(enemy);
                     }
 
+                    //adds one to the count in the manager every frame
                     eManager.Count++;
+                    //if the count divided by 60 if equal to or greater than the wave length, adds another to the list
                     if (eManager.Count/60 >= waveLength)
                     {
                         enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 192), rng.Next(1200, windowHeight - 192), 128, 128), windowWidth, windowHeight);
@@ -234,12 +237,12 @@ namespace Strike_12
                         waveDelta /= 1.5;
                         waveLength += waveDelta;
                     }
-
-
                     break;
 
                 //if enter is pressed in the shop, returns to arena; if space is pressed brings up the menu
                 case GameState.Shop:
+
+                    //resets data from Arena
                     eManager.Enemies.Clear();
                     waveLength = 10;
                     waveDelta = 10;
@@ -250,6 +253,7 @@ namespace Strike_12
                         enemy.Reset();
                     }
 
+                    //key presses to change between gamestates
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
                     {
                         state = GameState.Arena;
