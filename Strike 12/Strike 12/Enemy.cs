@@ -132,8 +132,8 @@ namespace Strike_12
 
         public override void Reset()
         {
-            size.X = rng.Next(300, windowWidth - 300);
-            size.Y = rng.Next(300, windowHeight - 300);
+            size.X = rng.Next(64, windowWidth - 64);
+            size.Y = rng.Next(500, windowHeight - 64);
             moveSpeed = 5;
         }
     }
