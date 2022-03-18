@@ -26,6 +26,7 @@ namespace Strike_12
         private int windowWidth = 2304;
         private int windowHeight = 1984;
         Random rng = new Random();
+        private Texture2D titleScreen;
 
         // Temp player assets
         private Texture2D playerSprites;
@@ -93,6 +94,7 @@ namespace Strike_12
             playerSprites = Content.Load<Texture2D>("playerSpriteSheet");
             enemySprites = Content.Load<Texture2D>("enemySpriteSheet");
             tileSprites = Content.Load<Texture2D>("tileSpriteSheet");
+            titleScreen = Content.Load<Texture2D>("Logo (1)");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height / 2);
@@ -284,18 +286,17 @@ namespace Strike_12
             {
                 //text for menu screen
                 case GameState.Menu:
-                    _spriteBatch.DrawString(titleFont, "STRIKE XII",
-                        new Vector2(200, 200), Color.Black);
-                    _spriteBatch.DrawString(displayFont, "Press Enter to continue\nTo learn the controls, press Space",
-                        new Vector2(100, 400), Color.Black);
+                    _spriteBatch.Draw(titleScreen, new Rectangle((windowWidth/2 - titleScreen.Width/2 - 250), (windowHeight/2 - titleScreen.Height/2 - 400), 1500, 750), Color.White);
+                    _spriteBatch.DrawString(displayFont, "        Press Enter to continue\nTo learn the controls, press Space",
+                        new Vector2(700, 1500), Color.Black);
                     break;
 
                 //text for control screen
                 case GameState.Controls:
-                    _spriteBatch.DrawString(titleFont, "Filler for Controls page",
+                    _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right",
                         new Vector2(150, 200), Color.Black);
                     _spriteBatch.DrawString(displayFont, "Press Space to continue to return to the menu",
-                        new Vector2(100, 400), Color.Black);
+                        new Vector2(100, 1800), Color.Black);
                     break;
 
                 //text for arena screen
