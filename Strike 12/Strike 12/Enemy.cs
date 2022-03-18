@@ -32,6 +32,8 @@ namespace Strike_12
 
         private int moveSpeed = 5; //temp speed variable, can be changed
 
+        Random rng = new Random();
+
         //fields for gravity
         protected Vector2 position;
         protected Vector2 velocity;
@@ -114,8 +116,8 @@ namespace Strike_12
 
         public override void Reset()
         {
-            size.X = 100;
-            size.Y = 750;
+            size.X = rng.Next(300, windowWidth - 300);
+            size.Y = rng.Next(300, windowHeight - 300);
             moveSpeed = 5;
         }
     }
