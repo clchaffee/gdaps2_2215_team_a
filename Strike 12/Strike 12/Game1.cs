@@ -23,8 +23,11 @@ namespace Strike_12
         private SpriteBatch _spriteBatch;
         private SpriteFont titleFont;
         private SpriteFont displayFont;
-        private int windowWidth = 2304;
-        private int windowHeight = 1984;
+        //private int windowWidth = 1216;
+        //private int windowHeight = 992;
+        private int windowWidth = 2560;
+        private int windowHeight = 1920;
+        Random rng = new Random();
 
         // Temp player assets
         private Texture2D playerSprites;
@@ -37,6 +40,9 @@ namespace Strike_12
         private Enemy enemy;
         private int eStartX;
         private int eStartY;
+        Rectangle eSize;
+        private double waveLength = 10;
+        private EnemyManager eManager;
 
 
         // Level Assets
@@ -66,6 +72,7 @@ namespace Strike_12
             _graphics.PreferredBackBufferHeight = windowHeight;
             _graphics.PreferredBackBufferWidth = windowWidth;
             _graphics.ApplyChanges();
+            eManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
 
             base.Initialize();
         }
@@ -89,24 +96,28 @@ namespace Strike_12
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height / 2);
 
-            eStartX = 100;
-            eStartY = 750;
+            eStartX = rng.Next(300,windowWidth-300);
+            eStartY = rng.Next(300, windowHeight - 300);
+            eSize = new Rectangle(eStartX, eStartY, 128, 128);
 
-            tile = new Tile(tileSprites, new Rectangle(GraphicsDevice.Viewport.Width/2, GraphicsDevice.Viewport.Height/2 + 128, 128, 128),
-                GraphicsDevice.Viewport.Width,GraphicsDevice.Viewport.Height, "wall");
+            tile = new Tile(tileSprites, new Rectangle(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2 + 128, 128, 128),
+                GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, "wall");
 
             // Initialize the player with the asset loaded in
             player = new Player
-                (playerSprites, new Rectangle (pStartX, pStartY, 128, 128),
-                    windowWidth,windowHeight,
+                (playerSprites, new Rectangle(pStartX, pStartY, 128, 128),
+                    windowWidth, windowHeight,
                 new Vector2(
                 GraphicsDevice.Viewport.Width / 2,
                 GraphicsDevice.Viewport.Height / 2));
-            
-            enemy = new Enemy
-                (enemySprites, new Rectangle(
-                    eStartX, eStartY, 128, 128),
-                    windowWidth, windowHeight);
+
+            //eSize.X = rng.Next(300, windowWidth - 300);
+            //eSize.Y = rng.Next(300, windowHeight - 300);
+            eManager.Initialize();
+            enemy = new Enemy(enemySprites, eSize, windowWidth, windowHeight);
+            eManager.SpawnEnemy(enemy);
+
+
 
             // -- LEVEL LOADING --
             editor = new LevelEditor();
@@ -127,7 +138,7 @@ namespace Strike_12
 
             //gets keyboard state for each frame
             kbState = Keyboard.GetState();
-            
+
             //switch statement for specific key presses in the different states states
             switch (state)
             {
@@ -154,6 +165,8 @@ namespace Strike_12
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
 
+                    
+                    eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
                     // Checking collisons
@@ -167,7 +180,7 @@ namespace Strike_12
                                 {
                                     player.IsGrounded = true;
                                 }
-                            }                             
+                            }
                         }
                     }
 
@@ -177,32 +190,48 @@ namespace Strike_12
                         state = GameState.Shop;
                     }
 
-                    if (enemy.CheckCollision("Enemy", enemy, player)
-                        && player.TakeDamage(gameTime) == true)
+                    foreach (Enemy enemy in eManager.Enemies)
                     {
-                        player.Health -= 1;
-                        
-                    }
-                    else if(enemy.CheckCollision("top", enemy, player))
-                    {
+                        if (enemy.CheckCollision("Enemy", enemy, player)
+                            && player.TakeDamage(gameTime) == true)
+                        {
+                            player.Health -= 1;
+
+                        }
+                        else if (enemy.CheckCollision("top", enemy, player))
+                        {
                         //has to make the player jump when they hit the top
+                        }
                     }
-                    
+
                     if (player.Health <= 0)
                     {
                         state = GameState.Shop;
                     }
 
-                     // Temp player and enemy update call
+                    // Temp player and enemy update call
                     player.Update(gameTime);
-                    enemy.Update(gameTime);
+                    foreach (Enemy enemy in eManager.Enemies)
+                    {
+                        enemy.Update(gameTime);
+                    }
+                    if (gameTime.TotalGameTime.TotalSeconds >= waveLength)
+                    {
+                        eManager.SpawnEnemy(enemy);
+                        waveLength += waveLength + waveLength / 2;
+                    }
+
 
                     break;
 
                 //if enter is pressed in the shop, returns to arena; if space is pressed brings up the menu
                 case GameState.Shop:
                     player.Reset();
-                    enemy.Reset();
+                    foreach (Enemy enemy in eManager.Enemies)
+                    {
+                        enemy.Reset();
+                    }
+
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
                     {
                         state = GameState.Arena;
@@ -259,8 +288,6 @@ namespace Strike_12
                     // Draw the tiles
                     editor.Draw(_spriteBatch, tileSprites);
 
-                    _spriteBatch.DrawString(titleFont, "Filler for Arena",
-                        new Vector2(150, 200), Color.Black);
                     _spriteBatch.DrawString(displayFont, "Press Space to go to the shop page (happens upon character death)",
                         new Vector2(100, 400), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
@@ -270,7 +297,10 @@ namespace Strike_12
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
-                    enemy.Draw(_spriteBatch, enemySprites);
+                    foreach (Enemy enemy in eManager.Enemies)
+                    {
+                        enemy.Draw(_spriteBatch, enemySprites);
+                    }
 
                     tile.Draw(_spriteBatch, tileSprites);
 
@@ -297,6 +327,6 @@ namespace Strike_12
         //time, player and enemy position, player health
 
 
-        
+
     }
 }
