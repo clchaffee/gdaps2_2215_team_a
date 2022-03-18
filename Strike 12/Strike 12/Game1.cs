@@ -36,7 +36,6 @@ namespace Strike_12
         private int pStartX;
         private int pStartY;
 
-
         // Temp enemy assets
         private Texture2D enemySprites;
         private Enemy enemy;
@@ -107,7 +106,6 @@ namespace Strike_12
                 new Vector2(
                 GraphicsDevice.Viewport.Width / 2,
                 GraphicsDevice.Viewport.Height / 2));
-
             
             enemy = new Enemy
                 (enemySprites, new Rectangle(
@@ -163,9 +161,9 @@ namespace Strike_12
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
                     // Checking collisons
-                    for (int i = 0; i < editor.LayoutHeight; i++)
+                    for (int i = 0; i < editor.LayoutRows; i++)
                     {
-                        for (int j = 0; j < editor.LayoutWidth; j++)
+                        for (int j = 0; j < editor.LayoutRows; j++)
                         {
                             if (editor[i, j] != null)
                             {
