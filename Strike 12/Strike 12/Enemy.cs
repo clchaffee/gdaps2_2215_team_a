@@ -53,6 +53,11 @@ namespace Strike_12
         }
 
         // ----- | Property | -----
+        public bool IsGrounded
+        {
+            get { return isGrounded; }
+            set { isGrounded = value; }
+        }
 
         // ----- | Methods | -----
         // -- Methods Overriden from parent class
@@ -94,6 +99,8 @@ namespace Strike_12
 
                 // Update the player's Y velocity according to the multiplier
                 velocity.Y += 0.15f * gravityMultiplier;
+
+                
             }
 
         }

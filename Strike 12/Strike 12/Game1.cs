@@ -14,7 +14,9 @@ namespace Strike_12
         Menu,
         Controls,
         Arena,
-        Shop
+        Shop,
+        GameOver,
+        GameWinner
     }
     public class Game1 : Game
     {
@@ -25,8 +27,8 @@ namespace Strike_12
         private SpriteFont displayFont;
         //private int windowWidth = 1216;
         //private int windowHeight = 992;
-        private int windowWidth = 2560;
-        private int windowHeight = 1920;
+        private int windowWidth = 1152;
+        private int windowHeight = 922;
 
         // Temp player assets
         private Texture2D playerSprites;
@@ -201,12 +203,58 @@ namespace Strike_12
                     player.Update(gameTime);
                     enemy.Update(gameTime);
 
+                    if (timer > 30)
+                    {
+                        state = GameState.GameWinner;
+                    }
+                    else if (player.Health <= 0)
+                    {
+                        state = GameState.GameOver;
+                    }
+
+                    break;
+
+                // Game Winner: appears when timer is greater than 30
+                case GameState.GameWinner:
+                    player.Reset();
+                    enemy.Reset();
+
+                    timer = 0;
+
+                    if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
+                    {
+                        state = GameState.Arena;
+                    }
+                    if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
+                    {
+                        state = GameState.Shop;
+                    }
+
+                    break;
+
+                // Game Over: appears when health is less than 1
+                case GameState.GameOver:
+                    player.Reset();
+                    enemy.Reset();
+
+                    timer = 0;
+
+                    if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
+                    {
+                        state = GameState.Arena;
+                    }
+                    if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
+                    {
+                        state = GameState.Shop;
+                    }
+
                     break;
 
                 //if enter is pressed in the shop, returns to arena; if space is pressed brings up the menu
                 case GameState.Shop:
                     player.Reset();
                     enemy.Reset();
+
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
                     {
                         state = GameState.Arena;
@@ -278,6 +326,22 @@ namespace Strike_12
 
                     tile.Draw(_spriteBatch, tileSprites);
 
+                    break;
+
+                //Text for game winner screen
+                case GameState.GameWinner:
+                    _spriteBatch.DrawString(titleFont, "Filler for Game Winner page",
+                        new Vector2(150, 200), Color.Black);
+                    _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Space to return to the shop",
+                        new Vector2(100, 400), Color.Black);
+                    break;
+
+                // Text for game over state
+                case GameState.GameOver:
+                    _spriteBatch.DrawString(titleFont, "Filler for Game Over page",
+                        new Vector2(150, 200), Color.Black);
+                    _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Space to return to the shop",
+                        new Vector2(100, 400), Color.Black);
                     break;
 
                 //text for shop screen
