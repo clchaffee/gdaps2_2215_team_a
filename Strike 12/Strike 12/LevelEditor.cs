@@ -92,6 +92,14 @@ namespace Strike_12
                                                                     "temp");
                                         break;
 
+                                    case 'g':
+                                        tileLayout[i, j] = new Tile(tileSprites,
+                                                                    new Rectangle(128 * j, 128 * i, 128, 128),
+                                                                    windowWidth,
+                                                                    windowHeight,
+                                                                    "ground");
+                                        break;
+
                                     default:
                                         tileLayout[i, j] = null;
                                         break;
@@ -134,6 +142,10 @@ namespace Strike_12
                                 break;
 
                             case "temp":
+                                _spriteBatch.Draw(tileTexture, tileLayout[i, j].Size, Color.White);
+                                break;
+
+                            case "ground":
                                 _spriteBatch.Draw(tileTexture, tileLayout[i, j].Size, Color.White);
                                 break;
 
