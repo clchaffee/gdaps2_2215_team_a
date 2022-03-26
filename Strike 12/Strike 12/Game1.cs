@@ -39,12 +39,14 @@ namespace Strike_12
         // enemy assets
         private Texture2D enemySprites;
         private Enemy enemy;
+        private BulletEnemy bEnemy;
         private int eStartX;
         private int eStartY;
         Rectangle eSize;
         private double waveLength = 10;
         private double waveDelta = 10;
         private EnemyManager eManager;
+        private EnemyManager bManager;
 
         //variables for the shop
         private Shop shop;
@@ -83,6 +85,7 @@ namespace Strike_12
             _graphics.PreferredBackBufferWidth = windowWidth;
             _graphics.ApplyChanges();
             eManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
+            bManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
 
 
             base.Initialize();
@@ -111,7 +114,7 @@ namespace Strike_12
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height / 2);
 
-            eStartX = rng.Next(300,windowWidth-300);
+            eStartX = rng.Next(300, windowWidth - 300);
             eStartY = rng.Next(300, windowHeight - 300);
             eSize = new Rectangle(eStartX, eStartY, 128, 128);
 
@@ -125,9 +128,12 @@ namespace Strike_12
 
             //eSize.X = rng.Next(300, windowWidth - 300);
             //eSize.Y = rng.Next(300, windowHeight - 300);
+
+            // ENEMY STUFF
             eManager.Initialize();
             enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
             eManager.SpawnEnemy(enemy);
+            bEnemy = new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight);
 
 
             // -- LEVEL LOADING --
@@ -200,7 +206,7 @@ namespace Strike_12
                         {
                             if (editor[i, j] != null)
                             {
-                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) 
+                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j])
                                     && (editor[i, j].Type == "ground" || editor[i, j].Type == "platform"))
                                 {
                                     player.PlatformPosY = editor[i, j].Size.Y;
@@ -210,7 +216,7 @@ namespace Strike_12
                                 if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i, j].Type == "leftWall")
                                 {
                                     player.WallPosX = editor[i, j].Size.X;
-                                    if (player.Size.X-64>editor[i, j].Size.X)
+                                    if (player.Size.X - 64 > editor[i, j].Size.X)
                                     {
                                         player.LeftCollided = false;
                                     }
@@ -234,26 +240,27 @@ namespace Strike_12
                         }
                     }
 
-                    //if space is pressed, go to shop
+                    //if space is pressed, game over
                     if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
                     {
                         timer = 0;
-                        state = GameState.Shop;
+                        state = GameState.GameOver;
                     }
 
                     //checks if player fell in a pit
                     if (player.Size.Y > windowHeight)
                     {
-                        player.Health = 0;
+                        //player.Health -= 1;
+                        state = GameState.GameOver;
                     }
 
-                        //collision for each enemy in the Enemy class
-                        foreach (Enemy enemy in eManager.Enemies)
+                    //collision for each enemy in the Enemy class
+                    foreach (Enemy enemy in eManager.Enemies)
                     {
                         if (enemy.CheckCollision("enemy", enemy, player))
                         {
 
-                            if(player.TakeDamage(gameTime))
+                            if (player.TakeDamage(gameTime))
                             {
                                 player.Health -= 1;
                             }
@@ -261,17 +268,18 @@ namespace Strike_12
                         }
                         else if (enemy.CheckCollision("top", enemy, player))
                         {
-                        //has to make the player jump when they hit the top
+                            //has to make the player jump when they hit the top
                         }
                     }
                     //if the player has no more health, go to shop
                     if (player.Health <= 0)
                     {
-                        state = GameState.Shop;
+                        state = GameState.GameOver;
                     }
 
                     // Temp player and enemy update call
                     player.Update(gameTime);
+                    bEnemy.Update(gameTime);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Update(gameTime);
@@ -286,6 +294,7 @@ namespace Strike_12
 
                     //adds one to the count in the manager every frame
                     eManager.Count++;
+                    /*
                     //if the count divided by 60 if equal to or greater than the wave length, adds another to the list
                     if (eManager.Count/60 >= waveLength)
                     {
@@ -294,13 +303,18 @@ namespace Strike_12
                         waveDelta /= 1.5;
                         waveLength += waveDelta;
                     }
+                    */
                     break;
 
                 // Game Winner: appears when timer is greater than 30
                 case GameState.GameWinner:
                     player.Reset();
-                    enemy.Reset();
-                    shop.Points += (int)timer;
+                    bEnemy.Reset();
+                    foreach (Enemy enemy in eManager.Enemies)
+                    {
+                        enemy.Reset();
+                    }
+
                     timer = 0;
 
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
@@ -316,8 +330,12 @@ namespace Strike_12
                 // Game Over: appears when health is less than 1
                 case GameState.GameOver:
                     player.Reset();
-                    enemy.Reset();
-                    shop.Points += (int)timer;
+                    bEnemy.Reset();
+                    foreach (Enemy enemy in eManager.Enemies)
+                    {
+                        enemy.Reset();
+                    }
+
                     timer = 0;
 
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
@@ -463,6 +481,7 @@ namespace Strike_12
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
+                    bEnemy.Draw(_spriteBatch, enemySprites);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Draw(_spriteBatch, enemySprites);
