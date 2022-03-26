@@ -61,6 +61,11 @@ namespace Strike_12
             set { health = value; }
         }
 
+        public float Speed
+        {
+            get { return moveSpeed; }
+            set { moveSpeed = value; }
+        }
         public int PlatformPosY
         {
             get { return platformPos.Y; }
@@ -96,7 +101,6 @@ namespace Strike_12
             get { return rightCollided; }
             set { rightCollided = value; }
         }
-
 
         // ----- | Constructor | -----
         public Player(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, 
@@ -400,7 +404,6 @@ namespace Strike_12
             position.Y = windowHeight / 2 - size.Height / 2;
             velocity.X = 0f;
             velocity.Y = 0f;
-            Health = 10;
         }
     }
 }
