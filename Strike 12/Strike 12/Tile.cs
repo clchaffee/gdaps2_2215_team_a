@@ -6,7 +6,10 @@ using System.Text;
 
 namespace Strike_12
 {
-    class Tile : GameObject
+    /// <summary>
+    /// class to hold tile information
+    /// </summary>
+    class Tile : GameObject, ICollidable 
     {
         private Texture2D texture;
         private Rectangle size;
@@ -22,6 +25,7 @@ namespace Strike_12
             get { return tileType; }
         }
 
+        //constructor
         public Tile(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, string type)
             : base(texture, size, windowWidth, windowHeight)
         {
@@ -31,7 +35,6 @@ namespace Strike_12
             this.windowHeight = windowHeight;
             this.tileType = type;
         }
-
 
         public override void Update(GameTime gameTime)
         {

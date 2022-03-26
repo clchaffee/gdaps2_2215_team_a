@@ -22,7 +22,7 @@ namespace Strike_12
         protected int windowHeight;
 
         //property
-        protected Rectangle Size
+        public Rectangle Size
         {
             get { return size; }
         }
@@ -45,40 +45,27 @@ namespace Strike_12
             sb.Draw(texture, size, Color.White);
         }
 
-        //collision detection
+        //collision detection checks type and returns true or false if there was collision
         public virtual bool CheckCollision(string type, GameObject collider, GameObject collided)
         {
-
-            if (type == "enemy")
+            switch(type)
             {
-                return collider.Size.Intersects(collided.Size);
-            }
-            else if (type == "wall")
-            {
-                /*return collider.Size.Left == collided.Size.Right
-                    || collider.Size.Right == collided.Size.Left
-                    || collider.Size.Bottom == collided.Size.Top
-                    || collider.Size.Intersects(collided.Size);*/
-
-                /*return (collider.size.Bottom >= collided.size.Top) &&
-                       (collider.size.Left - collider.texture.Width >=
-                        collided.size.Left &&
-                        collider.size.Right + collider.texture.Width <= collided.size.Right);*/
-
-                return (collider.size.Bottom >= collided.size.Top) &&
-                       (collider.size.Left <=
-                        collided.size.Right &&
-                        collider.size.Right >= collided.size.Left) &&
-                       (collider.size.Top <= collided.size.Bottom);
-            }
-            else if (type == "ground")
-            {
-                return collider.Size.Bottom == collided.Size.Top
-                    || collider.Size.Intersects(collided.Size);
-            }
-            else
-            {
-                return false;
+                case "enemy":
+                    return collider.Size.Intersects(collided.Size);
+                    break;
+                case "leftWall":
+                case "rightWall":
+                    return collider.Size.Intersects(collided.Size);
+                    break;
+                case "ground":
+                    return collider.Size.Intersects(collided.Size);
+                    break;
+                case "platform":
+                    return collider.Size.Intersects(collided.Size);
+                    break;
+                default:
+                    return false;
+                    break;
             }
         }
 

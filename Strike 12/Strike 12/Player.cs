@@ -34,16 +34,22 @@ namespace Strike_12
         private PlayerStates previousPlayerState;
         private PlayerStates dashDirection;
         private Texture2D playerSprite;
-        private float moveSpeed = 10f;
+        private float moveSpeed = 8f;
         private int health = 10;
         private float gravityMultiplier = 1f;
         private int dashCounter = 20;
         private int iCounter = 0;
+        private Rectangle platformPos;
 
         //fields for gravity
         protected Vector2 position;
         protected Vector2 velocity;
         protected bool isGrounded;
+
+        protected bool collided;
+        protected bool leftCollided;
+        protected bool rightCollided;
+        protected Rectangle wallPos;
 
         // Input Fields
         public KeyboardState kbState;
@@ -55,11 +61,42 @@ namespace Strike_12
             set { health = value; }
         }
 
+        public int PlatformPosY
+        {
+            get { return platformPos.Y; }
+            set { platformPos.Y = value; }
+        }
+
+        public int PlatformPosX
+        {
+            get { return platformPos.X; }
+            set { platformPos.X = value; }
+        }
+
+        public int WallPosX
+        {
+            get { return wallPos.X; }
+            set { wallPos.X = value; }
+        }
+
         public bool IsGrounded
         {
             get { return isGrounded; }
             set { isGrounded = value; }
         }
+
+        public bool LeftCollided
+        {
+            get { return leftCollided; }
+            set { leftCollided = value; }
+        }
+
+        public bool RightCollided
+        {
+            get { return rightCollided; }
+            set { rightCollided = value; }
+        }
+
 
         // ----- | Constructor | -----
         public Player(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, 
@@ -87,7 +124,7 @@ namespace Strike_12
         public bool TakeDamage(GameTime gameTime)
         {
             iCounter++;
-            if(iCounter == 20)
+            if(iCounter == 10)
             {
                 iCounter = 0;
                 return true;
@@ -125,21 +162,21 @@ namespace Strike_12
                         dashCounter--;
                         return;
                     }
-                    else if (kbState.IsKeyDown(Keys.A))
+                    else if (kbState.IsKeyDown(Keys.A) && leftCollided == false)
                     {
                         size.X -= 20;
                         position.X -= 20f;
                         dashCounter--;
                         return;
                     }
-                    else if (kbState.IsKeyDown(Keys.S))
+                    else if (kbState.IsKeyDown(Keys.S) && IsGrounded == false)
                     {
                         size.Y += 20;
                         position.Y += 20f;
                         dashCounter--;
                         return;
                     }
-                    else if (kbState.IsKeyDown(Keys.D))
+                    else if (kbState.IsKeyDown(Keys.D) && rightCollided == false)
                     {
                         size.X += 20;
                         position.X += 20f;
@@ -154,10 +191,10 @@ namespace Strike_12
             }
 
             //if A is pressed, moves player left, changes player state depending on if jumping or not.
-            if (kbState.IsKeyDown(Keys.A))
+            if (kbState.IsKeyDown(Keys.A) && leftCollided == false)
             {
                 velocity.X = -moveSpeed;
-                if (!isGrounded)
+                if (!isGrounded && previousPlayerState != PlayerStates.moveLeft)
                 {
                     playerState = PlayerStates.jumpLeft;
                 }
@@ -167,10 +204,10 @@ namespace Strike_12
                 }
             }
             //if D is pressed, moves player right, changes player state depending on if jumping or not.
-            else if (kbState.IsKeyDown(Keys.D))
+            else if (kbState.IsKeyDown(Keys.D) && rightCollided == false)
             {
                 velocity.X = moveSpeed;
-                if (!isGrounded)
+                if (!isGrounded && previousPlayerState != PlayerStates.moveRight)
                 {
                     playerState = PlayerStates.jumpRight;
                 }
@@ -213,10 +250,17 @@ namespace Strike_12
                 }
             }
 
-            //if the player is no longer on the ground, applies gravity
-            if (!isGrounded)
+            if (isGrounded)
             {
-
+                position.Y = platformPos.Y - playerSprite.Height;
+                gravityMultiplier = 1f;
+                moveSpeed = 10f;
+                dashCounter = 20;
+                velocity.Y = 0;
+            }
+            //if the player is no longer on the ground, applies gravity
+            else if (!isGrounded)
+            {
                 // While the gravity multipler is under a specified value, add to it
                 if (gravityMultiplier < 5)
                 {
@@ -236,8 +280,8 @@ namespace Strike_12
                 // Update the player's Y velocity according to the multiplier
                 velocity.Y += 0.15f * gravityMultiplier;
 
-                /* Air Dash
-                if (kbState.IsKeyDown(Keys.Enter) && !previousKBState.IsKeyDown(Keys.Enter) && dashCounter > 0)
+                // Air Dash
+                if (kbState.IsKeyDown(Keys.Up) && !previousKBState.IsKeyDown(Keys.Up) && dashCounter > 0)
                 {
                     dashDirection = playerState;
                     playerState = PlayerStates.airdash;
@@ -245,14 +289,31 @@ namespace Strike_12
                     velocity.X = 0;
                     size.X += 0;
                     size.Y += 0;
-                }*/
+                }
             }
-            else if (isGrounded)
+
+            //checks for if the player is above a platform or ground, and resets grounded to false
+            if (platformPos.Y >= size.Y && (platformPos.X < size.X || platformPos.X > size.X + 64))
             {
-                dashCounter = 20;
-                velocity.Y = 0;
+                IsGrounded = false;
             }
-                
+
+            //checks if collided with wall
+            if (rightCollided)
+            {
+                rightCollided = false;
+            }
+            
+            if (leftCollided)
+            {
+                leftCollided = false;
+            }
+
+
+            
+            
+
+
             //updates position based on velocity and the size rectangle
             position += velocity;
             size.X = (int)position.X;
@@ -337,9 +398,9 @@ namespace Strike_12
         {
             position.X = windowWidth / 2 - size.Width / 2;
             position.Y = windowHeight / 2 - size.Height / 2;
-            Health = 10;
             velocity.X = 0f;
             velocity.Y = 0f;
+            Health = 10;
         }
     }
 }
