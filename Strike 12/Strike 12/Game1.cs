@@ -315,6 +315,14 @@ namespace Strike_12
                         enemy.Reset();
                     }
 
+                    //resets data from Arena
+                    eManager.Enemies.Clear();
+                    waveLength = 10;
+                    waveDelta = 10;
+                    eManager.Count = 0;
+
+                    //you get 5 points per second spent alive in the arena
+                    shop.Points += 5 * (int)timer;
                     timer = 0;
 
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
@@ -336,6 +344,14 @@ namespace Strike_12
                         enemy.Reset();
                     }
 
+                    //resets data from Arena
+                    eManager.Enemies.Clear();
+                    waveLength = 10;
+                    waveDelta = 10;
+                    eManager.Count = 0;
+
+                    //you get 5 points per second spent alive in the arena
+                    shop.Points += 5 * (int)timer;
                     timer = 0;
 
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
@@ -352,22 +368,7 @@ namespace Strike_12
                 //if enter is pressed in the shop, returns to arena; if space is pressed brings up the menu
                 case GameState.Shop:
 
-                    //you get 5 points per second spent alive in the arena
-                    shop.Points += 5*(int)timer;
-
-                    //resets data from Arena
-                    eManager.Enemies.Clear();
-                    waveLength = 10;
-                    waveDelta = 10;
-                    eManager.Count = 0;
-                    timer = 0;
                     player.Health = shop.MaxHealth;
-                    player.Reset();
-
-                    foreach (Enemy enemy in eManager.Enemies)
-                    {
-                        enemy.Reset();
-                    }
 
                     // for each button calls update method, checks if pressed and gives upgrade if you have enough points
                     foreach (Button button in buttons)
