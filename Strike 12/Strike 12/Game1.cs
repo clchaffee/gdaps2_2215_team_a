@@ -221,17 +221,18 @@ namespace Strike_12
                         }
                     }
 
-                    //if space is pressed, go to shop
+                    //if space is pressed, game over
                     if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
                     {
                         timer = 0;
-                        state = GameState.Shop;
+                        state = GameState.GameOver;
                     }
 
                     //checks if player fell in a pit
                     if (player.Size.Y > windowHeight)
                     {
-                        player.Health -= 1;
+                        //player.Health -= 1;
+                        state = GameState.GameOver;
                     }
 
                     //collision for each enemy in the Enemy class
@@ -254,7 +255,7 @@ namespace Strike_12
                     //if the player has no more health, go to shop
                     if (player.Health <= 0)
                     {
-                        state = GameState.Shop;
+                        state = GameState.GameOver;
                     }
 
                     // Temp player and enemy update call
@@ -289,7 +290,11 @@ namespace Strike_12
                 // Game Winner: appears when timer is greater than 30
                 case GameState.GameWinner:
                     player.Reset();
-                    enemy.Reset();
+                    bEnemy.Reset();
+                    foreach (Enemy enemy in eManager.Enemies)
+                    {
+                        enemy.Reset();
+                    }
 
                     timer = 0;
 
@@ -308,7 +313,10 @@ namespace Strike_12
                 case GameState.GameOver:
                     player.Reset();
                     bEnemy.Reset();
-                    enemy.Reset();
+                    foreach (Enemy enemy in eManager.Enemies)
+                    {
+                        enemy.Reset();
+                    }
 
                     timer = 0;
 
@@ -332,12 +340,7 @@ namespace Strike_12
                     waveDelta = 10;
                     eManager.Count = 0;
                     timer = 0;
-                    player.Reset();
-                    bEnemy.Reset();
-                    foreach (Enemy enemy in eManager.Enemies)
-                    {
-                        enemy.Reset();
-                    }
+
 
                     //key presses to change between gamestates
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))

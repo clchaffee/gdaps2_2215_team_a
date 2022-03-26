@@ -398,6 +398,12 @@ namespace Strike_12
         {
             position.X = windowWidth / 2 - size.Width / 2;
             position.Y = windowHeight / 2 - size.Height / 2;
+            //position.X = 500;
+            //position.Y = 500;
+            size.X = (int)position.X;
+            size.Y = (int)position.Y;
+
+
             velocity.X = 0f;
             velocity.Y = 0f;
             Health = 10;
