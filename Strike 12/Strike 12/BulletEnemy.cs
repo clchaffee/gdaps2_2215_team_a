@@ -36,29 +36,29 @@ namespace Strike_12
             this.windowHeight = windowHeight;
 
             location = (CornerState)rng.Next(0, 4);
-            xSpeed = rng.Next(1, 11);
-            ySpeed = rng.Next(1, 11);
+            xSpeed = rng.Next(2, 11);
+            ySpeed = rng.Next(2, 11);
 
             switch (location)
             {
                 case CornerState.TLeft:
-                    size.X = 0 - size.Width;
-                    size.Y = 0 - size.Height;
+                    this.size.X = 0 - size.Width;
+                    this.size.Y = 0 - size.Height;
                     break;
 
                 case CornerState.TRight:
-                    size.X = windowWidth;
-                    size.Y = 0- size.Height;
+                    this.size.X = windowWidth;
+                    this.size.Y = 0- size.Height;
                     break;
 
                 case CornerState.BLeft:
-                    size.X = 0 - size.Width;
-                    size.Y = windowHeight;
+                    this.size.X = 0 - size.Width;
+                    this.size.Y = windowHeight;
                     break;
 
                 case CornerState.BRight:
-                    size.X = windowWidth;
-                    size.Y = windowHeight;
+                    this.size.X = windowWidth;
+                    this.size.Y = windowHeight;
                     break;
             }
 
@@ -128,6 +128,37 @@ namespace Strike_12
                          size,
                          new Rectangle(windowWidth, windowHeight, 128, 128),
                          Color.White);
+                    break;
+            }
+        }
+
+        // Reset()
+        public override void Reset()
+        {
+            location = (CornerState)rng.Next(0, 4);
+            xSpeed = rng.Next(2, 11);
+            ySpeed = rng.Next(2, 11);
+
+            switch (location)
+            {
+                case CornerState.TLeft:
+                    this.size.X = 0 - size.Width;
+                    this.size.Y = 0 - size.Height;
+                    break;
+
+                case CornerState.TRight:
+                    this.size.X = windowWidth;
+                    this.size.Y = 0 - size.Height;
+                    break;
+
+                case CornerState.BLeft:
+                    this.size.X = 0 - size.Width;
+                    this.size.Y = windowHeight;
+                    break;
+
+                case CornerState.BRight:
+                    this.size.X = windowWidth;
+                    this.size.Y = windowHeight;
                     break;
             }
         }
