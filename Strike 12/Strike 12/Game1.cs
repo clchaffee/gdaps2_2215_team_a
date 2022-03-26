@@ -39,6 +39,7 @@ namespace Strike_12
         // Temp enemy assets
         private Texture2D enemySprites;
         private Enemy enemy;
+        private BulletEnemy bEnemy;
         private int eStartX;
         private int eStartY;
         Rectangle eSize;
@@ -117,9 +118,12 @@ namespace Strike_12
 
             //eSize.X = rng.Next(300, windowWidth - 300);
             //eSize.Y = rng.Next(300, windowHeight - 300);
+
+            // ENEMY STUFF
             eManager.Initialize();
             enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
             eManager.SpawnEnemy(enemy);
+            bEnemy = new BulletEnemy(enemySprites, new Rectangle(0,0,64,64), windowWidth, windowHeight);
 
 
             // -- LEVEL LOADING --
@@ -253,6 +257,7 @@ namespace Strike_12
 
                     // Temp player and enemy update call
                     player.Update(gameTime);
+                    bEnemy.Update(gameTime);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Update(gameTime);
@@ -267,6 +272,7 @@ namespace Strike_12
 
                     //adds one to the count in the manager every frame
                     eManager.Count++;
+                    /*
                     //if the count divided by 60 if equal to or greater than the wave length, adds another to the list
                     if (eManager.Count/60 >= waveLength)
                     {
@@ -275,6 +281,7 @@ namespace Strike_12
                         waveDelta /= 1.5;
                         waveLength += waveDelta;
                     }
+                    */
                     break;
 
                 // Game Winner: appears when timer is greater than 30
@@ -393,6 +400,7 @@ namespace Strike_12
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
+                    bEnemy.Draw(_spriteBatch, enemySprites);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Draw(_spriteBatch, enemySprites);

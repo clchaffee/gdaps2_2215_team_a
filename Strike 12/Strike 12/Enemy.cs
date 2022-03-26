@@ -32,7 +32,7 @@ namespace Strike_12
 
         private int moveSpeed = 5; //temp speed variable, can be changed
 
-        Random rng = new Random();
+        protected Random rng = new Random();
 
         //fields for gravity
         protected Vector2 position;
