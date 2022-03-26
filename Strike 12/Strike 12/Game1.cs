@@ -225,7 +225,7 @@ namespace Strike_12
                     //checks if player fell in a pit
                     if (player.Size.Y > windowHeight)
                     {
-                        player.Health = 0;
+                        player.Health -= 1;
                     }
 
                         //collision for each enemy in the Enemy class
