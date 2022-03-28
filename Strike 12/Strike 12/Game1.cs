@@ -58,7 +58,9 @@ namespace Strike_12
         private LevelEditor editor;
         private Texture2D tileSprites;
         private Tile tile;
-        
+
+        // Other Assets
+        private Texture2D arenaBackground;
 
         //sets the default state as the menu
         GameState state = GameState.Menu;
@@ -110,6 +112,7 @@ namespace Strike_12
             //other assests
             tileSprites = Content.Load<Texture2D>("brick");
             titleScreen = Content.Load<Texture2D>("Logo (1)");
+            arenaBackground = Content.Load<Texture2D>("Temp Arena Background");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height / 2);
@@ -470,6 +473,7 @@ namespace Strike_12
                 //text for arena screen
                 case GameState.Arena:
 
+                    _spriteBatch.Draw(arenaBackground, new Rectangle(64, 64, 1536, 832), Color.White);
                     // Draw the tiles
                     editor.Draw(_spriteBatch, tileSprites);
 
