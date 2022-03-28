@@ -297,6 +297,8 @@ namespace Strike_12
 
                     //adds one to the count in the manager every frame
                     eManager.Count++;
+                    
+                    // TODO: properly update the spawning method/algorithm
                     /*
                     //if the count divided by 60 if equal to or greater than the wave length, adds another to the list
                     if (eManager.Count/60 >= waveLength)
