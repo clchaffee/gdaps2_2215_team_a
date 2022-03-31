@@ -216,7 +216,7 @@ namespace Strike_12
                     eManager.Count = 0;
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
                     {
-                        state = GameState.Arena;
+                        state = GameState.Start;
                     }
                     if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
                     {
@@ -233,6 +233,9 @@ namespace Strike_12
                     break;
 
                 case GameState.Start:
+
+                    Thread.Sleep(500);
+                    state = GameState.Arena;
 
                     break;
 
@@ -401,7 +404,7 @@ namespace Strike_12
                     shop.Points += 5 * (int)timer;
                     timer = 0;
 
-                    Thread.Sleep(2000);
+                    Thread.Sleep(500);
                     state = GameState.Shop;
 
                     break;
@@ -455,6 +458,7 @@ namespace Strike_12
                         }
                     }
 
+
                     //key presses to change between gamestates
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
                     {
@@ -506,6 +510,9 @@ namespace Strike_12
                         new Vector2(100, 1800), Color.Black);
                     break;
 
+                case GameState.Start:
+                    player.Draw(_spriteBatch, playerSprites);
+                    break;
                 //text for arena screen
                 case GameState.Arena:
 
@@ -561,7 +568,7 @@ namespace Strike_12
 
                     _spriteBatch.DrawString(displayFont, $"\nKromer: {shop.Points} " +
                         $"\nHealth: {player.Health}," +
-                        $"\nSpeed: {player.BaseSpeed}" +
+                        $"\n{String.Format("Speed: {0:0.0}", player.BaseSpeed)}" +
                         $"\nEnergy: {player.Energy}\n" +
                         $"\nDeaths: {player.Deaths}" +
                         $"\n{String.Format("Best Time: {0:0.00}", player.BestTime)}" +
