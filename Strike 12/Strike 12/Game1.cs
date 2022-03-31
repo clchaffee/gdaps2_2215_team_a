@@ -40,6 +40,7 @@ namespace Strike_12
         private Texture2D enemySprites;
         private Enemy enemy;
         private BulletEnemy bEnemy;
+        private LaserEnemy lEnemy;
         private int eStartX;
         private int eStartY;
         Rectangle eSize;
@@ -88,7 +89,7 @@ namespace Strike_12
             _graphics.ApplyChanges();
             eManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
             bManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
-
+            
 
             base.Initialize();
         }
@@ -137,7 +138,7 @@ namespace Strike_12
             enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
             eManager.SpawnEnemy(enemy);
             bEnemy = new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight);
-
+            lEnemy = new LaserEnemy(enemySprites, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.Size.Y);
 
             // -- LEVEL LOADING --
             editor = new LevelEditor();
@@ -283,6 +284,7 @@ namespace Strike_12
                     // Temp player and enemy update call
                     player.Update(gameTime);
                     bEnemy.Update(gameTime);
+                    lEnemy.Update(gameTime, player.Size.Y);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Update(gameTime);
@@ -344,6 +346,7 @@ namespace Strike_12
                 case GameState.GameOver:
                     player.Reset();
                     bEnemy.Reset();
+                    lEnemy.Reset();
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Reset();
@@ -489,6 +492,7 @@ namespace Strike_12
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
                     bEnemy.Draw(_spriteBatch, enemySprites);
+                    lEnemy.Draw(_spriteBatch, buttonTexture);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Draw(_spriteBatch, enemySprites);
