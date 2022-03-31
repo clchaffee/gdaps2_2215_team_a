@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Strike_12
 {
@@ -13,6 +14,7 @@ namespace Strike_12
     {
         Menu,
         Controls,
+        Start,
         Arena,
         Shop,
         GameOver,
@@ -151,13 +153,46 @@ namespace Strike_12
 
             //makes a new shop and buttons for each of the purchases
             shop = new Shop(points);
-            buttons.Add(new Button("health", buttonTexture, new Rectangle(700, 300, 100, 50), 10));
-            buttons.Add(new Button("speed", buttonTexture, new Rectangle(900, 300, 100, 50), 10));
-            buttons.Add(new Button("energy", buttonTexture, new Rectangle(1100, 300, 100, 50), 10));
-            buttons.Add(new Button("dash", buttonTexture, new Rectangle(700, 600, 100, 50), 10));
-            buttons.Add(new Button("heal", buttonTexture, new Rectangle(900, 600, 100, 50), 10));
-            buttons.Add(new Button("slow", buttonTexture, new Rectangle(1100, 600, 100, 50), 10));
-            buttons.Add(new Button("cat", buttonTexture, new Rectangle(400, 600, 10, 10), 10));
+
+            buttons.Add(new Button("health", 
+                buttonTexture, 
+                new Rectangle(700, 300, 100, 50), 
+                10));
+
+            buttons.Add(new Button("speed", 
+                buttonTexture, 
+                new Rectangle(900, 300, 100, 50), 
+                10));
+
+            buttons.Add(new Button("energy", 
+                buttonTexture, 
+                new Rectangle(1100, 300, 100, 50), 
+                10));
+
+            buttons.Add(new Button("dash", 
+                buttonTexture, 
+                new Rectangle(700, 600, 100, 50), 
+                10));
+
+            buttons.Add(new Button("heal", 
+                buttonTexture, 
+                new Rectangle(900, 600, 100, 50), 
+                10));
+
+            buttons.Add(new Button("slow", 
+                buttonTexture, 
+                new Rectangle(1100, 600, 100, 50), 
+                10));
+
+            buttons.Add(new Button("cat", 
+                buttonTexture, 
+                new Rectangle(400, 600, 10, 10),
+                10));
+
+            for (int i = 0; i < buttons.Count; i++)
+            {
+                buttons[i].OnLeftButtonClick += buttons[i].Purchased;
+            }
         }
 
         /// <summary>
@@ -200,6 +235,10 @@ namespace Strike_12
                     {
                         state = GameState.Menu;
                     }
+                    break;
+
+                case GameState.Start:
+
                     break;
 
                 // when in the arena, "dies" when you press space, entering the shop
@@ -249,13 +288,6 @@ namespace Strike_12
                         }
                     }
 
-                    //if space is pressed, game over
-                    if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
-                    {
-                        timer = 0;
-                        state = GameState.GameOver;
-                    }
-
                     //checks if player fell in a pit
                     if (player.Size.Y > windowHeight)
                     {
@@ -283,6 +315,7 @@ namespace Strike_12
                     //if the player has no more health, go to shop
                     if (player.Health <= 0)
                     {
+                        
                         state = GameState.GameOver;
                     }
 
@@ -350,6 +383,7 @@ namespace Strike_12
                 // Game Over: appears when health is less than 1
                 case GameState.GameOver:
                     player.Reset();
+                    player.Deaths++;
                     bEnemy.Reset();
                     pEnemy.Reset();
                     foreach (Enemy enemy in eManager.Enemies)
@@ -363,18 +397,17 @@ namespace Strike_12
                     waveDelta = 10;
                     eManager.Count = 0;
 
+                    if (timer > player.BestTime)
+                    {
+                        player.BestTime = (float)timer;
+                    }
+
                     //you get 5 points per second spent alive in the arena
                     shop.Points += 5 * (int)timer;
                     timer = 0;
 
-                    if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
-                    {
-                        state = GameState.Arena;
-                    }
-                    if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
-                    {
-                        state = GameState.Shop;
-                    }
+                    Thread.Sleep(2000);
+                    state = GameState.Shop;
 
                     break;
 
@@ -388,41 +421,35 @@ namespace Strike_12
                     {
                         button.Update(gameTime);
 
-                        if (button.IsPressed && shop.Points >= button.Cost)
+                        if (shop.Points >= button.Cost)
                         {
                             switch(button.Type)
                             {
                                 case "health":
-                                    shop.Points -= button.Cost;
                                     button.Cost += 10;
                                     shop.MaxHealth += 1;
                                     player.Health = player.Health + shop.MaxHealth;
                                     break;
 
                                 case "speed":
-                                    shop.Points -= button.Cost;
                                     button.Cost += 20;
-                                    shop.Speed += 10f;
-                                    player.Speed = player.Speed + shop.Speed;
+                                    player.BaseSpeed += 0.1f;
                                     break;
 
                                 case "energy":
-                                    shop.Points -= button.Cost;
                                     button.Cost += 10;
+                                    player.Energy += 2f;
                                     break;
 
                                 case "dash":
-                                    shop.Points -= button.Cost;
                                     button.Cost += 10;
                                     break;
 
                                 case "heal":
-                                    shop.Points -= button.Cost;
                                     button.Cost += 10;
                                     break;
 
                                 case "slow":
-                                    shop.Points -= button.Cost;
                                     button.Cost += 10;
                                     break;
                             }
@@ -468,13 +495,14 @@ namespace Strike_12
                 //text for menu screen
                 case GameState.Menu:
                     _spriteBatch.Draw(titleScreen, new Rectangle((windowWidth/2 - titleScreen.Width/2 - 250), (windowHeight/2 - titleScreen.Height/2 - 200), 1500, 750), Color.White);
-                    _spriteBatch.DrawString(displayFont, "        Press Enter to continue\nTo learn the controls, press Space",
-                        new Vector2(700, 1500), Color.Black);
+                    _spriteBatch.DrawString(displayFont, "Press Enter to continue\nTo learn the controls, press Space",
+                        new Vector2(100, 800), Color.Black);
                     break;
 
                 //text for control screen
                 case GameState.Controls:
-                    _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right",
+                    _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right" +
+                        "\nPress Up Arrow to dash in your direction\n\nPress Space to go back to the Menu",
                         new Vector2(150, 200), Color.Black);
                     _spriteBatch.DrawString(displayFont, "Press Space to continue to return to the menu",
                         new Vector2(100, 1800), Color.Black);
@@ -487,7 +515,7 @@ namespace Strike_12
                     // Draw the tiles
                     editor.Draw(_spriteBatch, tileSprites);
 
-                    _spriteBatch.DrawString(displayFont, "Press Space to go to the shop page (happens upon character death)",
+                    _spriteBatch.DrawString(displayFont, "Go to the shop page (happens upon character death)",
                         new Vector2(100, 400), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
                        new Vector2(100, 150), Color.Black);
@@ -515,10 +543,16 @@ namespace Strike_12
 
                 // Text for game over state
                 case GameState.GameOver:
-                    _spriteBatch.DrawString(titleFont, "Filler for Game Over page",
-                        new Vector2(150, 200), Color.Black);
-                    _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Space to return to the shop",
+                    _spriteBatch.Draw(arenaBackground, new Rectangle(64, 64, 1536, 832), Color.White);
+                    // Draw the tiles
+                    editor.Draw(_spriteBatch, tileSprites);
+
+                    _spriteBatch.DrawString(displayFont, "Go to the shop page (happens upon character death)",
                         new Vector2(100, 400), Color.Black);
+                    _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
+                       new Vector2(100, 150), Color.Black);
+                    _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
+                       new Vector2(100, 100), Color.Black);
                     break;
 
                 //text for shop screen
@@ -527,9 +561,13 @@ namespace Strike_12
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
 
-                    _spriteBatch.DrawString(displayFont, $"\nKromer Counter: {shop.Points} " +
-                        $"\nPlayer Health: {player.Health}," +
-                        $"\nSpeed: {player.Speed}",
+                    _spriteBatch.DrawString(displayFont, $"\nKromer: {shop.Points} " +
+                        $"\nHealth: {player.Health}," +
+                        $"\nSpeed: {player.BaseSpeed}" +
+                        $"\nEnergy: {player.Energy}\n" +
+                        $"\nDeaths: {player.Deaths}" +
+                        $"\n{String.Format("Best Time: {0:0.00}", player.BestTime)}" +
+                        $"\nSpendings: {shop.Spendings}",
                        new Vector2(200, 100), Color.Black);
 
                     _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Space to return to the menu",
