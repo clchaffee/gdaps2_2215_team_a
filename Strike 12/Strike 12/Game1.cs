@@ -153,13 +153,41 @@ namespace Strike_12
 
             //makes a new shop and buttons for each of the purchases
             shop = new Shop(points);
-            buttons.Add(new Button("health", buttonTexture, new Rectangle(700, 300, 100, 50), 10));
-            buttons.Add(new Button("speed", buttonTexture, new Rectangle(900, 300, 100, 50), 10));
-            buttons.Add(new Button("energy", buttonTexture, new Rectangle(1100, 300, 100, 50), 10));
-            buttons.Add(new Button("dash", buttonTexture, new Rectangle(700, 600, 100, 50), 10));
-            buttons.Add(new Button("heal", buttonTexture, new Rectangle(900, 600, 100, 50), 10));
-            buttons.Add(new Button("slow", buttonTexture, new Rectangle(1100, 600, 100, 50), 10));
-            buttons.Add(new Button("cat", buttonTexture, new Rectangle(400, 600, 10, 10), 10));
+
+            buttons.Add(new Button("health", 
+                buttonTexture, 
+                new Rectangle(700, 300, 100, 50), 
+                10));
+
+            buttons.Add(new Button("speed", 
+                buttonTexture, 
+                new Rectangle(900, 300, 100, 50),
+                10));
+
+            buttons.Add(new Button("energy", 
+                buttonTexture, 
+                new Rectangle(1100, 300, 100, 50), 
+                10));
+
+            buttons.Add(new Button("dash", 
+                buttonTexture, 
+                new Rectangle(700, 600, 100, 50), 
+                10));
+
+            buttons.Add(new Button("heal", 
+                buttonTexture, 
+                new Rectangle(900, 600, 100, 50), 
+                10));
+
+            buttons.Add(new Button("slow", 
+                buttonTexture, 
+                new Rectangle(1100, 600, 100, 50), 
+                10));
+
+            buttons.Add(new Button("cat",
+                buttonTexture, 
+                new Rectangle(400, 600, 10, 10), 
+                0));
         }
 
         /// <summary>
@@ -388,53 +416,44 @@ namespace Strike_12
                     {
                         button.Update(gameTime);
 
+                        //if the button has been prssed and the player has enough points to purchase the item
                         if (button.IsPressed && shop.Points >= button.Cost)
                         {
-                            switch(button.Type)
+                            shop.Points -= button.Cost;
+                            shop.Spendings += button.Cost;
+
+                            switch (button.Type)
                             {
                                 case "health":
-                                    shop.Points -= button.Cost;
-                                    shop.Spendings += button.Cost;
                                     button.Cost += 10;
                                     shop.MaxHealth += 1;
                                     player.Health = player.Health + shop.MaxHealth;
                                     break;
 
                                 case "speed":
-                                    shop.Points -= button.Cost;
-                                    shop.Spendings += button.Cost;
                                     button.Cost += 20;
                                     player.BaseSpeed += 0.1f;
                                     break;
 
                                 case "energy":
-                                    shop.Points -= button.Cost;
-                                    shop.Spendings += button.Cost;
                                     button.Cost += 10;
                                     player.Energy += 2f;
                                     break;
 
                                 case "dash":
-                                    shop.Points -= button.Cost;
-                                    shop.Spendings += button.Cost;
                                     button.Cost += 10;
                                     break;
 
                                 case "heal":
-                                    shop.Points -= button.Cost;
-                                    shop.Spendings += button.Cost;
                                     button.Cost += 10;
                                     break;
 
                                 case "slow":
-                                    shop.Points -= button.Cost;
-                                    shop.Spendings += button.Cost;
                                     button.Cost += 10;
                                     break;
                             }
                         }
                     }
-
 
                     //key presses to change between gamestates
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
