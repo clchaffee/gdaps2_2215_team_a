@@ -1,23 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-/// <summary>
-/// 
-/// </summary>
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
 namespace Strike_12
 {
-    // Terminology, T = Top, B = Bottom
-    enum CornerState
-    {
-        TLeft,
-        TRight,
-        BLeft,
-        BRight
-    }
-
-    class BulletEnemy : Enemy
+    class BounceEnemy : BulletEnemy
     {
         // ----- Fields -----
         private Texture2D enemySprite;
@@ -27,7 +16,7 @@ namespace Strike_12
 
         // ----- | Constructor | -----
         // Paramatarized Constructor
-        public BulletEnemy(Texture2D texture, Rectangle size, int windowWidth, int windowHeight)
+        public BounceEnemy(Texture2D texture, Rectangle size, int windowWidth, int windowHeight)
             : base(texture, size, windowWidth, windowHeight)
         {
             enemySprite = texture;
@@ -40,29 +29,28 @@ namespace Strike_12
             switch (location)
             {
                 case CornerState.TLeft:
-                    this.size.X = 0 - size.Width;
-                    this.size.Y = 0 - size.Height;
+                    this.size.X = size.Width;
+                    this.size.Y = size.Height;
                     break;
 
                 case CornerState.TRight:
-                    this.size.X = windowWidth;
-                    this.size.Y = 0- size.Height;
+                    this.size.X = windowWidth - 128;
+                    this.size.Y = size.Height;
                     break;
 
                 case CornerState.BLeft:
-                    this.size.X = 0 - size.Width;
-                    this.size.Y = windowHeight;
+                    this.size.X = size.Width;
+                    this.size.Y = windowHeight - 128;
                     break;
 
                 case CornerState.BRight:
-                    this.size.X = windowWidth;
-                    this.size.Y = windowHeight;
+                    this.size.X = windowWidth - 128;
+                    this.size.Y = windowHeight - 128;
                     break;
             }
-
         }
 
-        // ----- Methods -----
+        // ----- | Method | -----
 
         // Update():
         public override void Update(GameTime gameTime)
@@ -89,9 +77,19 @@ namespace Strike_12
                     size.Y -= ySpeed;
                     break;
             }
+
+            //changes direction when the border of the window is hit
+            if (size.X > windowWidth - 128 || size.X < 64)
+            {
+                xSpeed = -1 * xSpeed;
+            }
+            if (size.Y > windowHeight - 128 || size.Y < 64)
+            {
+                ySpeed = -1 * ySpeed;
+            }
         }
 
-        // Draw():
+        // Draw()
         public override void Draw(SpriteBatch spriteBatch, Texture2D Texture)
         {
             switch (location)
@@ -100,7 +98,7 @@ namespace Strike_12
                     spriteBatch.Draw(
                          enemySprite,
                          size,
-                         new Rectangle(0 - windowWidth, 0 - windowHeight, 128, 128),
+                         new Rectangle(64 - windowWidth, 64 - windowHeight, 128, 128),
                          Color.White);
                     break;
 
@@ -108,7 +106,7 @@ namespace Strike_12
                     spriteBatch.Draw(
                          enemySprite,
                          size,
-                         new Rectangle(windowWidth, 0 - windowHeight, 128, 128),
+                         new Rectangle(windowWidth, 64 - windowHeight, 128, 128),
                          Color.White);
                     break;
 
@@ -116,7 +114,7 @@ namespace Strike_12
                     spriteBatch.Draw(
                          enemySprite,
                          size,
-                         new Rectangle(0 - windowWidth, windowHeight, 128, 128),
+                         new Rectangle(64 - windowWidth, windowHeight, 128, 128),
                          Color.White);
                     break;
 
@@ -130,7 +128,7 @@ namespace Strike_12
             }
         }
 
-        // Reset()
+        // Reset():
         public override void Reset()
         {
             location = (CornerState)rng.Next(0, 4);
@@ -140,23 +138,23 @@ namespace Strike_12
             switch (location)
             {
                 case CornerState.TLeft:
-                    this.size.X = 0 - size.Width;
-                    this.size.Y = 0 - size.Height;
+                    this.size.X = size.Width;
+                    this.size.Y = size.Height;
                     break;
 
                 case CornerState.TRight:
-                    this.size.X = windowWidth;
-                    this.size.Y = 0 - size.Height;
+                    this.size.X = windowWidth - 128;
+                    this.size.Y = size.Height;
                     break;
 
                 case CornerState.BLeft:
-                    this.size.X = 0 - size.Width;
-                    this.size.Y = windowHeight;
+                    this.size.X = size.Width;
+                    this.size.Y = windowHeight - 128;
                     break;
 
                 case CornerState.BRight:
-                    this.size.X = windowWidth;
-                    this.size.Y = windowHeight;
+                    this.size.X = windowWidth - 128;
+                    this.size.Y = windowHeight - 128;
                     break;
             }
         }

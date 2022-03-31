@@ -136,9 +136,13 @@ namespace Strike_12
                     break;
             }
 
-            //prints cost
-            spriteBatch.DrawString(spriteFont, $"Cost: {cost}",
-                      new Vector2(size.X, size.Y + size.Height), Color.Black);
+            if (Cost != 0)
+            {
+                //prints cost
+                spriteBatch.DrawString(spriteFont, $"Cost: {cost}",
+                          new Vector2(size.X, size.Y + size.Height), Color.Black);
+            }
+
         }
     }
 }
