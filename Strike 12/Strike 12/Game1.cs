@@ -40,8 +40,12 @@ namespace Strike_12
 
         // enemy assets
         private Texture2D enemySprites;
+        
+        // Enemy types for testing purposes
         private Enemy enemy;
         private BulletEnemy bEnemy;
+        private BounceEnemy pEnemy;
+
         private int eStartX;
         private int eStartY;
         Rectangle eSize;
@@ -90,6 +94,7 @@ namespace Strike_12
             _graphics.ApplyChanges();
             eManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
             bManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
+            
 
 
             base.Initialize();
@@ -139,6 +144,7 @@ namespace Strike_12
             enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
             eManager.SpawnEnemy(enemy);
             bEnemy = new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight);
+            pEnemy = new BounceEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight);
 
 
             // -- LEVEL LOADING --
@@ -196,6 +202,10 @@ namespace Strike_12
                     {
                         state = GameState.Menu;
                     }
+                    break;
+
+                case GameState.Start:
+
                     break;
 
                 // when in the arena, "dies" when you press space, entering the shop
@@ -279,6 +289,7 @@ namespace Strike_12
                     // Temp player and enemy update call
                     player.Update(gameTime);
                     bEnemy.Update(gameTime);
+                    pEnemy.Update(gameTime);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Update(gameTime);
@@ -341,6 +352,7 @@ namespace Strike_12
                     player.Reset();
                     player.Deaths++;
                     bEnemy.Reset();
+                    pEnemy.Reset();
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Reset();
@@ -491,7 +503,8 @@ namespace Strike_12
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
-                    bEnemy.Draw(_spriteBatch, enemySprites);
+                    //bEnemy.Draw(_spriteBatch, enemySprites);
+                    pEnemy.Draw(_spriteBatch, enemySprites);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Draw(_spriteBatch, enemySprites);
@@ -555,7 +568,5 @@ namespace Strike_12
             _spriteBatch.End();
             base.Draw(gameTime);
         }
-
-        
     }
 }
