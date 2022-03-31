@@ -35,10 +35,12 @@ namespace Strike_12
             this.windowWidth = windowWidth;
             this.windowHeight = windowHeight;
 
+            // Chooses a random corner to for the block
             location = (CornerState)rng.Next(0, 4);
             xSpeed = rng.Next(2, 11);
             ySpeed = rng.Next(2, 11);
 
+            // Cases for random corner
             switch (location)
             {
                 case CornerState.TLeft:
