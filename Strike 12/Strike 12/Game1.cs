@@ -542,5 +542,7 @@ namespace Strike_12
             _spriteBatch.End();
             base.Draw(gameTime);
         }
+
+        
     }
 }
