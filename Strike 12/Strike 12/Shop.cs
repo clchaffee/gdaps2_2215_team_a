@@ -15,6 +15,7 @@ namespace Strike_12
     {
         //currency/points
         private int kromer = 0;
+        private int spendings = 0;
 
         //upgrades
         private int maxHealth = 10;
@@ -33,6 +34,15 @@ namespace Strike_12
         {
             get { return kromer; }
             set { kromer = value; }
+        }
+
+        /// <summary>
+        /// get set property for lifetime spendings
+        /// </summary>
+        public int Spendings
+        {
+            get { return spendings; }
+            set { spendings = value; }
         }
 
         /// <summary>
@@ -105,7 +115,7 @@ namespace Strike_12
         /// <param name="spriteFont"></param>
         public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)
         {
-            spriteBatch.DrawString(spriteFont, $"Hahah funny stats, aka you suck",
+            spriteBatch.DrawString(spriteFont, $"Stats and Upgrades:",
                       new Vector2(100, 100), Color.Black);
         }
     }

@@ -28,20 +28,27 @@ namespace Strike_12
     class Player : GameObject
     {
         // ----- | Fields | -----
-        //parameters for size and position for the player not currently decided
-
+        //player states
         private PlayerStates playerState;
         private PlayerStates previousPlayerState;
         private PlayerStates dashDirection;
+
+        //player information
         private Texture2D playerSprite;
+        private float baseSpeed = 1f;
         private float moveSpeed = 8f;
         private int health = 10;
-        private float gravityMultiplier = 1f;
+        private float energy = 10f;
+        private int deaths = 0;
+        private float bestTime = 0f;
+
+        //other
         private int dashCounter = 20;
         private int iCounter = 0;
         private Rectangle platformPos;
 
         //fields for gravity
+        private float gravityMultiplier = 1f;
         protected Vector2 position;
         protected Vector2 velocity;
         protected bool isGrounded;
@@ -61,11 +68,30 @@ namespace Strike_12
             set { health = value; }
         }
 
-        public float Speed
+        public float BaseSpeed
         {
-            get { return moveSpeed; }
-            set { moveSpeed = value; }
+            get { return baseSpeed; }
+            set { baseSpeed = value; }
         }
+
+        public float Energy
+        {
+            get { return energy; }
+            set { energy = value; }
+        }
+
+        public int Deaths
+        {
+            get { return deaths; }
+            set { deaths = value; }
+        }
+
+        public float BestTime
+        {
+            get { return bestTime; }
+            set { bestTime = value; }
+        }
+
         public int PlatformPosY
         {
             get { return platformPos.Y; }
@@ -197,7 +223,7 @@ namespace Strike_12
             //if A is pressed, moves player left, changes player state depending on if jumping or not.
             if (kbState.IsKeyDown(Keys.A) && leftCollided == false)
             {
-                velocity.X = -moveSpeed;
+                velocity.X = -(baseSpeed * moveSpeed);
                 if (!isGrounded && previousPlayerState != PlayerStates.moveLeft)
                 {
                     playerState = PlayerStates.jumpLeft;
@@ -210,7 +236,7 @@ namespace Strike_12
             //if D is pressed, moves player right, changes player state depending on if jumping or not.
             else if (kbState.IsKeyDown(Keys.D) && rightCollided == false)
             {
-                velocity.X = moveSpeed;
+                velocity.X = (baseSpeed*moveSpeed);
                 if (!isGrounded && previousPlayerState != PlayerStates.moveRight)
                 {
                     playerState = PlayerStates.jumpRight;
@@ -258,7 +284,7 @@ namespace Strike_12
             {
                 position.Y = platformPos.Y - playerSprite.Height;
                 gravityMultiplier = 1f;
-                moveSpeed = 10f;
+                moveSpeed = baseSpeed * 10f;
                 dashCounter = 20;
                 velocity.Y = 0;
             }
@@ -274,11 +300,11 @@ namespace Strike_12
                 // If the player is falling, lower their movespeed to allow for precise landing
                 if (velocity.Y <= 10 && velocity.Y >= 0)
                 {
-                    moveSpeed += 0.3f;
+                    moveSpeed = baseSpeed * 10.3f;
                 }
                 else if (velocity.Y > 0)
                 {
-                    moveSpeed = 8.7f;
+                    moveSpeed = baseSpeed * 8.7f;
                 }
 
                 // Update the player's Y velocity according to the multiplier
