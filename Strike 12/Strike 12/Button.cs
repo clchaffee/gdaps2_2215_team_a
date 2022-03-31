@@ -142,6 +142,12 @@ namespace Strike_12
         public void Purchased()
         {
             shop.Points -= Cost;
+            shop.Spendings += Cost;
+        }
+
+        public void Health()
+        {
+
         }
     }
 }
