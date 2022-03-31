@@ -198,6 +198,10 @@ namespace Strike_12
                     }
                     break;
 
+                case GameState.Start:
+
+                    break;
+
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
 
@@ -555,7 +559,5 @@ namespace Strike_12
             _spriteBatch.End();
             base.Draw(gameTime);
         }
-
-        
     }
 }
