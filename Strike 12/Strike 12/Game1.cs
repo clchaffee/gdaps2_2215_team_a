@@ -45,7 +45,9 @@ namespace Strike_12
         private Enemy enemy;
         private BulletEnemy bEnemy;
         private BounceEnemy pEnemy;
+        private FollowEnemy fEnemy;
 
+        private LaserEnemy lEnemy;
         private int eStartX;
         private int eStartY;
         Rectangle eSize;
@@ -145,7 +147,8 @@ namespace Strike_12
             eManager.SpawnEnemy(enemy);
             bEnemy = new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight);
             pEnemy = new BounceEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight);
-
+            fEnemy = new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight);
+            lEnemy = new LaserEnemy(enemySprites, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.Size.Y);
 
             // -- LEVEL LOADING --
             editor = new LevelEditor();
@@ -153,13 +156,41 @@ namespace Strike_12
 
             //makes a new shop and buttons for each of the purchases
             shop = new Shop(points);
-            buttons.Add(new Button("health", buttonTexture, new Rectangle(700, 300, 100, 50), 10));
-            buttons.Add(new Button("speed", buttonTexture, new Rectangle(900, 300, 100, 50), 10));
-            buttons.Add(new Button("energy", buttonTexture, new Rectangle(1100, 300, 100, 50), 10));
-            buttons.Add(new Button("dash", buttonTexture, new Rectangle(700, 600, 100, 50), 10));
-            buttons.Add(new Button("heal", buttonTexture, new Rectangle(900, 600, 100, 50), 10));
-            buttons.Add(new Button("slow", buttonTexture, new Rectangle(1100, 600, 100, 50), 10));
-            buttons.Add(new Button("cat", buttonTexture, new Rectangle(400, 600, 10, 10), 10));
+
+            buttons.Add(new Button("health", 
+                buttonTexture, 
+                new Rectangle(700, 300, 100, 50), 
+                10));
+
+            buttons.Add(new Button("speed", 
+                buttonTexture, 
+                new Rectangle(900, 300, 100, 50),
+                10));
+
+            buttons.Add(new Button("energy", 
+                buttonTexture, 
+                new Rectangle(1100, 300, 100, 50), 
+                10));
+
+            buttons.Add(new Button("dash", 
+                buttonTexture, 
+                new Rectangle(700, 600, 100, 50), 
+                10));
+
+            buttons.Add(new Button("heal", 
+                buttonTexture, 
+                new Rectangle(900, 600, 100, 50), 
+                10));
+
+            buttons.Add(new Button("slow", 
+                buttonTexture, 
+                new Rectangle(1100, 600, 100, 50), 
+                10));
+
+            buttons.Add(new Button("cat",
+                buttonTexture, 
+                new Rectangle(400, 600, 10, 10), 
+                0));
         }
 
         /// <summary>
@@ -298,7 +329,9 @@ namespace Strike_12
                     // Temp player and enemy update call
                     player.Update(gameTime);
                     bEnemy.Update(gameTime);
+                    lEnemy.Update(gameTime, player.Size.Y);
                     pEnemy.Update(gameTime);
+                    fEnemy.Update(gameTime, player);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Update(gameTime);
@@ -361,7 +394,9 @@ namespace Strike_12
                     player.Reset();
                     player.Deaths++;
                     bEnemy.Reset();
+                    lEnemy.Reset();
                     pEnemy.Reset();
+                    fEnemy.Reset();
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Reset();
@@ -397,53 +432,46 @@ namespace Strike_12
                     {
                         button.Update(gameTime);
 
+                        //if the button has been prssed and the player has enough points to purchase the item
                         if (button.IsPressed && shop.Points >= button.Cost)
                         {
-                            //mesh dont worry about it shhhhh monogame doesn't like event and delegates :(
-                            switch(button.Type)
+                            shop.Points -= button.Cost;
+                            shop.Spendings += button.Cost;
+
+                            switch (button.Type)
                             {
                                 case "health":
-                                    shop.Points -= button.Cost;
-                                    shop.Spendings += button.Cost;
                                     button.Cost += 10;
                                     shop.MaxHealth += 1;
                                     player.Health = player.Health + shop.MaxHealth;
                                     break;
 
                                 case "speed":
-                                    shop.Points -= button.Cost;
-                                    shop.Spendings += button.Cost;
                                     button.Cost += 20;
                                     player.BaseSpeed += 0.1f;
                                     break;
 
                                 case "energy":
-                                    shop.Points -= button.Cost;
-                                    shop.Spendings += button.Cost;
                                     button.Cost += 10;
                                     player.Energy += 2f;
                                     break;
 
                                 case "dash":
-                                    shop.Points -= button.Cost;
-                                    shop.Spendings += button.Cost;
                                     button.Cost += 10;
                                     break;
 
                                 case "heal":
-                                    shop.Points -= button.Cost;
-                                    shop.Spendings += button.Cost;
                                     button.Cost += 10;
                                     break;
 
                                 case "slow":
-                                    shop.Points -= button.Cost;
-                                    shop.Spendings += button.Cost;
                                     button.Cost += 10;
                                     break;
                             }
                         }
                     }
+
+
                     //key presses to change between gamestates
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
                     {
@@ -514,8 +542,11 @@ namespace Strike_12
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
+                    bEnemy.Draw(_spriteBatch, enemySprites);
+                    lEnemy.Draw(_spriteBatch, buttonTexture);
                     //bEnemy.Draw(_spriteBatch, enemySprites);
-                    pEnemy.Draw(_spriteBatch, enemySprites);
+                    //pEnemy.Draw(_spriteBatch, enemySprites);
+                    fEnemy.Draw(_spriteBatch, enemySprites);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Draw(_spriteBatch, enemySprites);
