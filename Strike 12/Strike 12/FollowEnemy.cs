@@ -54,25 +54,38 @@ namespace Strike_12
         // ----- | Methods | -----
 
         // Update():
-        public void Update(GameTime gameTime, Player playerPos)
+        public void Update(GameTime gameTime, Player playerVal)
         {
-            if (size.X > playerPos.Size.X)
+            Vector2 enemyPos = new Vector2(size.X, size.Y);
+            Vector2 playerPos = new Vector2(playerVal.Size.X, playerVal.Size.Y);
+
+            float xDistance = enemyPos.X - playerPos.X;
+            float yDistance = enemyPos.Y - playerPos.Y;
+
+            float length = (float)Math.Sqrt(Math.Pow(xDistance, 2) + Math.Pow(yDistance, 2));
+
+            float nomX = Math.Abs(xDistance / length);
+            float nomY = Math.Abs(yDistance / length);
+
+            if (enemyPos.X > playerPos.X)
             {
-                size.X += -xSpeed;
+                size.X -= (int)(6 * nomX);
             }
             else
             {
-                size.X += xSpeed;
+                size.X += (int)(6 * nomX);
             }
 
-            if (size.Y > playerPos.Size.Y)
+            if (enemyPos.Y > playerPos.Y)
             {
-                size.Y += -ySpeed;
+                size.Y -= (int)(6 * nomY);
             }
             else
             {
-                size.Y += ySpeed;
+                size.Y += (int)(6 * nomY);
             }
+
+
         }
     }
 }
