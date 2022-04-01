@@ -45,6 +45,7 @@ namespace Strike_12
         private Enemy enemy;
         private BulletEnemy bEnemy;
         private BounceEnemy pEnemy;
+        private FollowEnemy fEnemy;
 
         private int eStartX;
         private int eStartY;
@@ -145,6 +146,7 @@ namespace Strike_12
             eManager.SpawnEnemy(enemy);
             bEnemy = new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight);
             pEnemy = new BounceEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight);
+            fEnemy = new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight);
 
 
             // -- LEVEL LOADING --
@@ -323,6 +325,7 @@ namespace Strike_12
                     player.Update(gameTime);
                     bEnemy.Update(gameTime);
                     pEnemy.Update(gameTime);
+                    fEnemy.Update(gameTime, player);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Update(gameTime);
@@ -386,6 +389,7 @@ namespace Strike_12
                     player.Deaths++;
                     bEnemy.Reset();
                     pEnemy.Reset();
+                    fEnemy.Reset();
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Reset();
@@ -525,7 +529,8 @@ namespace Strike_12
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
                     //bEnemy.Draw(_spriteBatch, enemySprites);
-                    pEnemy.Draw(_spriteBatch, enemySprites);
+                    //pEnemy.Draw(_spriteBatch, enemySprites);
+                    fEnemy.Draw(_spriteBatch, enemySprites);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Draw(_spriteBatch, enemySprites);
