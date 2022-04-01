@@ -62,6 +62,9 @@ namespace Strike_12
         public KeyboardState kbState;
         private KeyboardState previousKBState;
 
+        //shop related functions
+        public bool dashPurchased = false;
+
         public int Health
         {
             get { return health; }
@@ -180,8 +183,10 @@ namespace Strike_12
             //sets current keyboard state
             kbState = Keyboard.GetState();
 
-            // If the player is in the airdash state,
-            if (playerState == PlayerStates.airdash)
+            // If the player is in the airdash state
+            //and the ability is purchased in the shop
+
+            if (playerState == PlayerStates.airdash && dashPurchased == true)
             {
                 if (dashCounter > 0)
                 {
@@ -311,14 +316,17 @@ namespace Strike_12
                 velocity.Y += 0.15f * gravityMultiplier;
 
                 // Air Dash
-                if (kbState.IsKeyDown(Keys.Up) && !previousKBState.IsKeyDown(Keys.Up) && dashCounter > 0)
+                if (dashPurchased == true)
                 {
-                    dashDirection = playerState;
-                    playerState = PlayerStates.airdash;
-                    velocity.Y = 0;
-                    velocity.X = 0;
-                    size.X += 0;
-                    size.Y += 0;
+                    if (kbState.IsKeyDown(Keys.Up) && !previousKBState.IsKeyDown(Keys.Up) && dashCounter > 0)
+                    {
+                        dashDirection = playerState;
+                        playerState = PlayerStates.airdash;
+                        velocity.Y = 0;
+                        velocity.X = 0;
+                        size.X += 0;
+                        size.Y += 0;
+                    }
                 }
             }
 
@@ -338,11 +346,6 @@ namespace Strike_12
             {
                 leftCollided = false;
             }
-
-
-            
-            
-
 
             //updates position based on velocity and the size rectangle
             position += velocity;
@@ -415,7 +418,7 @@ namespace Strike_12
                     break;
 
                 case PlayerStates.airdash:
-                    spriteBatch.Draw(
+                        spriteBatch.Draw(
                          playerTexture,
                          size,
                          new Rectangle(2 * 128, 0, 128, 128),

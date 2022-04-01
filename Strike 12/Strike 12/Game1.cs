@@ -172,7 +172,7 @@ namespace Strike_12
             buttons.Add(new Button("dash", 
                 buttonTexture, 
                 new Rectangle(700, 600, 100, 50), 
-                10));
+                50));
 
             buttons.Add(new Button("heal", 
                 buttonTexture, 
@@ -444,7 +444,9 @@ namespace Strike_12
                                     break;
 
                                 case "dash":
-                                    button.Cost += 10;
+                                    player.dashPurchased = true;
+                                    
+
                                     break;
 
                                 case "heal":
