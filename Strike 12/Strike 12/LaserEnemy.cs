@@ -64,7 +64,7 @@ namespace Strike_12
                 }
             }
 
-            else if (size.Y > playerPos - 20 || size.Y > playerPos + 20)
+            else if (size.Y > playerPos - 20 && size.Y < playerPos + 20)
             {
                 blast = true;
             }
@@ -86,11 +86,13 @@ namespace Strike_12
 
         }
 
+        //draws yay
         public override void Draw(SpriteBatch spriteBatch, Texture2D enemyTexture)
         {
             spriteBatch.Draw(enemyTexture, size, Color.White);
         }
 
+        //resets everything 
         public override void Reset()
         {
             if (rng.Next(1, 100) > 50)
