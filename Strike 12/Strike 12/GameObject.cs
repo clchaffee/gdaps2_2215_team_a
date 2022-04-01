@@ -26,6 +26,13 @@ namespace Strike_12
         public Rectangle Size
         {
             get { return size; }
+            set { size = value; }
+        }
+
+        public int XPos
+        {
+            get { return size.X; }
+            set { size.X = value; }
         }
 
         //constructor

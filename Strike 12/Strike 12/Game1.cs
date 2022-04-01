@@ -124,7 +124,7 @@ namespace Strike_12
             arenaBackground = Content.Load<Texture2D>("Temp Arena Background");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
-            pStartY = (GraphicsDevice.Viewport.Height / 2);
+            pStartY = (GraphicsDevice.Viewport.Height - 192);
 
             eStartX = rng.Next(300, windowWidth - 300);
             eStartY = rng.Next(300, windowHeight - 300);
@@ -135,8 +135,8 @@ namespace Strike_12
                 (playerSprites, new Rectangle(pStartX, pStartY, 64, 128),
                     windowWidth, windowHeight,
                 new Vector2(
-                GraphicsDevice.Viewport.Width / 2,
-                GraphicsDevice.Viewport.Height / 2));
+                64,
+                GraphicsDevice.Viewport.Height - 128));
 
             //eSize.X = rng.Next(300, windowWidth - 300);
             //eSize.Y = rng.Next(300, windowHeight - 300);
@@ -175,7 +175,7 @@ namespace Strike_12
             buttons.Add(new Button("dash", 
                 buttonTexture, 
                 new Rectangle(700, 600, 100, 50), 
-                10));
+                50));
 
             buttons.Add(new Button("heal", 
                 buttonTexture, 
@@ -234,16 +234,22 @@ namespace Strike_12
                         state = GameState.Menu;
                     }
                     break;
-
+                
+                //start animation
                 case GameState.Start:
 
-                    Thread.Sleep(500);
-                    state = GameState.Arena;
+                    player.XPos = player.XPos + 10;
+                    if (player.XPos > _graphics.PreferredBackBufferWidth)
+                    {
+                        state = GameState.Arena;
+                    }
 
                     break;
 
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
+
+                    
 
                     eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
@@ -451,7 +457,9 @@ namespace Strike_12
                                     break;
 
                                 case "dash":
-                                    button.Cost += 10;
+                                    player.dashPurchased = true;
+                                    
+
                                     break;
 
                                 case "heal":
@@ -503,9 +511,12 @@ namespace Strike_12
             {
                 //text for menu screen
                 case GameState.Menu:
+                case GameState.Start:
                     _spriteBatch.Draw(titleScreen, new Rectangle((windowWidth/2 - titleScreen.Width/2 - 250), (windowHeight/2 - titleScreen.Height/2 - 200), 1500, 750), Color.White);
                     _spriteBatch.DrawString(displayFont, "Press Enter to continue\nTo learn the controls, press Space",
                         new Vector2(100, 800), Color.Black);
+
+                    player.Draw(_spriteBatch, playerSprites);
                     break;
 
                 //text for control screen
@@ -517,9 +528,6 @@ namespace Strike_12
                         new Vector2(100, 1800), Color.Black);
                     break;
 
-                case GameState.Start:
-                    player.Draw(_spriteBatch, playerSprites);
-                    break;
                 //text for arena screen
                 case GameState.Arena:
 

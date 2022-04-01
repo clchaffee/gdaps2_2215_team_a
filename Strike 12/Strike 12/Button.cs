@@ -121,11 +121,27 @@ namespace Strike_12
             switch (state)
             {
                 case (State.Pressed):
-                    spriteBatch.Draw(texture, size, Color.Green);
+                    if (type != "cat")
+                    {
+                        spriteBatch.Draw(texture, size, Color.Green);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(texture, size, Color.White);
+                        spriteBatch.DrawString(spriteFont, $"MEOW ^-3-^",
+                                 new Vector2(size.X, size.Y + size.Height), Color.Black);
+                    }
                     break;
 
                 case (State.Highlighted):
-                    spriteBatch.Draw(texture, size, Color.Red);
+                    if (type != "cat")
+                    {
+                        spriteBatch.Draw(texture, size, Color.Red);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(texture, size, Color.White);
+                    }
                     break;
 
                 case (State.NonHighlighted):
@@ -139,7 +155,7 @@ namespace Strike_12
             if (Cost != 0)
             {
                 //prints cost
-                spriteBatch.DrawString(spriteFont, $"Cost: {cost}",
+                spriteBatch.DrawString(spriteFont, $"{Type} \nCost: {cost}",
                           new Vector2(size.X, size.Y + size.Height), Color.Black);
             }
 
