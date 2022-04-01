@@ -20,11 +20,19 @@ namespace Strike_12
         protected Rectangle size;
         protected int windowWidth;
         protected int windowHeight;
+        protected Random rng;
 
         //property
         public Rectangle Size
         {
             get { return size; }
+            set { size = value; }
+        }
+
+        public int XPos
+        {
+            get { return size.X; }
+            set { size.X = value; }
         }
 
         //constructor
