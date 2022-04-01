@@ -8,17 +8,9 @@ using Microsoft.Xna.Framework.Input;
 namespace Strike_12
 {
     /// <summary>
-    /// Wrot by Professor Mesh:
-    /// If the client wants to be notified when a button is clicked, it must
-    /// implement a method matching this delegate and then tie that method to
-    /// the button's "OnButtonClick" event.
-    /// </summary>
-    public delegate void OnButtonClickDelegate();
-
-    /// <summary>
     /// states of buttons
     /// mainly for color indicators rn
-    /// </summary
+    /// </summary>
     enum State 
     { 
         Pressed,
@@ -28,11 +20,9 @@ namespace Strike_12
 
     class Button
     {
-        //fields
-        //position and image
+        //fields for position and image
         protected Texture2D texture;
         protected Rectangle size;
-        public Shop shop;
 
         //mouse and game states
         private MouseState mouseState;
@@ -41,10 +31,8 @@ namespace Strike_12
 
         //variables
         private string type;
+        private bool isPressed = false;
         private int cost;
-
-        //event for left click
-        public event OnButtonClickDelegate OnLeftButtonClick;
 
         //get set properties for each button called/created
         //button upgrade
@@ -59,6 +47,12 @@ namespace Strike_12
             get { return size; }
         }
 
+        //bool to check if the button is pressed
+        public bool IsPressed
+        {
+            get { return isPressed; }
+        }
+
         //cost of upgrades
         public int Cost
         {
@@ -66,7 +60,7 @@ namespace Strike_12
             set { this.cost = value; }
         }
 
-        //constructor to take in each piece of data of each button
+        //constructor to take in each piece of data
         public Button(string type, Texture2D texture, Rectangle size, int cost)
         {
             this.type = type;
@@ -85,16 +79,24 @@ namespace Strike_12
             mouseState = Mouse.GetState();
 
             //if the mouse is in the bounds of the window
-            if (size.Contains(mouseState.Position))
+            if (mouseState.X > size.X && mouseState.Y > size.Y 
+                && mouseState.X < (size.X + size.Width) && mouseState.Y < size.Y + size.Height)
             {
                 state = State.Highlighted;
                 //if the button is still being presse, not yet released
-                if (prevMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
+                if (mouseState.LeftButton == ButtonState.Pressed)
                 {
-                    OnLeftButtonClick();
                     state = State.Pressed;
                 }
-       
+                //once clicked and then released
+                else if (prevMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
+                {
+                    isPressed = true;
+                }
+                else
+                {
+                    isPressed = false;
+                }
             }
             //if the mouth is not in the bunds of the button
             else
@@ -134,19 +136,12 @@ namespace Strike_12
                     break;
             }
 
-            //prints cost
-            spriteBatch.DrawString(spriteFont, $"Cost: {cost}",
-                      new Vector2(size.X, size.Y + size.Height), Color.Black);
-        }
-
-        public void Purchased()
-        {
-            shop.Points -= Cost;
-            shop.Spendings += Cost;
-        }
-
-        public void Health()
-        {
+            if (Cost != 0)
+            {
+                //prints cost
+                spriteBatch.DrawString(spriteFont, $"Cost: {cost}",
+                          new Vector2(size.X, size.Y + size.Height), Color.Black);
+            }
 
         }
     }

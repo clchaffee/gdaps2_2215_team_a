@@ -91,22 +91,8 @@ namespace Strike_12
             // ============= Gravity Section =============
 
             // If this enemy has gravity and they are not grounded
-            if (hasGravity && !isGrounded)
-            {
-                // While the gravity multipler is under a specified value, add to it
-                if (gravityMultiplier < 5)
-                {
-                    gravityMultiplier += 1f;
-                }
-
-                // Update the player's Y velocity according to the multiplier
-                velocity.Y += 0.15f * gravityMultiplier;
-
-                
-            }
 
         }
-
         /// <summary>
         /// changes enemy sprite based on which direction it is going
         /// </summary>

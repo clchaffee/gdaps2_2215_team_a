@@ -47,6 +47,7 @@ namespace Strike_12
         private BounceEnemy pEnemy;
         private FollowEnemy fEnemy;
 
+        private LaserEnemy lEnemy;
         private int eStartX;
         private int eStartY;
         Rectangle eSize;
@@ -147,7 +148,7 @@ namespace Strike_12
             bEnemy = new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight);
             pEnemy = new BounceEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight);
             fEnemy = new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight);
-
+            lEnemy = new LaserEnemy(enemySprites, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.Size.Y);
 
             // -- LEVEL LOADING --
             editor = new LevelEditor();
@@ -163,7 +164,7 @@ namespace Strike_12
 
             buttons.Add(new Button("speed", 
                 buttonTexture, 
-                new Rectangle(900, 300, 100, 50), 
+                new Rectangle(900, 300, 100, 50),
                 10));
 
             buttons.Add(new Button("energy", 
@@ -186,15 +187,10 @@ namespace Strike_12
                 new Rectangle(1100, 600, 100, 50), 
                 10));
 
-            buttons.Add(new Button("cat", 
+            buttons.Add(new Button("cat",
                 buttonTexture, 
-                new Rectangle(400, 600, 10, 10),
-                10));
-
-            for (int i = 0; i < buttons.Count; i++)
-            {
-                buttons[i].OnLeftButtonClick += buttons[i].Purchased;
-            }
+                new Rectangle(400, 600, 10, 10), 
+                0));
         }
 
         /// <summary>
@@ -223,7 +219,7 @@ namespace Strike_12
                     eManager.Count = 0;
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
                     {
-                        state = GameState.Arena;
+                        state = GameState.Start;
                     }
                     if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
                     {
@@ -240,6 +236,9 @@ namespace Strike_12
                     break;
 
                 case GameState.Start:
+
+                    Thread.Sleep(500);
+                    state = GameState.Arena;
 
                     break;
 
@@ -324,6 +323,7 @@ namespace Strike_12
                     // Temp player and enemy update call
                     player.Update(gameTime);
                     bEnemy.Update(gameTime);
+                    lEnemy.Update(gameTime, player.Size.Y);
                     pEnemy.Update(gameTime);
                     fEnemy.Update(gameTime, player);
                     foreach (Enemy enemy in eManager.Enemies)
@@ -388,6 +388,7 @@ namespace Strike_12
                     player.Reset();
                     player.Deaths++;
                     bEnemy.Reset();
+                    lEnemy.Reset();
                     pEnemy.Reset();
                     fEnemy.Reset();
                     foreach (Enemy enemy in eManager.Enemies)
@@ -410,7 +411,7 @@ namespace Strike_12
                     shop.Points += 5 * (int)timer;
                     timer = 0;
 
-                    Thread.Sleep(2000);
+                    Thread.Sleep(500);
                     state = GameState.Shop;
 
                     break;
@@ -425,9 +426,13 @@ namespace Strike_12
                     {
                         button.Update(gameTime);
 
-                        if (shop.Points >= button.Cost)
+                        //if the button has been prssed and the player has enough points to purchase the item
+                        if (button.IsPressed && shop.Points >= button.Cost)
                         {
-                            switch(button.Type)
+                            shop.Points -= button.Cost;
+                            shop.Spendings += button.Cost;
+
+                            switch (button.Type)
                             {
                                 case "health":
                                     button.Cost += 10;
@@ -512,6 +517,9 @@ namespace Strike_12
                         new Vector2(100, 1800), Color.Black);
                     break;
 
+                case GameState.Start:
+                    player.Draw(_spriteBatch, playerSprites);
+                    break;
                 //text for arena screen
                 case GameState.Arena:
 
@@ -528,6 +536,8 @@ namespace Strike_12
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
+                    bEnemy.Draw(_spriteBatch, enemySprites);
+                    lEnemy.Draw(_spriteBatch, buttonTexture);
                     //bEnemy.Draw(_spriteBatch, enemySprites);
                     //pEnemy.Draw(_spriteBatch, enemySprites);
                     fEnemy.Draw(_spriteBatch, enemySprites);
@@ -568,7 +578,7 @@ namespace Strike_12
 
                     _spriteBatch.DrawString(displayFont, $"\nKromer: {shop.Points} " +
                         $"\nHealth: {player.Health}," +
-                        $"\nSpeed: {player.BaseSpeed}" +
+                        $"\n{String.Format("Speed: {0:0.0}", player.BaseSpeed)}" +
                         $"\nEnergy: {player.Energy}\n" +
                         $"\nDeaths: {player.Deaths}" +
                         $"\n{String.Format("Best Time: {0:0.00}", player.BestTime)}" +

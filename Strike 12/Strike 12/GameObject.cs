@@ -20,6 +20,7 @@ namespace Strike_12
         protected Rectangle size;
         protected int windowWidth;
         protected int windowHeight;
+        protected Random rng;
 
         //property
         public Rectangle Size
