@@ -61,6 +61,7 @@ namespace Strike_12
         private int points = 0;
         private List<Button> buttons = new List<Button>();
         private Texture2D buttonTexture;
+        private Texture2D shopBG;
 
         // Level Assets
         private LevelEditor editor;
@@ -122,6 +123,7 @@ namespace Strike_12
             tileSprites = Content.Load<Texture2D>("brick");
             titleScreen = Content.Load<Texture2D>("Logo (1)");
             arenaBackground = Content.Load<Texture2D>("Temp Arena Background");
+            shopBG = Content.Load<Texture2D>("Shop Background");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height - 192);
@@ -159,37 +161,37 @@ namespace Strike_12
 
             buttons.Add(new Button("health", 
                 buttonTexture, 
-                new Rectangle(700, 300, 100, 50), 
+                new Rectangle(1100, 150, 100, 50), 
                 10));
 
             buttons.Add(new Button("speed", 
                 buttonTexture, 
-                new Rectangle(900, 300, 100, 50),
+                new Rectangle(1250, 150, 100, 50),
                 10));
 
             buttons.Add(new Button("energy", 
                 buttonTexture, 
-                new Rectangle(1100, 300, 100, 50), 
+                new Rectangle(1400, 150, 100, 50), 
                 10));
 
             buttons.Add(new Button("dash", 
                 buttonTexture, 
-                new Rectangle(700, 600, 100, 50), 
+                new Rectangle(1100, 300, 100, 50), 
                 50));
 
             buttons.Add(new Button("heal", 
                 buttonTexture, 
-                new Rectangle(900, 600, 100, 50), 
+                new Rectangle(1250, 300, 100, 50), 
                 10));
 
             buttons.Add(new Button("slow", 
                 buttonTexture, 
-                new Rectangle(1100, 600, 100, 50), 
+                new Rectangle(1400, 300, 100, 50), 
                 10));
 
             buttons.Add(new Button("cat",
                 buttonTexture, 
-                new Rectangle(400, 600, 10, 10), 
+                new Rectangle(205, 625, 5, 5), 
                 0));
         }
 
@@ -581,6 +583,8 @@ namespace Strike_12
                 //text for shop screen
                 case GameState.Shop:
 
+                    _spriteBatch.Draw(shopBG, new Vector2(0, 0), Color.White);
+
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
 
@@ -591,10 +595,10 @@ namespace Strike_12
                         $"\nDeaths: {player.Deaths}" +
                         $"\n{String.Format("Best Time: {0:0.00}", player.BestTime)}" +
                         $"\nSpendings: {shop.Spendings}",
-                       new Vector2(200, 100), Color.Black);
+                       new Vector2(40, 100), Color.White);
 
                     _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Space to return to the menu",
-                        new Vector2(100, 400), Color.Black);
+                        new Vector2(40, 400), Color.White);
 
                     //draws each button
                     foreach (Button button in buttons)

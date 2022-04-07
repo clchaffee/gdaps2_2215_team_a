@@ -129,7 +129,7 @@ namespace Strike_12
                     {
                         spriteBatch.Draw(texture, size, Color.White);
                         spriteBatch.DrawString(spriteFont, $"MEOW ^-3-^",
-                                 new Vector2(size.X, size.Y + size.Height), Color.Black);
+                                 new Vector2(size.X, size.Y + size.Height), Color.LightGray);
                     }
                     break;
 
