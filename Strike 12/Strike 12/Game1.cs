@@ -62,6 +62,7 @@ namespace Strike_12
         private List<Button> buttons = new List<Button>();
         private Texture2D buttonTexture;
         private Texture2D shopBG;
+        private Texture2D shopKeeper;
 
         // Level Assets
         private LevelEditor editor;
@@ -124,6 +125,7 @@ namespace Strike_12
             titleScreen = Content.Load<Texture2D>("Logo (1)");
             arenaBackground = Content.Load<Texture2D>("Temp Arena Background");
             shopBG = Content.Load<Texture2D>("Shop Background");
+            shopKeeper = Content.Load<Texture2D>("ShopKeeperTest");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height - 192);
@@ -584,6 +586,7 @@ namespace Strike_12
                 case GameState.Shop:
 
                     _spriteBatch.Draw(shopBG, new Vector2(0, 0), Color.White);
+                    _spriteBatch.Draw(shopKeeper, new Vector2(400, 100), Color.White);
 
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
