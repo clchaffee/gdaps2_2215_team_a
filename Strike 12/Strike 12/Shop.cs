@@ -116,7 +116,7 @@ namespace Strike_12
         public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)
         {
             spriteBatch.DrawString(spriteFont, $"Stats and Upgrades:",
-                      new Vector2(100, 100), Color.Black);
+                      new Vector2(75, 75), Color.White);
         }
     }
 }
