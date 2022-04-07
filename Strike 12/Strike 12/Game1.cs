@@ -544,10 +544,10 @@ namespace Strike_12
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
-                    //bEnemy.Draw(_spriteBatch, enemySprites);
-                    //lEnemy.Draw(_spriteBatch, buttonTexture);
-                    //bEnemy.Draw(_spriteBatch, enemySprites);
-                    //pEnemy.Draw(_spriteBatch, enemySprites);
+                    bEnemy.Draw(_spriteBatch, enemySprites);
+                    lEnemy.Draw(_spriteBatch, buttonTexture);
+                    bEnemy.Draw(_spriteBatch, enemySprites);
+                    pEnemy.Draw(_spriteBatch, enemySprites);
                     fEnemy.Draw(_spriteBatch, enemySprites);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
