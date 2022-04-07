@@ -129,7 +129,7 @@ namespace Strike_12
             titleScreen = Content.Load<Texture2D>("Logo (1)");
             arenaBackground = Content.Load<Texture2D>("Temp Arena Background");
             shopBG = Content.Load<Texture2D>("Shop Background");
-            shopKeeper = Content.Load<Texture2D>("ShopKeeperTest");
+            shopKeeper = Content.Load<Texture2D>("ShopKeeper");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height - 192);
@@ -636,7 +636,7 @@ namespace Strike_12
                 case GameState.Shop:
 
                     _spriteBatch.Draw(shopBG, new Vector2(0, 0), Color.White);
-                    _spriteBatch.Draw(shopKeeper, new Vector2(400, 100), Color.White);
+                    _spriteBatch.Draw(shopKeeper, new Vector2(450, 115), Color.White);
 
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
