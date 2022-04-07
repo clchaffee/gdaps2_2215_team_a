@@ -26,12 +26,10 @@ namespace Strike_12
             Count = 0;
         }
 
-        public EnemyManager(Texture2D sprite, Rectangle size, int wWidth, int wHeight)
+        public EnemyManager(int wWidth, int wHeight)
         {
             this.wWidth = wWidth;
             this.wHeight = wHeight;
-            this.size = size;
-            this.sprite = sprite;
         }
         
         public void SpawnEnemy(Enemy enemy)

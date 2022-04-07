@@ -52,7 +52,6 @@ namespace Strike_12
         private BulletEnemy bEnemy;
         private BounceEnemy pEnemy;
         private FollowEnemy fEnemy;
-
         private LaserEnemy lEnemy;
         private int eStartX;
         private int eStartY;
@@ -102,8 +101,8 @@ namespace Strike_12
             _graphics.PreferredBackBufferHeight = windowHeight;
             _graphics.PreferredBackBufferWidth = windowWidth;
             _graphics.ApplyChanges();
-            eManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
-            bManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
+            eManager = new EnemyManager(windowWidth, windowHeight);
+            bManager = new EnemyManager(windowWidth, windowHeight);
 
             base.Initialize();
         }
@@ -129,7 +128,7 @@ namespace Strike_12
             titleScreen = Content.Load<Texture2D>("Logo (1)");
             arenaBackground = Content.Load<Texture2D>("Temp Arena Background");
             shopBG = Content.Load<Texture2D>("Shop Background");
-            shopKeeper = Content.Load<Texture2D>("ShopKeeperTest");
+            //shopKeeper = Content.Load<Texture2D>("ShopKeeperTest");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height - 192);
@@ -154,9 +153,14 @@ namespace Strike_12
             enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
             eManager.SpawnEnemy(enemy);
             bEnemy = new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight);
+            eManager.SpawnEnemy(bEnemy);
             pEnemy = new BounceEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight);
+            eManager.SpawnEnemy(pEnemy);
             fEnemy = new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight);
-            lEnemy = new LaserEnemy(enemySprites, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.Size.Y);
+            eManager.SpawnEnemy(bEnemy);
+            lEnemy = new LaserEnemy(buttonTexture, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.Size.Y);
+            eManager.SpawnEnemy(lEnemy);
+
 
             // -- LEVEL LOADING --
             editor = new LevelEditor();
@@ -385,21 +389,32 @@ namespace Strike_12
                     }
 
                     // Temp player and enemy update call
-                    bEnemy.Update(gameTime);
-                    lEnemy.Update(gameTime, player.Size.Y);
-                    pEnemy.Update(gameTime);
-                    fEnemy.Update(gameTime, player);
+                    //bEnemy.Update(gameTime);
+                    //lEnemy.Update(gameTime, player.Size.Y);
+                    //pEnemy.Update(gameTime);
+                    //fEnemy.Update(gameTime, player);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
-                        enemy.Update(gameTime);
+                        if(enemy is FollowEnemy)
+                        {
+                            ((FollowEnemy)enemy).Update(gameTime, player);
+                        }
+                        else if (enemy is LaserEnemy)
+                        {
+                            ((LaserEnemy)enemy).Update(gameTime, player.Size.Y);
+                        }
+                        else
+                        {
+                            enemy.Update(gameTime);
+                        }
                     }
 
                     //if the count of the list is zero (empty), will automatically add one to it
-                    if (eManager.Enemies.Count == 0)
-                    {
-                        enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
-                        eManager.SpawnEnemy(enemy);
-                    }
+                    //if (eManager.Enemies.Count == 0)
+                    //{
+                    //    enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
+                    //    eManager.SpawnEnemy(enemy);
+                    //}
 
                     //adds one to the count in the manager every frame
                     eManager.Count++;
@@ -598,11 +613,7 @@ namespace Strike_12
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
-                    bEnemy.Draw(_spriteBatch, enemySprites);
-                    lEnemy.Draw(_spriteBatch, buttonTexture);
-                    bEnemy.Draw(_spriteBatch, enemySprites);
-                    pEnemy.Draw(_spriteBatch, enemySprites);
-                    fEnemy.Draw(_spriteBatch, enemySprites);
+
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Draw(_spriteBatch, enemySprites);
