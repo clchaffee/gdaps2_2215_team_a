@@ -38,6 +38,12 @@ namespace Strike_12
         private int pStartX;
         private int pStartY;
 
+
+        bool isCollidingUp;
+        bool isCollidingDown;
+        bool isCollidingRight;
+        bool isCollidingLeft;
+
         // enemy assets
         private Texture2D enemySprites;
         
@@ -96,8 +102,6 @@ namespace Strike_12
             _graphics.ApplyChanges();
             eManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
             bManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
-            
-
 
             base.Initialize();
         }
@@ -207,8 +211,6 @@ namespace Strike_12
             //gets keyboard state for each frame
             kbState = Keyboard.GetState();
 
-            
-
             //switch statement for specific key presses in the different states states
             switch (state)
             {
@@ -238,8 +240,8 @@ namespace Strike_12
                 //start animation
                 case GameState.Start:
 
-                    player.XPos = player.XPos + 10;
-                    if (player.XPos > _graphics.PreferredBackBufferWidth)
+                    player.SizeX = player.SizeX + 10;
+                    if (player.SizeX > _graphics.PreferredBackBufferWidth)
                     {
                         state = GameState.Arena;
                     }
@@ -249,52 +251,100 @@ namespace Strike_12
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
 
-                    
-
                     eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
-                    // Checking collisons
+                    // Temp player and enemy update call
+                    player.Update(gameTime);
+
+                    isCollidingUp = false;
+                    isCollidingDown = false;
+                    isCollidingRight = false;
+                    isCollidingLeft = false;
+
+                    // Collision Detection
                     for (int i = 0; i < editor.LayoutRows; i++)
                     {
                         for (int j = 0; j < editor.LayoutColumns; j++)
                         {
                             if (editor[i, j] != null)
                             {
-                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j])
-                                    && (editor[i, j].Type == "ground" || editor[i, j].Type == "platform"))
+
+                                // Check for left collisions
+                                if (player.IsCollidingLeft(player, editor[i, j], player.VelocityX) &&
+                                    (!isCollidingLeft))
                                 {
-                                    player.PlatformPosY = editor[i, j].Size.Y;
-                                    player.PlatformPosX = editor[i, j].Size.X;
+                                    player.LeftCollided = true;
+
+                                    while (player.Size.Left != editor[i, j].Size.Right)
+                                    {
+                                        player.SizeX += 1;
+                                    }
+
+                                    player.PositionX = player.SizeX;
+
+                                    isCollidingLeft = true;
+                                }
+                                else
+                                {
+                                    player.LeftCollided = false;
+                                }
+
+                                // Check for right collisions
+                                if (player.IsCollidingRight(player, editor[i, j], player.VelocityX) &&
+                                    (!isCollidingRight))
+                                {
+                                    player.RightCollided = true;
+
+                                    while (player.Size.Right != editor[i, j].Size.Left)
+                                    {
+                                        player.SizeX -= 1;
+                                    }
+
+                                    player.PositionX = player.SizeX;
+
+                                    isCollidingRight = true;
+                                }
+                                else
+                                {
+                                    player.RightCollided = false;
+                                }
+
+                                // Check for top collisions
+                                if (player.IsCollidingTop(player, editor[i, j]) &&
+                                    (!isCollidingUp))
+                                {
+                                    while (player.Size.Bottom != editor[i, j].Size.Top)
+                                    {
+                                        player.SizeY -= 1;
+                                    }
+
+                                    player.VelocityY = 0;
+                                    player.PositionY = player.SizeY;
+
                                     player.IsGrounded = true;
+                                    isCollidingUp = true;
                                 }
-                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i, j].Type == "leftWall")
+
+                                // Check for bottom collisions
+                                if (player.IsCollidingBottom(player, editor[i, j]) &&
+                                    (!isCollidingDown))
                                 {
-                                    player.WallPosX = editor[i, j].Size.X;
-                                    if (player.Size.X - 64 > editor[i, j].Size.X)
+                                    while (player.Size.Top != editor[i, j].Size.Bottom)
                                     {
-                                        player.LeftCollided = false;
+                                        player.SizeY++;
                                     }
-                                    else
-                                    {
-                                        player.LeftCollided = true;
-                                    }
-                                }
-                                if (player.CheckCollision(editor[i, j].Type, player, editor[i, j]) && editor[i, j].Type == "rightWall")
-                                {
-                                    if (editor[i, j].Size.X > player.Size.X + 128)
-                                    {
-                                        player.RightCollided = false;
-                                    }
-                                    else
-                                    {
-                                        player.RightCollided = true;
-                                    }
+
+                                    player.PositionY = player.SizeY;
+
+                                    player.VelocityY = 0;
+                                    player.CanJump = false;
+                                    player.IsGrounded = false;
+                                    isCollidingDown = true;
                                 }
                             }
                         }
                     }
-
                     //checks if player fell in a pit
                     if (player.Size.Y > windowHeight)
                     {
@@ -305,7 +355,10 @@ namespace Strike_12
                     //collision for each enemy in the Enemy class
                     foreach (Enemy enemy in eManager.Enemies)
                     {
-                        if (enemy.CheckCollision("enemy", enemy, player))
+
+                        if (enemy.IsCollidingBottom(enemy, player) ||
+                            enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
+                            enemy.IsCollidingRight(enemy, player, player.VelocityX))
                         {
 
                             if (player.TakeDamage(gameTime))
@@ -314,11 +367,12 @@ namespace Strike_12
                             }
 
                         }
-                        else if (enemy.CheckCollision("top", enemy, player))
+                        else if (enemy.IsCollidingTop(enemy, player))
                         {
-                            //has to make the player jump when they hit the top
+                            player.Jump();
                         }
                     }
+
                     //if the player has no more health, go to shop
                     if (player.Health <= 0)
                     {
@@ -327,7 +381,6 @@ namespace Strike_12
                     }
 
                     // Temp player and enemy update call
-                    player.Update(gameTime);
                     bEnemy.Update(gameTime);
                     lEnemy.Update(gameTime, player.Size.Y);
                     pEnemy.Update(gameTime);
@@ -392,7 +445,7 @@ namespace Strike_12
                 // Game Over: appears when health is less than 1
                 case GameState.GameOver:
                     player.Reset();
-                    player.Deaths++;
+                    //player.Deaths++;
                     bEnemy.Reset();
                     lEnemy.Reset();
                     pEnemy.Reset();
@@ -458,8 +511,6 @@ namespace Strike_12
 
                                 case "dash":
                                     player.dashPurchased = true;
-                                    
-
                                     break;
 
                                 case "heal":
@@ -472,7 +523,6 @@ namespace Strike_12
                             }
                         }
                     }
-
 
                     //key presses to change between gamestates
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
