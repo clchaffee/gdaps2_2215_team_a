@@ -70,6 +70,7 @@ namespace Strike_12
         private Texture2D shopWall;
         private Texture2D shopFG;
         private Texture2D shopKeeper;
+        private Texture2D noseButton;
 
         // Level Assets
         private LevelEditor editor;
@@ -132,6 +133,7 @@ namespace Strike_12
             shopWall = Content.Load<Texture2D>("ShopWall");
             shopFG = Content.Load<Texture2D>("ShopFG");
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
+            noseButton = Content.Load<Texture2D>("CatNose");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height - 192);
@@ -611,6 +613,9 @@ namespace Strike_12
                     {
                         enemy.Draw(_spriteBatch, enemySprites);
                     }
+
+                    //clock hand
+                    _spriteBatch.(new VertexPositionColor(new Vector3(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2, 0), Color.Black));
 
                     break;
 
