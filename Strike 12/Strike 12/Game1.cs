@@ -67,7 +67,8 @@ namespace Strike_12
         private int points = 0;
         private List<Button> buttons = new List<Button>();
         private Texture2D buttonTexture;
-        private Texture2D shopBG;
+        private Texture2D shopWall;
+        private Texture2D shopFG;
         private Texture2D shopKeeper;
 
         // Level Assets
@@ -128,7 +129,8 @@ namespace Strike_12
             tileSprites = Content.Load<Texture2D>("brick");
             titleScreen = Content.Load<Texture2D>("Logo (1)");
             arenaBackground = Content.Load<Texture2D>("Temp Arena Background");
-            shopBG = Content.Load<Texture2D>("Shop Background");
+            shopWall = Content.Load<Texture2D>("ShopWall");
+            shopFG = Content.Load<Texture2D>("ShopFG");
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
@@ -637,14 +639,14 @@ namespace Strike_12
                 //text for shop screen
                 case GameState.Shop:
 
-                    _spriteBatch.Draw(shopBG, new Vector2(0, 0), Color.White);
-                    _spriteBatch.Draw(shopKeeper, new Vector2(450, 115), Color.White);
-
+                    _spriteBatch.Draw(shopWall, new Vector2(0, 0), Color.White);
+                    _spriteBatch.Draw(shopKeeper, new Vector2(450, 100), Color.White);
+                    _spriteBatch.Draw(shopFG, new Vector2(0, 0), Color.White);
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
 
                     _spriteBatch.DrawString(displayFont, $"\nKromer: {shop.Points} " +
-                        $"\nHealth: {player.Health}," +
+                        $"\nHealth: {player.Health}" +
                         $"\n{String.Format("Speed: {0:0.0}", player.BaseSpeed)}" +
                         $"\nEnergy: {player.Energy}\n" +
                         $"\nDeaths: {player.Deaths}" +
