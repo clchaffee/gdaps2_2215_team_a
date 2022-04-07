@@ -28,8 +28,12 @@ namespace Strike_12
             get { return size; }
             set { size = value; }
         }
-
-        public int XPos
+        public int SizeY
+        {
+            get { return size.Y; }
+            set { size.Y = value; }
+        }
+        public int SizeX
         {
             get { return size.X; }
             set { size.X = value; }
@@ -54,27 +58,43 @@ namespace Strike_12
         }
 
         //collision detection checks type and returns true or false if there was collision
-        public virtual bool CheckCollision(string type, GameObject collider, GameObject collided)
+        // Check Top Collision
+        public bool IsCollidingTop(GameObject collider, GameObject collidee)
         {
-            switch(type)
-            {
-                case "enemy":
-                    return collider.Size.Intersects(collided.Size);
-                    break;
-                case "leftWall":
-                case "rightWall":
-                    return collider.Size.Intersects(collided.Size);
-                    break;
-                case "ground":
-                    return collider.Size.Intersects(collided.Size);
-                    break;
-                case "platform":
-                    return collider.Size.Intersects(collided.Size);
-                    break;
-                default:
-                    return false;
-                    break;
-            }
+            //return (Rectangle.Intersect(collider.size, collidee.size) != null);
+            return collider.size.Bottom > collidee.size.Top &&
+                   collider.size.Top < collidee.size.Top &&
+                   collider.size.Left < collidee.size.Right &&
+                   collider.size.Right > collidee.size.Left;
+        }
+
+        // Check Bottom Collision
+        public bool IsCollidingBottom(GameObject collider, GameObject collidee)
+        {
+            //return (Rectangle.Intersect(collider.size, collidee.size) != null);
+            return collider.size.Top < collidee.size.Bottom &&
+                   collider.size.Bottom > collidee.size.Bottom &&
+                   collider.size.Left < collidee.size.Right &&
+                   collider.size.Right > collidee.size.Left;
+        }
+
+        // Check Left Collision
+        public bool IsCollidingLeft(GameObject collider, GameObject collidee, float velocity)
+        {
+            return //collider.size.Left + velocity <= collidee.size.Right &&
+                   collider.size.Left < collidee.size.Right &&
+                   collider.size.Right > collidee.size.Right &&
+                   collider.size.Top < collidee.size.Bottom - 16 &&
+                   collider.size.Bottom > collidee.size.Top + 16;
+        }
+
+        public bool IsCollidingRight(GameObject collider, GameObject collidee, float velocity)
+        {
+            return //collider.size.Right + velocity >= collidee.size.Left &&
+                   collider.size.Right > collidee.size.Left &&
+                   collider.size.Left < collidee.size.Left &&
+                   collider.size.Top < collidee.size.Bottom - 16 &&
+                   collider.size.Bottom > collidee.size.Top + 16;
         }
 
         //makes a game object bounce when hitting the wall or ground
