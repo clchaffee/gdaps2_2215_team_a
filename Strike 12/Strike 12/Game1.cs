@@ -614,9 +614,6 @@ namespace Strike_12
                         enemy.Draw(_spriteBatch, enemySprites);
                     }
 
-                    //clock hand
-                    _spriteBatch.(new VertexPositionColor(new Vector3(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2, 0), Color.Black));
-
                     break;
 
                 //Text for game winner screen
