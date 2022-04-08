@@ -94,6 +94,7 @@ namespace Strike_12
 
         // Other Assets
         private Texture2D arenaBackground;
+        private Texture2D titleBG;
 
         //sets the default state as the menu
         GameState state = GameState.Menu;
@@ -147,6 +148,7 @@ namespace Strike_12
             //other assests
             tileSprites = Content.Load<Texture2D>("brick");
             titleScreen = Content.Load<Texture2D>("Logo (1)");
+            titleBG = Content.Load<Texture2D>("tempTS");
             arenaBackground = Content.Load<Texture2D>("Temp Arena Background");
             shopWall = Content.Load<Texture2D>("ShopWall");
             shopFG = Content.Load<Texture2D>("ShopFG");
@@ -418,24 +420,25 @@ namespace Strike_12
 
                     //TODO: Reimplement enemy collision 
                     //collision for each enemy in the Enemy class
-                    //foreach (Enemy enemy in eManager.Enemies)
-                    //{
+                    foreach (Enemy enemy in eManager.Enemies)
+                    {
 
-                    //if (enemy.IsCollidingBottom(enemy, player) ||
-                    //    enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
-                    //    enemy.IsCollidingRight(enemy, player, player.VelocityX))
-                    //{
+                        if (enemy.IsCollidingBottom(enemy, player) ||
+                            enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
+                            enemy.IsCollidingRight(enemy, player, player.VelocityX))
+                        {
 
-                    //    if (player.TakeDamage(gameTime))
-                    //    {
-                    //        player.Health -= 1;
-                    //    }
+                            if (player.TakeDamage(gameTime))
+                            {
+                                player.Health -= 1;
+                            }
 
-                    //}
-                    //else if (enemy.IsCollidingTop(enemy, player))
-                    //{
-                    //    player.Jump();
-                    //}
+                        }
+                        else if (enemy.IsCollidingTop(enemy, player))
+                        {
+                            player.Jump();
+                        }
+                    }
 
 
                     //if the player has no more health, go to shop
@@ -745,8 +748,9 @@ namespace Strike_12
                 //text for menu screen
                 case GameState.Menu:
                 case GameState.Start:
-                    _spriteBatch.Draw(titleScreen, new Rectangle((windowWidth / 2 - titleScreen.Width / 2 - 250), (windowHeight / 2 - titleScreen.Height / 2 - 200), 1500, 750), Color.White);
-                    _spriteBatch.DrawString(displayFont, "Press Enter to Start\nOr Press Space for Controls and Difficulty Selection",
+                    _spriteBatch.Draw(titleBG, new Rectangle(0, 0, titleBG.Width * 4, titleBG.Height * 4), Color.White); 
+                    //_spriteBatch.Draw(titleScreen, new Rectangle((windowWidth/2 - titleScreen.Width/2 - 250), (windowHeight/2 - titleScreen.Height/2 - 200), 1500, 750), Color.White);
+                    _spriteBatch.DrawString(displayFont, "Press Enter to continue\nTo learn the controls, press Space",
                         new Vector2(100, 800), Color.Black);
 
                     player.Draw(_spriteBatch, playerSprites);
