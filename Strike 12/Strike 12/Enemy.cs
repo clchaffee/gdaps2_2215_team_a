@@ -73,7 +73,7 @@ namespace Strike_12
             size.X += moveSpeed;
 
             //changes direction when the border of the window is hit
-            if (size.X > windowWidth - 128 || size.X < 0)
+            if (size.X > windowWidth - 128 || size.X < 64)
             {
                 moveSpeed = -1 * moveSpeed;
             }

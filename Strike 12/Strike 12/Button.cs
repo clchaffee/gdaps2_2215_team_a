@@ -32,6 +32,7 @@ namespace Strike_12
         //variables
         private string type;
         private bool isPressed = false;
+        private bool isHighlighted = false;
         private int cost;
 
         //get set properties for each button called/created
@@ -51,6 +52,11 @@ namespace Strike_12
         public bool IsPressed
         {
             get { return isPressed; }
+        }
+
+        public bool IsHighlight
+        {
+            get { return isHighlighted; }
         }
 
         //cost of upgrades
@@ -82,6 +88,7 @@ namespace Strike_12
             if (mouseState.X > size.X && mouseState.Y > size.Y 
                 && mouseState.X < (size.X + size.Width) && mouseState.Y < size.Y + size.Height)
             {
+                isHighlighted = true;
                 state = State.Highlighted;
                 //if the button is still being presse, not yet released
                 if (mouseState.LeftButton == ButtonState.Pressed)
@@ -101,6 +108,7 @@ namespace Strike_12
             //if the mouth is not in the bunds of the button
             else
             {
+                isHighlighted = false;
                 state = State.NonHighlighted;
             }
             //updated the mouse state
@@ -114,7 +122,7 @@ namespace Strike_12
         /// <param name="spriteBatch"></param>
         /// <param name="spriteFont"></param>
         /// <param name="texture"></param>
-        public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont, Texture2D texture)
+        public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)
         {
             //switch for states of the buttons
             //as of now, only changes colors
@@ -129,7 +137,7 @@ namespace Strike_12
                     {
                         spriteBatch.Draw(texture, size, Color.White);
                         spriteBatch.DrawString(spriteFont, $"MEOW ^-3-^",
-                                 new Vector2(size.X, size.Y + size.Height), Color.LightGray);
+                                 new Vector2(size.X + 50, size.Y - 100), Color.LightGray);
                     }
                     break;
 
@@ -156,7 +164,7 @@ namespace Strike_12
             {
                 //prints cost
                 spriteBatch.DrawString(spriteFont, $"{Type} \nCost: {cost}",
-                          new Vector2(size.X, size.Y + size.Height), Color.Black);
+                          new Vector2(size.X, size.Y + size.Height), Color.LightGray);
             }
 
         }
