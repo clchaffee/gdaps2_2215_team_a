@@ -932,9 +932,10 @@ namespace Strike_12
                     {
                         button.Draw(_spriteBatch, displayFont);
 
+                        //if the player doesnt have enough points to by the item
                         if (button.IsHighlight && shop.Points < button.Cost)
                         {
-                            _spriteBatch.DrawString(displayFont, "Sorry hun, you don't have enough kromer.", new Vector2(600, 80), Color.White);
+                            _spriteBatch.DrawString(displayFont, "Sorry hun, you don't have enough to buy that.", new Vector2(600, 80), Color.White);
                         }
                     }
                     break;
