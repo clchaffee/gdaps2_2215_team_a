@@ -788,7 +788,7 @@ namespace Strike_12
                     player.Draw(_spriteBatch, playerSprites);
                     break;
 
-                //text for control screen
+                // text for control screen
                 case GameState.Controls:
                     _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right" +
                         "\nPress Left Shift and a direction to airdash (WHEN UNLOCKED)" +
