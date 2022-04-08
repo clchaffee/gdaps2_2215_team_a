@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.IO;
 
 namespace Strike_12
 {
@@ -21,11 +22,17 @@ namespace Strike_12
         private int maxHealth = 10;
         private float speed = 8f;
         private int maxEnergy = 0;
-        
+
         //abilities
         private bool airDash = false;
         private bool heal = false;
         private bool timeSlow = false;
+
+        //filename and list for whitty comments
+        private string filename = "..//..//..//Comments.txt";
+        private List<string> comments;
+        //random object for random comments
+        Random rng;
 
         /// <summary>
         /// get set property for points
@@ -106,6 +113,10 @@ namespace Strike_12
         public Shop(int points)
         {
             kromer = points;
+
+            comments = new List<string>();
+            this.AddDialogue();
+            rng = new Random();
         }
 
         /// <summary>
@@ -117,6 +128,54 @@ namespace Strike_12
         {
             spriteBatch.DrawString(spriteFont, $"Stats and Upgrades:",
                       new Vector2(75, 75), Color.White);
+        }
+
+
+        /// <summary>
+        /// private method to add comments from a file to a list
+        /// </summary>
+        private void AddDialogue()
+        {
+            //declares reader
+            StreamReader input = null;
+
+            //tries inializing
+            try
+            {
+                input = new StreamReader(filename);
+            }
+            //catches if file not found and sends error
+            catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+
+            //initializes line to null
+            string line = null;
+
+            //for each new line with text adds to list
+            while((line = input.ReadLine()) != null)
+            {
+                comments.Add(line);
+            }
+
+            //closes reader
+            if (input != null)
+            {
+                input.Close();
+            }
+        }
+
+        /// <summary>
+        /// takes a comment randomly selected from the list
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public string Comment(string type)
+        {
+            string comment = null;
+            comment = comments[rng.Next(comments.Count)];
+            return comment;
         }
     }
 }

@@ -75,6 +75,13 @@ namespace Strike_12
         private Texture2D shopWall;
         private Texture2D shopFG;
         private Texture2D shopKeeper;
+        private Texture2D noseButton;
+        private string comment;
+
+        //items
+        private Texture2D healthUpgrade;
+        private Texture2D speedUpgrade;
+        private Texture2D energyUpgrade;
 
         // Level Assets
         private LevelEditor editor;
@@ -111,6 +118,9 @@ namespace Strike_12
             eManager = new EnemyManager(windowWidth, windowHeight);
             bManager = new EnemyManager(windowWidth, windowHeight);
 
+            //initializes comment to null
+            comment = null;
+
             base.Initialize();
         }
 
@@ -137,6 +147,11 @@ namespace Strike_12
             shopWall = Content.Load<Texture2D>("ShopWall");
             shopFG = Content.Load<Texture2D>("ShopFG");
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
+            noseButton = Content.Load<Texture2D>("CatNose");
+
+            healthUpgrade = Content.Load<Texture2D>("HealthBottle");
+            speedUpgrade = Content.Load<Texture2D>("SpeedBottle");
+            energyUpgrade = Content.Load<Texture2D>("EnergyBottle");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height - 192);
@@ -178,25 +193,26 @@ namespace Strike_12
             shop = new Shop(points);
 
             buttons.Add(new Button("health", 
-                buttonTexture, 
-                new Rectangle(1100, 150, 100, 50), 
+                healthUpgrade, 
+                new Rectangle(1100, 150, healthUpgrade.Width, healthUpgrade.Height), 
                 10));
 
             buttons.Add(new Button("speed", 
-                buttonTexture, 
-                new Rectangle(1250, 150, 100, 50),
+                speedUpgrade, 
+                new Rectangle(1250, 150, speedUpgrade.Width, speedUpgrade.Height),
                 10));
 
             buttons.Add(new Button("energy", 
-                buttonTexture, 
-                new Rectangle(1400, 150, 100, 50), 
+                energyUpgrade, 
+                new Rectangle(1400, 150, energyUpgrade.Width, energyUpgrade.Height), 
                 10));
 
             buttons.Add(new Button("dash", 
                 buttonTexture, 
-                new Rectangle(1100, 300, 100, 50), 
+                new Rectangle(1100, 400, 100, 50), 
                 50));
 
+            /*        NOT FOR SPRINT 3
             buttons.Add(new Button("heal", 
                 buttonTexture, 
                 new Rectangle(1250, 300, 100, 50), 
@@ -205,12 +221,11 @@ namespace Strike_12
             buttons.Add(new Button("slow", 
                 buttonTexture, 
                 new Rectangle(1400, 300, 100, 50), 
-                10));
+                10));*/
 
             buttons.Add(new Button("cat",
-                buttonTexture, 
-                new Rectangle(205, 625, 5, 5), 
-                0));
+                noseButton, 
+                new Rectangle(197, 625, noseButton.Width/4, noseButton.Height/4), 0));
         }
 
         /// <summary>
@@ -567,6 +582,9 @@ namespace Strike_12
                     shop.Points += 5 * (int)timer;
                     timer = 0;
 
+                    //sets a new comment
+                    comment = shop.Comment(null);
+
                     Thread.Sleep(500);
                     state = GameState.Shop;
 
@@ -574,7 +592,6 @@ namespace Strike_12
 
                 //if enter is pressed in the shop, returns to arena; if space is pressed brings up the menu
                 case GameState.Shop:
-
                     player.Health = shop.MaxHealth;
 
                     // for each button calls update method, checks if pressed and gives upgrade if you have enough points
@@ -744,13 +761,20 @@ namespace Strike_12
                         $"\nSpendings: {shop.Spendings}",
                        new Vector2(40, 100), Color.White);
 
+                    _spriteBatch.DrawString(displayFont, comment, new Vector2(450,200), Color.LightGray);
+
                     _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Q to quit to the menu",
                         new Vector2(40, 400), Color.White);
 
                     //draws each button
                     foreach (Button button in buttons)
                     {
-                        button.Draw(_spriteBatch, displayFont, buttonTexture);
+                        button.Draw(_spriteBatch, displayFont);
+
+                        if (button.IsHighlight && shop.Points < button.Cost)
+                        {
+                            _spriteBatch.DrawString(displayFont,"Sorry hun, you don't have enough kromer.", new Vector2(600, 80), Color.White);
+                        }
                     }
 
                     break;
