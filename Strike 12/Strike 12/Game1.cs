@@ -595,7 +595,6 @@ namespace Strike_12
                                 spawnCap = true;
                             }
                         }
-
                     }
 
                     //if the player has no more health, go to shop
@@ -714,7 +713,7 @@ namespace Strike_12
                                 shop.Points -= button.Cost;
                                 shop.Spendings += button.Cost;
                             }
-
+                            //switch statement for each button to increase cost
                             switch (button.Type)
                             {
                                 case "health":
@@ -798,7 +797,7 @@ namespace Strike_12
                     _spriteBatch.Draw(titleBG, new Rectangle(0, 0, titleBG.Width * 4, titleBG.Height * 4), Color.White); 
                     //_spriteBatch.Draw(titleScreen, new Rectangle((windowWidth/2 - titleScreen.Width/2 - 250), (windowHeight/2 - titleScreen.Height/2 - 200), 1500, 750), Color.White);
                     _spriteBatch.DrawString(displayFont, "Press Enter to continue\nTo learn the controls, press Space",
-                        new Vector2(100, 800), Color.Black);
+                        new Vector2(100, 800), Color.LightGray);
 
                     player.Draw(_spriteBatch, playerSprites);
                     break;
@@ -810,6 +809,8 @@ namespace Strike_12
                         "\nPress Space to stop time for a short period (WHEN UNLOCKED)\n" +
                         "\nPress Space to go back to the Menu",
                         new Vector2(100, 50), Color.Black);
+
+                    //changes color based on what difficulty was selected
                     if (easy)
                     {
                         _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
@@ -860,16 +861,16 @@ namespace Strike_12
                     editor.Draw(_spriteBatch, tileSprites);
 
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
-                        new Vector2(100, 150), Color.Black);
+                        new Vector2(100, 150), Color.LightGray);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
-                       new Vector2(100, 50), Color.Black);
+                       new Vector2(100, 50), Color.LightGray);
                     _spriteBatch.DrawString(displayFont, $"\nEnergy: {player.CurrentEnergy}",
-                       new Vector2(100, 100), Color.Black);
+                       new Vector2(100, 100), Color.LightGray);
 
                     _spriteBatch.DrawString(displayFont, $"\nWave: {wave}",
-                        new Vector2(100, 200), Color.Black);
+                        new Vector2(100, 200), Color.LightGray);
                     _spriteBatch.DrawString(displayFont, $"\n# of enemies in wave: {eManager.Enemies.Count}",
-                        new Vector2(100, 250), Color.Black);
+                        new Vector2(100, 250), Color.LightGray);
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
@@ -896,11 +897,11 @@ namespace Strike_12
                     editor.Draw(_spriteBatch, tileSprites);
 
                     _spriteBatch.DrawString(displayFont, "Go to the shop page (happens upon character death)",
-                        new Vector2(100, 400), Color.Black);
+                        new Vector2(100, 400), Color.LightGray);
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
-                       new Vector2(100, 150), Color.Black);
+                       new Vector2(100, 150), Color.LightGray);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
-                       new Vector2(100, 100), Color.Black);
+                       new Vector2(100, 100), Color.LightGray);
                     break;
 
                 //text for shop screen
@@ -936,7 +937,6 @@ namespace Strike_12
                             _spriteBatch.DrawString(displayFont, "Sorry hun, you don't have enough kromer.", new Vector2(600, 80), Color.White);
                         }
                     }
-
                     break;
 
                 default:

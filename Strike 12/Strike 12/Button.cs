@@ -118,6 +118,7 @@ namespace Strike_12
         /// <summary>
         /// personal draw method for each button that prints out the button based on state
         /// and the printed (updated) cost of said button
+        /// *** TEMP UNTIL ANIMATION MANAGER IS COMPLETE ***
         /// </summary>
         /// <param name="spriteBatch"></param>
         /// <param name="spriteFont"></param>
@@ -128,6 +129,8 @@ namespace Strike_12
             //as of now, only changes colors
             switch (state)
             {
+                //specific check for checking whether the button is
+                //one of the upgrades or the cat
                 case (State.Pressed):
                     if (type != "cat")
                     {
@@ -160,6 +163,7 @@ namespace Strike_12
                     break;
             }
 
+            //only button with a cost of zero is the cat
             if (Cost != 0)
             {
                 //prints cost
