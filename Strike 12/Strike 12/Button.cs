@@ -137,7 +137,7 @@ namespace Strike_12
                     {
                         spriteBatch.Draw(texture, size, Color.White);
                         spriteBatch.DrawString(spriteFont, $"MEOW ^-3-^",
-                                 new Vector2(size.X, size.Y + size.Height), Color.LightGray);
+                                 new Vector2(size.X + 50, size.Y - 100), Color.LightGray);
                     }
                     break;
 
@@ -164,7 +164,7 @@ namespace Strike_12
             {
                 //prints cost
                 spriteBatch.DrawString(spriteFont, $"{Type} \nCost: {cost}",
-                          new Vector2(size.X, size.Y + size.Height), Color.Black);
+                          new Vector2(size.X, size.Y + size.Height), Color.LightGray);
             }
 
         }

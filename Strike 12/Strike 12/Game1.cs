@@ -214,9 +214,8 @@ namespace Strike_12
                 10));*/
 
             buttons.Add(new Button("cat",
-                buttonTexture, 
-                new Rectangle(205, 625, 5, 5), 
-                0));
+                noseButton, 
+                new Rectangle(197, 625, noseButton.Width/4, noseButton.Height/4), 0));
         }
 
         /// <summary>
@@ -672,7 +671,7 @@ namespace Strike_12
                         $"\nSpendings: {shop.Spendings}",
                        new Vector2(40, 100), Color.White);
 
-                    _spriteBatch.DrawString(displayFont, comment, new Vector2(500,200), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, comment, new Vector2(450,200), Color.LightGray);
 
                     _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Q to quit to the menu",
                         new Vector2(40, 400), Color.White);
@@ -684,7 +683,7 @@ namespace Strike_12
 
                         if (button.IsHighlight && shop.Points < button.Cost)
                         {
-                            _spriteBatch.DrawString(displayFont,"Sorry hun, you don't have enough points", new Vector2(600, 100), Color.White);
+                            _spriteBatch.DrawString(displayFont,"Sorry hun, you don't have enough kromer.", new Vector2(600, 80), Color.White);
                         }
                     }
 
