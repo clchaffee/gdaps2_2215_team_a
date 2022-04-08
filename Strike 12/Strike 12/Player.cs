@@ -90,10 +90,10 @@ namespace Strike_12
             set { maxHealth = value; }
         }
 
-        public float MoveSpeed
+        public float BaseSpeed
         {
-            get { return moveSpeed; }
-            set { moveSpeed = value; }
+            get { return baseSpeed; }
+            set { baseSpeed = value; }
         }
 
         public float Energy
@@ -286,7 +286,7 @@ namespace Strike_12
             //if A is pressed, moves player left, changes player state depending on if jumping or not.
             if (kbState.IsKeyDown(Keys.A) && !leftCollided && playerState != PlayerStates.airdash)
             {
-                velocity.X = -moveSpeed;
+                velocity.X = -(baseSpeed*moveSpeed);
 
                 if (!isGrounded && previousPlayerState != PlayerStates.moveLeft)
                 {
@@ -300,7 +300,7 @@ namespace Strike_12
             //if D is pressed, moves player right, changes player state depending on if jumping or not.
             else if (kbState.IsKeyDown(Keys.D) && !rightCollided && playerState != PlayerStates.airdash)
             {
-                velocity.X = moveSpeed;
+                velocity.X = (baseSpeed*moveSpeed);
 
                 if (!isGrounded && previousPlayerState != PlayerStates.moveRight)
                 {
@@ -350,7 +350,7 @@ namespace Strike_12
             {
                 //position.Y = this.SizeY - playerSprite.Height;
                 gravityMultiplier = 1f;
-                moveSpeed = 10f;
+                moveSpeed = baseSpeed*10f;
                 dashCounter = 20;
                 velocity.Y = 0;
                 canJump = true;
@@ -367,11 +367,11 @@ namespace Strike_12
                 // If the player is falling, lower their movespeed to allow for precise landing
                 if (velocity.Y <= 10 && velocity.Y >= 0)
                 {
-                    moveSpeed += 0.3f;
+                    moveSpeed += baseSpeed*0.3f;
                 }
                 else if (velocity.Y > 0)
                 {
-                    moveSpeed = 8.7f;
+                    moveSpeed = baseSpeed * 8.7f;
                 }
 
                 // Update the player's Y velocity according to the multiplier
@@ -561,6 +561,7 @@ namespace Strike_12
         {
             position.X = 64;
             position.Y = windowHeight - 196;
+            playerState = PlayerStates.faceRight;
             velocity.X = 0f;
             velocity.Y = 0f;
             dashCounter = 20;

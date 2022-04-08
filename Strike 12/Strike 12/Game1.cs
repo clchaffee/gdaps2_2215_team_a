@@ -150,7 +150,7 @@ namespace Strike_12
             tileSprites = Content.Load<Texture2D>("brick");
             titleScreen = Content.Load<Texture2D>("Logo (1)");
             titleBG = Content.Load<Texture2D>("tempTS");
-            arenaBackground = Content.Load<Texture2D>("Temp Arena Background");
+            arenaBackground = Content.Load<Texture2D>("ArenaBG");
             shopWall = Content.Load<Texture2D>("ShopWall");
             shopFG = Content.Load<Texture2D>("ShopFG");
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
@@ -699,8 +699,21 @@ namespace Strike_12
                         //if the button has been prssed and the player has enough points to purchase the item
                         if (button.IsPressed && shop.Points >= button.Cost)
                         {
-                            shop.Points -= button.Cost;
-                            shop.Spendings += button.Cost;
+                            if(button.Type != "dash" && button.Type !="timestop")
+                            {
+                                shop.Points -= button.Cost;
+                                shop.Spendings += button.Cost;
+                            }
+                            else if(button.Type == "dash" && !shop.AirDash)
+                            {
+                                shop.Points -= button.Cost;
+                                shop.Spendings += button.Cost;
+                            }
+                            else if(button.Type == "timestop" && !shop.TimeSlow)
+                            {
+                                shop.Points -= button.Cost;
+                                shop.Spendings += button.Cost;
+                            }
 
                             switch (button.Type)
                             {
@@ -712,7 +725,7 @@ namespace Strike_12
 
                                 case "speed":
                                     button.Cost += 20;
-                                    player.MoveSpeed += 0.1f;
+                                    player.BaseSpeed += 0.05f;
                                     break;
 
                                 case "energy":
@@ -722,10 +735,12 @@ namespace Strike_12
 
                                 case "dash":
                                     player.dashPurchased = true;
+                                    shop.AirDash = true;
                                     break;
 
                                 case "timestop":
                                     player.timeStopPurchased = true;
+                                    shop.TimeSlow = true;
                                     break;
 
                                 case "heal":
@@ -840,7 +855,7 @@ namespace Strike_12
                 //text for arena screen
                 case GameState.Arena:
 
-                    _spriteBatch.Draw(arenaBackground, new Rectangle(64, 64, 1536, 832), Color.White);
+                    _spriteBatch.Draw(arenaBackground, new Vector2(0,0), Color.White);
                     // Draw the tiles
                     editor.Draw(_spriteBatch, tileSprites);
 
@@ -876,7 +891,7 @@ namespace Strike_12
 
                 // Text for game over state
                 case GameState.GameOver:
-                    _spriteBatch.Draw(arenaBackground, new Rectangle(64, 64, 1536, 832), Color.White);
+                    _spriteBatch.Draw(arenaBackground, new Vector2(0,0), Color.White);
                     // Draw the tiles
                     editor.Draw(_spriteBatch, tileSprites);
 
@@ -899,7 +914,7 @@ namespace Strike_12
 
                     _spriteBatch.DrawString(displayFont, $"\nKromer: {shop.Points} " +
                         $"\nHealth: {player.Health}" +
-                        $"\n{String.Format("Speed: {0:0.0}", player.MoveSpeed)}" +
+                        $"\n{String.Format("Speed: {0:0.00}", player.BaseSpeed)}" +
                         $"\nEnergy: {player.Energy}\n" +
                         $"\nDeaths: {player.Deaths}" +
                         $"\n{String.Format("Best Time: {0:0.00}", player.BestTime)}" +
