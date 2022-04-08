@@ -67,8 +67,10 @@ namespace Strike_12
         private int points = 0;
         private List<Button> buttons = new List<Button>();
         private Texture2D buttonTexture;
-        private Texture2D shopBG;
+        private Texture2D shopWall;
+        private Texture2D shopFG;
         private Texture2D shopKeeper;
+        private Texture2D noseButton;
 
         //items
         private Texture2D healthUpgrade;
@@ -133,9 +135,10 @@ namespace Strike_12
             tileSprites = Content.Load<Texture2D>("brick");
             titleScreen = Content.Load<Texture2D>("Logo (1)");
             arenaBackground = Content.Load<Texture2D>("Temp Arena Background");
-
-            shopBG = Content.Load<Texture2D>("Shop Background");
+            shopWall = Content.Load<Texture2D>("ShopWall");
+            shopFG = Content.Load<Texture2D>("ShopFG");
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
+            noseButton = Content.Load<Texture2D>("CatNose");
 
             healthUpgrade = Content.Load<Texture2D>("HealthBottle");
             speedUpgrade = Content.Load<Texture2D>("SpeedBottle");
@@ -460,7 +463,7 @@ namespace Strike_12
                 // Game Over: appears when health is less than 1
                 case GameState.GameOver:
                     player.Reset();
-                    //player.Deaths++;
+                    player.Deaths++;
                     bEnemy.Reset();
                     lEnemy.Reset();
                     pEnemy.Reset();
@@ -544,8 +547,10 @@ namespace Strike_12
                     {
                         state = GameState.Arena;
                     }
-                    if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
+                    if (kbState.IsKeyDown(Keys.Q) && prevKbState.IsKeyUp(Keys.Q))
                     {
+                        player.SizeX = GraphicsDevice.Viewport.Width / 2;
+                        player.SizeY = GraphicsDevice.Viewport.Height - 196;
                         state = GameState.Menu;
                     }
                     break;
@@ -578,7 +583,7 @@ namespace Strike_12
                 case GameState.Menu:
                 case GameState.Start:
                     _spriteBatch.Draw(titleScreen, new Rectangle((windowWidth/2 - titleScreen.Width/2 - 250), (windowHeight/2 - titleScreen.Height/2 - 200), 1500, 750), Color.White);
-                    _spriteBatch.DrawString(displayFont, "Press Enter to continue\nTo learn the controls, press Space",
+                    _spriteBatch.DrawString(displayFont, "Press Enter to Start\nOr Press Space for Controls",
                         new Vector2(100, 800), Color.Black);
 
                     player.Draw(_spriteBatch, playerSprites);
@@ -646,14 +651,14 @@ namespace Strike_12
                 //text for shop screen
                 case GameState.Shop:
 
-                    _spriteBatch.Draw(shopBG, new Vector2(0, 0), Color.White);
-                    _spriteBatch.Draw(shopKeeper, new Vector2(450, 115), Color.White);
-
+                    _spriteBatch.Draw(shopWall, new Vector2(0, 0), Color.White);
+                    _spriteBatch.Draw(shopKeeper, new Vector2(450, 100), Color.White);
+                    _spriteBatch.Draw(shopFG, new Vector2(0, 0), Color.White);
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
 
                     _spriteBatch.DrawString(displayFont, $"\nKromer: {shop.Points} " +
-                        $"\nHealth: {player.Health}," +
+                        $"\nHealth: {player.Health}" +
                         $"\n{String.Format("Speed: {0:0.0}", player.BaseSpeed)}" +
                         $"\nEnergy: {player.Energy}\n" +
                         $"\nDeaths: {player.Deaths}" +
@@ -661,7 +666,7 @@ namespace Strike_12
                         $"\nSpendings: {shop.Spendings}",
                        new Vector2(40, 100), Color.White);
 
-                    _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Space to return to the menu",
+                    _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Q to quit to the menu",
                         new Vector2(40, 400), Color.White);
 
                     //draws each button
