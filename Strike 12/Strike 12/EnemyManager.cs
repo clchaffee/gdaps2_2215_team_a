@@ -19,6 +19,7 @@ namespace Strike_12
         public int Start { get; set; } = 0;
         public int End { get; set; } = 30;
         public List<decimal> numEnemies = new List<decimal>();
+        public double limitation { get; set; } = .1;
 
 
         public int WaveNum { get; set; }
@@ -60,14 +61,14 @@ namespace Strike_12
 
         }
 
-        public List<decimal> SpawnFormula()
+        public List<decimal> SpawnFormula(double dampener)
         {
             for (int i = Start; i < End; i++)
             {
                 if (i % 5 == 0)
                 {
 
-                    decimal value = Math.Ceiling((decimal)Math.Exp(i * .1));
+                    decimal value = Math.Ceiling((decimal)Math.Exp(i * dampener));
 
                     numEnemies.Add(value); 
 

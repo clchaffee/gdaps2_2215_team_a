@@ -32,6 +32,10 @@ namespace Strike_12
         Random rng = new Random();
         private Texture2D titleScreen;
         private int Interval { get; set; } = 0;
+        private bool easy = false;
+        private bool medium = true;
+        private bool hard = false;
+        private bool impossible = false;
 
         int count;
         bool spawnCap = true;
@@ -266,6 +270,34 @@ namespace Strike_12
                     {
                         state = GameState.Menu;
                     }
+                    if (kbState.IsKeyDown(Keys.D1) && prevKbState.IsKeyUp(Keys.D1))
+                    {
+                        easy = true;
+                        medium = false;
+                        hard = false;
+                        impossible = false;
+                    }
+                    if (kbState.IsKeyDown(Keys.D2) && prevKbState.IsKeyUp(Keys.D2))
+                    {
+                        easy = false;
+                        medium = true;
+                        hard = false;
+                        impossible = false;
+                    }
+                    if (kbState.IsKeyDown(Keys.D3) && prevKbState.IsKeyUp(Keys.D3))
+                    {
+                        easy = false;
+                        medium = false;
+                        hard = true;
+                        impossible = false;
+                    }
+                    if (kbState.IsKeyDown(Keys.D0) && prevKbState.IsKeyUp(Keys.D0))
+                    {
+                        easy = false;
+                        medium = false;
+                        hard = false;
+                        impossible = true;
+                    }
                     break;
                 
                 //start animation
@@ -386,25 +418,25 @@ namespace Strike_12
 
                     //TODO: Reimplement enemy collision 
                     //collision for each enemy in the Enemy class
-                    foreach (Enemy enemy in eManager.Enemies)
-                    {
+                    //foreach (Enemy enemy in eManager.Enemies)
+                    //{
 
-                        if (enemy.IsCollidingBottom(enemy, player) ||
-                            enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
-                            enemy.IsCollidingRight(enemy, player, player.VelocityX))
-                        {
+                    //    if (enemy.IsCollidingBottom(enemy, player) ||
+                    //        enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
+                    //        enemy.IsCollidingRight(enemy, player, player.VelocityX))
+                    //    {
 
-                            if (player.TakeDamage(gameTime))
-                            {
-                                player.Health -= 1;
-                            }
+                    //        if (player.TakeDamage(gameTime))
+                    //        {
+                    //            player.Health -= 1;
+                    //        }
 
-                        }
-                        else if (enemy.IsCollidingTop(enemy, player))
-                        {
-                            player.Jump();
-                        }
-                    }
+                    //    }
+                    //    else if (enemy.IsCollidingTop(enemy, player))
+                    //    {
+                    //        player.Jump();
+                    //    }
+                    //}
 
                     //if the player has no more health, go to shop
                     if (player.Health <= 0)
@@ -454,10 +486,41 @@ namespace Strike_12
                             switch (wave)
                             {
                                 case 1:
-                                eManager.SpawnFormula();
-                                    for (int i = 0; i < eManager.numEnemies[Interval]; i++)
+
+                                    if (easy == true)
                                     {
-                                        eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        eManager.SpawnFormula(.1);
+                                        eManager.Enemies.Clear();
+                                        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                    }
+                                    if (medium == true)
+                                    {
+                                        eManager.SpawnFormula(.1);
+                                        //eManager.limitation = .1;
+                                        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                    }
+                                    if (hard == true)
+                                    {
+                                        eManager.SpawnFormula(.125);
+                                        //eManager.limitation = .3;
+                                        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                    }
+                                    if (impossible == true)
+                                    {
+                                        eManager.SpawnFormula(.2);
+                                        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
                                     }
                                     break;
 
@@ -483,18 +546,21 @@ namespace Strike_12
                             count++;
                             spawnCap = false;
                             waitTime = 59;
-                            if (Interval == 6)
+                            if (Interval == 7)
                             {
                                 eManager.Start += 5;
                                 eManager.End += 5;
-                                Interval = 0;
+                                Interval = 1;
                                 eManager.Enemies.Clear();
                                 wave++;
+                                spawnCap = true;
                             }
-                            else if (Interval == 7)
-                            {
-
-                            }
+                            //else if (Interval == 7)
+                            //{
+                            //    eManager.Enemies.Clear();
+                            //    Interval = 0;
+                            //    wave++;
+                            //}
                         }
                         else
                         {
@@ -679,7 +745,7 @@ namespace Strike_12
                 case GameState.Menu:
                 case GameState.Start:
                     _spriteBatch.Draw(titleScreen, new Rectangle((windowWidth/2 - titleScreen.Width/2 - 250), (windowHeight/2 - titleScreen.Height/2 - 200), 1500, 750), Color.White);
-                    _spriteBatch.DrawString(displayFont, "Press Enter to Start\nOr Press Space for Controls",
+                    _spriteBatch.DrawString(displayFont, "Press Enter to Start\nOr Press Space for Controls and Difficulty Selection",
                         new Vector2(100, 800), Color.Black);
 
                     player.Draw(_spriteBatch, playerSprites);
@@ -690,8 +756,46 @@ namespace Strike_12
                     _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right" +
                         "\nPress Up Arrow to dash in your direction\n\nPress Space to go back to the Menu",
                         new Vector2(150, 200), Color.Black);
-                    _spriteBatch.DrawString(displayFont, "Press Space to continue to return to the menu",
-                        new Vector2(100, 1800), Color.Black);
+                    if (easy)
+                    {
+                        _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
+                            new Vector2(100, 500), Color.Green);
+                    }
+                    else
+                    {
+                        _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
+                            new Vector2(100, 500), Color.Black);
+                    }
+                    if (medium)
+                    {
+                        _spriteBatch.DrawString(displayFont, "Press 2 for Medium Difficulty",
+                            new Vector2(100, 525), Color.Green);
+                    }
+                    else
+                    {
+                        _spriteBatch.DrawString(displayFont, "Press 2 for Medium Difficulty",
+                            new Vector2(100, 525), Color.Black);
+                    }
+                    if (hard)
+                    {
+                        _spriteBatch.DrawString(displayFont, "Press 4 for Hard Difficulty",
+                            new Vector2(100, 550), Color.Green);
+                    }
+                    else
+                    {
+                        _spriteBatch.DrawString(displayFont, "Press 3 for Hard Difficulty",
+                            new Vector2(100, 550), Color.Black);
+                    }
+                    if (impossible)
+                    {
+                        _spriteBatch.DrawString(displayFont, "Press 4 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
+                            new Vector2(100, 575), Color.Green);
+                    }
+                    else
+                    {
+                        _spriteBatch.DrawString(displayFont, "Press 4 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
+                            new Vector2(100, 575), Color.Black);
+                    }
                     break;
 
                 //text for arena screen
@@ -704,12 +808,14 @@ namespace Strike_12
                     _spriteBatch.DrawString(displayFont, "Go to the shop page (happens upon character death)",
                         new Vector2(100, 400), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
-                       new Vector2(100, 150), Color.Black);
+                        new Vector2(100, 150), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
-                       new Vector2(100, 100), Color.Black);
+                        new Vector2(100, 100), Color.Black);
 
-                    _spriteBatch.DrawString(displayFont, $"\nCount: {eManager.Enemies.Count}",
-                       new Vector2(100, 200), Color.Black);
+                    _spriteBatch.DrawString(displayFont, $"\nWave: {wave}",
+                        new Vector2(100, 200), Color.Black);
+                    _spriteBatch.DrawString(displayFont, $"\n# of enemies in wave: {eManager.Enemies.Count}",
+                        new Vector2(100, 250), Color.Black);
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
