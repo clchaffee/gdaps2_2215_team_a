@@ -42,6 +42,7 @@ namespace Strike_12
         private Texture2D playerSprite;
         private float baseSpeed = 1f;
         private float moveSpeed = 8f;
+        private int maxHealth = 10;
         private int health = 10;
         private float energy = 20f;
         private float maxEnergy = 20f;
@@ -53,6 +54,8 @@ namespace Strike_12
         private Keys moveDirection;
         private int iCounter = 0;
         private Rectangle platformPos;
+        private bool timeStopActive = false;
+        private int timeStopCooldown = 0;
 
         //fields for gravity
         private float gravityMultiplier = 1f;
@@ -73,6 +76,7 @@ namespace Strike_12
 
         //shop related functions
         public bool dashPurchased = false;
+        public bool timeStopPurchased = false;
 
         public int Health
         {
@@ -80,10 +84,16 @@ namespace Strike_12
             set { health = value; }
         }
 
-        public float BaseSpeed
+        public int MaxHealth
         {
-            get { return baseSpeed; }
-            set { baseSpeed = value; }
+            get { return maxHealth; }
+            set { maxHealth = value; }
+        }
+
+        public float MoveSpeed
+        {
+            get { return moveSpeed; }
+            set { moveSpeed = value; }
         }
 
         public float Energy
@@ -151,6 +161,12 @@ namespace Strike_12
             set { canJump = value; }
         }
 
+        public bool TimeStopActive
+        {
+            get { return timeStopActive; }
+            set { timeStopActive = value; }
+        }
+
         // ------------------------------------------
 
         public float VelocityX
@@ -175,7 +191,6 @@ namespace Strike_12
             get { return position.Y; }
             set { position.Y = value; }
         }
-
 
         // ----- | Constructor | -----
         public Player(Texture2D texture, Rectangle size, int windowWidth, int windowHeight,
@@ -362,12 +377,27 @@ namespace Strike_12
                 // Update the player's Y velocity according to the multiplier
                 velocity.Y += 0.15f * gravityMultiplier;
 
+                // Timestop Check
+                if (kbState.IsKeyDown(Keys.Space) &&
+                    timeStopPurchased &&
+                    !timeStopActive &&
+                    timeStopCooldown > 300)
+                {
+                    timeStopActive = true;
+                    timeStopCooldown = 0;
+                }
+                else
+                {
+                    timeStopCooldown++;
+                }
+
                 // Air Dash
                 if (kbState.IsKeyDown(Keys.RightShift) &&
                     dashCounter > 0 &&
                     energy - 5 >= 0 &&
                     playerState != PlayerStates.airdash &&
-                    !isGrounded)
+                    !isGrounded &&
+                    dashPurchased)
                 {
                     energy -= 5;
                     velocity.Y = 0;
@@ -534,8 +564,9 @@ namespace Strike_12
             velocity.X = 0f;
             velocity.Y = 0f;
             dashCounter = 20;
+            timeStopActive = false;
             energy = maxEnergy;
-            Health = 10;
+            Health = maxHealth;
         }
     }
 }

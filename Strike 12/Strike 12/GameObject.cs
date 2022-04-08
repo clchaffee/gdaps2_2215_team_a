@@ -14,7 +14,6 @@ namespace Strike_12
 {
     abstract class GameObject
     {
-
         //fields for position and image
         protected Texture2D texture;
         protected Rectangle size;

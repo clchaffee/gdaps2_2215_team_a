@@ -106,6 +106,8 @@ namespace Strike_12
 
         //variables
         double timer = 0;
+        int energyTimer = 0;
+        int stoppedTimer = 0;
 
         public Game1()
         {
@@ -217,18 +219,23 @@ namespace Strike_12
                 new Rectangle(1100, 400, 100, 50),
                 50));
 
-            /*        NOT FOR SPRINT 3
-            buttons.Add(new Button("heal", 
-                buttonTexture, 
-                new Rectangle(1250, 300, 100, 50), 
-                10));
+            buttons.Add(new Button("timestop",
+                  buttonTexture,
+                  new Rectangle(1400, 400, 100, 50),
+                  100)); 
 
-            buttons.Add(new Button("slow", 
-                buttonTexture, 
-                new Rectangle(1400, 300, 100, 50), 
-                10));*/
+               /*        NOT FOR SPRINT 3
+               buttons.Add(new Button("heal", 
+                   buttonTexture, 
+                   new Rectangle(1250, 300, 100, 50), 
+                   10));
 
-            buttons.Add(new Button("cat",
+               buttons.Add(new Button("slow", 
+                   buttonTexture, 
+                   new Rectangle(1400, 300, 100, 50), 
+                   10));*/
+
+               buttons.Add(new Button("cat",
                 noseButton,
                 new Rectangle(197, 625, noseButton.Width / 4, noseButton.Height / 4), 0));
         }
@@ -318,9 +325,22 @@ namespace Strike_12
                     //eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
-
                     // Temp player and enemy update call
                     player.Update(gameTime);
+
+                    // Increment the player's energy if it is currently under the maximum
+                    if (player.CurrentEnergy < player.Energy)
+                    {
+                        if (energyTimer > 60)
+                        {
+                            player.CurrentEnergy++;
+                            energyTimer = 0;
+                        }
+                        else
+                        {
+                            energyTimer++;
+                        }
+                    }
 
                     isCollidingUp = false;
                     isCollidingDown = false;
@@ -419,32 +439,31 @@ namespace Strike_12
 
                     //TODO: Reimplement enemy collision 
                     //collision for each enemy in the Enemy class
-                    foreach (Enemy enemy in eManager.Enemies)
+                    if (!player.TimeStopActive)
                     {
-
-                        if (enemy.IsCollidingBottom(enemy, player) ||
-                            enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
-                            enemy.IsCollidingRight(enemy, player, player.VelocityX))
+                        foreach (Enemy enemy in eManager.Enemies)
                         {
 
-                            if (player.TakeDamage(gameTime))
+                            if (enemy.IsCollidingBottom(enemy, player) ||
+                                enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
+                                enemy.IsCollidingRight(enemy, player, player.VelocityX))
                             {
-                                player.Health -= 1;
-                            }
 
-                        }
-                        else if (enemy.IsCollidingTop(enemy, player))
-                        {
-                            player.Jump();
+                                if (player.TakeDamage(gameTime))
+                                {
+                                    player.Health -= 1;
+                                }
+
+                            }
+                            else if (enemy.IsCollidingTop(enemy, player))
+                            {
+                                //player.Jump();
+                            }
                         }
                     }
-
-
-                    //if the player has no more health, go to shop
-                    if (player.Health <= 0)
+                    else
                     {
-
-                        state = GameState.GameOver;
+                        
                     }
 
                     // Temp player and enemy update call
@@ -452,19 +471,23 @@ namespace Strike_12
                     //lEnemy.Update(gameTime, player.Size.Y);
                     //pEnemy.Update(gameTime);
                     //fEnemy.Update(gameTime, player);
-                    foreach (Enemy enemy in eManager.Enemies)
+
+                    if (!player.TimeStopActive)
                     {
-                        if (enemy is FollowEnemy)
+                        foreach (Enemy enemy in eManager.Enemies)
                         {
-                            ((FollowEnemy)enemy).Update(gameTime, player);
-                        }
-                        else if (enemy is LaserEnemy)
-                        {
-                            ((LaserEnemy)enemy).Update(gameTime, player.Size.Y);
-                        }
-                        else
-                        {
-                            enemy.Update(gameTime);
+                            if (enemy is FollowEnemy)
+                            {
+                                ((FollowEnemy)enemy).Update(gameTime, player);
+                            }
+                            else if (enemy is LaserEnemy)
+                            {
+                                ((LaserEnemy)enemy).Update(gameTime, player.Size.Y);
+                            }
+                            else
+                            {
+                                enemy.Update(gameTime);
+                            }
                         }
                     }
 
@@ -575,22 +598,28 @@ namespace Strike_12
 
                     }
 
+                    //if the player has no more health, go to shop
+                    if (player.Health <= 0)
+                    {
+
+                        state = GameState.GameOver;
+                    }
+
+                    // If time is stopped, increased the stopped time timer (aka, the stoppedTimer)
+                    if (player.TimeStopActive)
+                    {
+                        if(stoppedTimer < 180)
+                        {
+                            stoppedTimer++;
+                        }
+                        else
+                        {
+                            player.TimeStopActive = false;
+                            stoppedTimer = 0;
+                        }
+                    }
+
                     break;
-
-
-
-
-                /*
-                //if the count divided by 60 if equal to or greater than the wave length, adds another to the list
-                if (eManager.Count/60 >= waveLength)
-                {
-                    enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
-                    eManager.SpawnEnemy(enemy);
-                    waveDelta /= 1.5;
-                    waveLength += waveDelta;
-                }
-                */
-
 
                 // Game Winner: appears when timer is greater than 30
                 case GameState.GameWinner:
@@ -678,12 +707,12 @@ namespace Strike_12
                                 case "health":
                                     button.Cost += 10;
                                     shop.MaxHealth += 1;
-                                    player.Health = player.Health + shop.MaxHealth;
+                                    player.MaxHealth += 1;
                                     break;
 
                                 case "speed":
                                     button.Cost += 20;
-                                    player.BaseSpeed += 0.1f;
+                                    player.MoveSpeed += 0.1f;
                                     break;
 
                                 case "energy":
@@ -693,6 +722,10 @@ namespace Strike_12
 
                                 case "dash":
                                     player.dashPurchased = true;
+                                    break;
+
+                                case "timestop":
+                                    player.timeStopPurchased = true;
                                     break;
 
                                 case "heal":
@@ -758,8 +791,10 @@ namespace Strike_12
                 //text for control screen
                 case GameState.Controls:
                     _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right" +
-                        "\nPress Up Arrow to dash in your direction\n\nPress Space to go back to the Menu",
-                        new Vector2(150, 200), Color.Black);
+                        "\nPress Left Shift and a direction to airdash (WHEN UNLOCKED)" +
+                        "\nPress Space to stop time for a short period (WHEN UNLOCKED)\n" +
+                        "\nPress Space to go back to the Menu",
+                        new Vector2(100, 50), Color.Black);
                     if (easy)
                     {
                         _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
@@ -809,8 +844,6 @@ namespace Strike_12
                     // Draw the tiles
                     editor.Draw(_spriteBatch, tileSprites);
 
-                    _spriteBatch.DrawString(displayFont, "Go to the shop page (happens upon character death)",
-                        new Vector2(100, 400), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
                         new Vector2(100, 150), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
@@ -866,7 +899,7 @@ namespace Strike_12
 
                     _spriteBatch.DrawString(displayFont, $"\nKromer: {shop.Points} " +
                         $"\nHealth: {player.Health}" +
-                        $"\n{String.Format("Speed: {0:0.0}", player.BaseSpeed)}" +
+                        $"\n{String.Format("Speed: {0:0.0}", player.MoveSpeed)}" +
                         $"\nEnergy: {player.Energy}\n" +
                         $"\nDeaths: {player.Deaths}" +
                         $"\n{String.Format("Best Time: {0:0.00}", player.BestTime)}" +

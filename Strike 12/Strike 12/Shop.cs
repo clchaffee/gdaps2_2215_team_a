@@ -130,7 +130,6 @@ namespace Strike_12
                       new Vector2(75, 75), Color.White);
         }
 
-
         /// <summary>
         /// private method to add comments from a file to a list
         /// </summary>
