@@ -783,7 +783,7 @@ namespace Strike_12
                     }
                     if (hard)
                     {
-                        _spriteBatch.DrawString(displayFont, "Press 4 for Hard Difficulty",
+                        _spriteBatch.DrawString(displayFont, "Press 3 for Hard Difficulty",
                             new Vector2(100, 550), Color.Green);
                     }
                     else
