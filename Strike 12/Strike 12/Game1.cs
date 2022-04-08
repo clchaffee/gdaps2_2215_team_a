@@ -71,6 +71,7 @@ namespace Strike_12
         private Texture2D shopFG;
         private Texture2D shopKeeper;
         private Texture2D noseButton;
+        private string comment;
 
         //items
         private Texture2D healthUpgrade;
@@ -111,6 +112,9 @@ namespace Strike_12
             _graphics.ApplyChanges();
             eManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
             bManager = new EnemyManager(enemySprites, eSize, windowWidth, windowHeight);
+
+            //initializes comment to null
+            comment = null;
 
             base.Initialize();
         }
@@ -488,6 +492,9 @@ namespace Strike_12
                     shop.Points += 5 * (int)timer;
                     timer = 0;
 
+                    //sets a new comment
+                    comment = shop.Comment(null);
+
                     Thread.Sleep(500);
                     state = GameState.Shop;
 
@@ -495,7 +502,6 @@ namespace Strike_12
 
                 //if enter is pressed in the shop, returns to arena; if space is pressed brings up the menu
                 case GameState.Shop:
-
                     player.Health = shop.MaxHealth;
 
                     // for each button calls update method, checks if pressed and gives upgrade if you have enough points
@@ -665,6 +671,8 @@ namespace Strike_12
                         $"\n{String.Format("Best Time: {0:0.00}", player.BestTime)}" +
                         $"\nSpendings: {shop.Spendings}",
                        new Vector2(40, 100), Color.White);
+
+                    _spriteBatch.DrawString(displayFont, comment, new Vector2(500,200), Color.LightGray);
 
                     _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Q to quit to the menu",
                         new Vector2(40, 400), Color.White);
