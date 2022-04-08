@@ -55,7 +55,7 @@ namespace Strike_12
 
         // enemy assets
         private Texture2D enemySprites;
-        
+
         // Enemy types for testing purposes
         private Enemy enemy;
         private BulletEnemy bEnemy;
@@ -196,24 +196,24 @@ namespace Strike_12
             //makes a new shop and buttons for each of the purchases
             shop = new Shop(points);
 
-            buttons.Add(new Button("health", 
-                healthUpgrade, 
-                new Rectangle(1100, 150, healthUpgrade.Width, healthUpgrade.Height), 
+            buttons.Add(new Button("health",
+                healthUpgrade,
+                new Rectangle(1100, 150, healthUpgrade.Width, healthUpgrade.Height),
                 10));
 
-            buttons.Add(new Button("speed", 
-                speedUpgrade, 
+            buttons.Add(new Button("speed",
+                speedUpgrade,
                 new Rectangle(1250, 150, speedUpgrade.Width, speedUpgrade.Height),
                 10));
 
-            buttons.Add(new Button("energy", 
-                energyUpgrade, 
-                new Rectangle(1400, 150, energyUpgrade.Width, energyUpgrade.Height), 
+            buttons.Add(new Button("energy",
+                energyUpgrade,
+                new Rectangle(1400, 150, energyUpgrade.Width, energyUpgrade.Height),
                 10));
 
-            buttons.Add(new Button("dash", 
-                buttonTexture, 
-                new Rectangle(1100, 400, 100, 50), 
+            buttons.Add(new Button("dash",
+                buttonTexture,
+                new Rectangle(1100, 400, 100, 50),
                 50));
 
             /*        NOT FOR SPRINT 3
@@ -228,8 +228,8 @@ namespace Strike_12
                 10));*/
 
             buttons.Add(new Button("cat",
-                noseButton, 
-                new Rectangle(197, 625, noseButton.Width/4, noseButton.Height/4), 0));
+                noseButton,
+                new Rectangle(197, 625, noseButton.Width / 4, noseButton.Height / 4), 0));
         }
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace Strike_12
                         impossible = true;
                     }
                     break;
-                
+
                 //start animation
                 case GameState.Start:
 
@@ -316,7 +316,7 @@ namespace Strike_12
 
                     //eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
-                    
+
 
                     // Temp player and enemy update call
                     player.Update(gameTime);
@@ -421,27 +421,27 @@ namespace Strike_12
                     //foreach (Enemy enemy in eManager.Enemies)
                     //{
 
-                        //if (enemy.IsCollidingBottom(enemy, player) ||
-                        //    enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
-                        //    enemy.IsCollidingRight(enemy, player, player.VelocityX))
-                        //{
+                    //if (enemy.IsCollidingBottom(enemy, player) ||
+                    //    enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
+                    //    enemy.IsCollidingRight(enemy, player, player.VelocityX))
+                    //{
 
-                        //    if (player.TakeDamage(gameTime))
-                        //    {
-                        //        player.Health -= 1;
-                        //    }
+                    //    if (player.TakeDamage(gameTime))
+                    //    {
+                    //        player.Health -= 1;
+                    //    }
 
-                        //}
-                        //else if (enemy.IsCollidingTop(enemy, player))
-                        //{
-                        //    player.Jump();
-                        //}
-                    }
+                    //}
+                    //else if (enemy.IsCollidingTop(enemy, player))
+                    //{
+                    //    player.Jump();
+                    //}
+
 
                     //if the player has no more health, go to shop
                     if (player.Health <= 0)
                     {
-                        
+
                         state = GameState.GameOver;
                     }
 
@@ -452,7 +452,7 @@ namespace Strike_12
                     //fEnemy.Update(gameTime, player);
                     foreach (Enemy enemy in eManager.Enemies)
                     {
-                        if(enemy is FollowEnemy)
+                        if (enemy is FollowEnemy)
                         {
                             ((FollowEnemy)enemy).Update(gameTime, player);
                         }
@@ -573,22 +573,22 @@ namespace Strike_12
 
                     }
 
-
-
-
-
-
-                    /*
-                    //if the count divided by 60 if equal to or greater than the wave length, adds another to the list
-                    if (eManager.Count/60 >= waveLength)
-                    {
-                        enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
-                        eManager.SpawnEnemy(enemy);
-                        waveDelta /= 1.5;
-                        waveLength += waveDelta;
-                    }
-                    */
                     break;
+
+
+
+
+                /*
+                //if the count divided by 60 if equal to or greater than the wave length, adds another to the list
+                if (eManager.Count/60 >= waveLength)
+                {
+                    enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
+                    eManager.SpawnEnemy(enemy);
+                    waveDelta /= 1.5;
+                    waveLength += waveDelta;
+                }
+                */
+
 
                 // Game Winner: appears when timer is greater than 30
                 case GameState.GameWinner:
@@ -745,7 +745,7 @@ namespace Strike_12
                 //text for menu screen
                 case GameState.Menu:
                 case GameState.Start:
-                    _spriteBatch.Draw(titleScreen, new Rectangle((windowWidth/2 - titleScreen.Width/2 - 250), (windowHeight/2 - titleScreen.Height/2 - 200), 1500, 750), Color.White);
+                    _spriteBatch.Draw(titleScreen, new Rectangle((windowWidth / 2 - titleScreen.Width / 2 - 250), (windowHeight / 2 - titleScreen.Height / 2 - 200), 1500, 750), Color.White);
                     _spriteBatch.DrawString(displayFont, "Press Enter to Start\nOr Press Space for Controls and Difficulty Selection",
                         new Vector2(100, 800), Color.Black);
 
@@ -870,7 +870,7 @@ namespace Strike_12
                         $"\nSpendings: {shop.Spendings}",
                        new Vector2(40, 100), Color.White);
 
-                    _spriteBatch.DrawString(displayFont, comment, new Vector2(450,200), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, comment, new Vector2(450, 200), Color.LightGray);
 
                     _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Q to quit to the menu",
                         new Vector2(40, 400), Color.White);
@@ -882,7 +882,7 @@ namespace Strike_12
 
                         if (button.IsHighlight && shop.Points < button.Cost)
                         {
-                            _spriteBatch.DrawString(displayFont,"Sorry hun, you don't have enough kromer.", new Vector2(600, 80), Color.White);
+                            _spriteBatch.DrawString(displayFont, "Sorry hun, you don't have enough kromer.", new Vector2(600, 80), Color.White);
                         }
                     }
 
@@ -898,3 +898,4 @@ namespace Strike_12
         }
     }
 }
+
