@@ -64,7 +64,7 @@ namespace Strike_12
                 }
             }
 
-            else if (size.Y > playerPos - 20 && size.Y < playerPos + 20)
+            else if (size.Y > playerPos - 20 && size.Y <  playerPos + 20)
             {
                 blast = true;
             }

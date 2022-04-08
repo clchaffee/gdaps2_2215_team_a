@@ -9,7 +9,7 @@ namespace Strike_12
     /// <summary>
     /// class to hold tile information
     /// </summary>
-    class Tile : GameObject, ICollidable 
+    class Tile : GameObject
     {
         private Texture2D texture;
         private Rectangle size;

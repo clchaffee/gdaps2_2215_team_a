@@ -530,8 +530,8 @@ namespace Strike_12
         /// </summary>
         public override void Reset()
         {
-            position.X = windowWidth / 2 - size.Width / 2;
-            position.Y = windowHeight / 2 - size.Height / 2;
+            position.X = 64;
+            position.Y = windowHeight - 196;
             velocity.X = 0f;
             velocity.Y = 0f;
             dashCounter = 20;
