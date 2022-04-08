@@ -789,12 +789,12 @@ namespace Strike_12
                     }
                     if (impossible)
                     {
-                        _spriteBatch.DrawString(displayFont, "Press 4 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
+                        _spriteBatch.DrawString(displayFont, "Press 0 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
                             new Vector2(100, 575), Color.Green);
                     }
                     else
                     {
-                        _spriteBatch.DrawString(displayFont, "Press 4 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
+                        _spriteBatch.DrawString(displayFont, "Press 0 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
                             new Vector2(100, 575), Color.Black);
                     }
                     break;
