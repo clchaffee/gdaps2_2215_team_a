@@ -363,9 +363,9 @@ namespace Strike_12
                 velocity.Y += 0.15f * gravityMultiplier;
 
                 // Air Dash
-                if (kbState.IsKeyDown(Keys.Enter) &&
+                if (kbState.IsKeyDown(Keys.RightShift) &&
                     dashCounter > 0 &&
-                    energy > 0 &&
+                    energy - 5 >= 0 &&
                     playerState != PlayerStates.airdash &&
                     !isGrounded)
                 {
