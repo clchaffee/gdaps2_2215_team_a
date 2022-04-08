@@ -31,6 +31,11 @@ namespace Strike_12
         private int windowHeight = 960;
         Random rng = new Random();
         private Texture2D titleScreen;
+        private int Interval { get; set; } = 0;
+
+        int count;
+        bool spawnCap = true;
+        int waitTime;
 
         // player assets
         private Texture2D playerSprites;
@@ -60,6 +65,7 @@ namespace Strike_12
         private double waveDelta = 10;
         private EnemyManager eManager;
         private EnemyManager bManager;
+        int wave = 1;
 
         //variables for the shop
         private Shop shop;
@@ -152,16 +158,16 @@ namespace Strike_12
 
             // ENEMY STUFF
             eManager.Initialize();
-            enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
-            eManager.SpawnEnemy(enemy);
-            bEnemy = new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight);
-            eManager.SpawnEnemy(bEnemy);
-            pEnemy = new BounceEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight);
-            eManager.SpawnEnemy(pEnemy);
-            fEnemy = new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight);
-            eManager.SpawnEnemy(bEnemy);
-            lEnemy = new LaserEnemy(buttonTexture, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.Size.Y);
-            eManager.SpawnEnemy(lEnemy);
+            //enemy = new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight);
+            //eManager.SpawnEnemy(enemy);
+            //bEnemy = new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight);
+            //eManager.SpawnEnemy(bEnemy);
+            //pEnemy = new BounceEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight);
+            //eManager.SpawnEnemy(pEnemy);
+            //fEnemy = new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight);
+            //eManager.SpawnEnemy(bEnemy);
+            //lEnemy = new LaserEnemy(buttonTexture, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.Size.Y);
+            //eManager.SpawnEnemy(lEnemy);
 
 
             // -- LEVEL LOADING --
@@ -261,8 +267,9 @@ namespace Strike_12
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
 
-                    eManager.FirstWave();
+                    //eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
+                    
 
                     // Temp player and enemy update call
                     player.Update(gameTime);
@@ -362,6 +369,7 @@ namespace Strike_12
                         state = GameState.GameOver;
                     }
 
+                    //TODO: Reimplement enemy collision 
                     //collision for each enemy in the Enemy class
                     foreach (Enemy enemy in eManager.Enemies)
                     {
@@ -411,17 +419,84 @@ namespace Strike_12
                         }
                     }
 
-                    //if the count of the list is zero (empty), will automatically add one to it
+                    //if the count of the list is zero(empty), will automatically add one to it
                     //if (eManager.Enemies.Count == 0)
                     //{
-                    //    enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
+                    //    enemy = new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight);
                     //    eManager.SpawnEnemy(enemy);
                     //}
 
                     //adds one to the count in the manager every frame
                     eManager.Count++;
-                    
+
                     // TODO: properly update the spawning method/algorithm
+
+                    if ((int)timer % 5 == 0)
+                    {
+
+                        if (spawnCap)
+                        {
+                            switch (wave)
+                            {
+                                case 1:
+                                eManager.SpawnFormula();
+                                    for (int i = 0; i < eManager.numEnemies[Interval]; i++)
+                                    {
+                                        eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                    }
+                                    break;
+
+                                case 2:
+                                    eManager.SpawnEnemy(new BounceEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight));
+                                    eManager.SpawnEnemy(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight));
+                                    break;
+
+                                case 3:
+                                    eManager.SpawnEnemy(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight));
+                                    break;
+
+                                case 4:
+                                    eManager.SpawnEnemy(new LaserEnemy(buttonTexture, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.Size.Y));
+                                    break;
+                                default:
+                                    break;
+                            }
+
+
+                            Interval++;
+
+                            count++;
+                            spawnCap = false;
+                            waitTime = 59;
+                            if (Interval == 6)
+                            {
+                                eManager.Start += 5;
+                                eManager.End += 5;
+                                Interval = 0;
+                                eManager.Enemies.Clear();
+                                wave++;
+                            }
+                            else if (Interval == 7)
+                            {
+
+                            }
+                        }
+                        else
+                        {
+                            waitTime--;
+                            if (waitTime == 0)
+                            {
+                                spawnCap = true;
+                            }
+                        }
+
+                    }
+
+
+
+
+
+
                     /*
                     //if the count divided by 60 if equal to or greater than the wave length, adds another to the list
                     if (eManager.Count/60 >= waveLength)
@@ -467,14 +542,15 @@ namespace Strike_12
                 case GameState.GameOver:
                     player.Reset();
                     player.Deaths++;
-                    bEnemy.Reset();
-                    lEnemy.Reset();
-                    pEnemy.Reset();
-                    fEnemy.Reset();
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Reset();
                     }
+                    eManager.Start += 0;
+                    eManager.End += 30;
+                    Interval = 0;
+                    eManager.Enemies.Clear();
+                    wave = 1;
 
                     //resets data from Arena
                     eManager.Enemies.Clear();
@@ -614,6 +690,9 @@ namespace Strike_12
                        new Vector2(100, 150), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
                        new Vector2(100, 100), Color.Black);
+
+                    _spriteBatch.DrawString(displayFont, $"\nCount: {eManager.Enemies.Count}",
+                       new Vector2(100, 200), Color.Black);
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
