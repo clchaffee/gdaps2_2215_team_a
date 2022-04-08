@@ -676,7 +676,7 @@ namespace Strike_12
 
                         if (button.IsHighlight && shop.Points < button.Cost)
                         {
-                            _spriteBatch.DrawString(displayFont,"NOT ENOUGH POINTS!", new Vector2(400, 100), Color.White);
+                            _spriteBatch.DrawString(displayFont,"Sorry hun, you don't have enough points", new Vector2(600, 100), Color.White);
                         }
                     }
 
