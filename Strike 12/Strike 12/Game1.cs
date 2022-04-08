@@ -73,6 +73,11 @@ namespace Strike_12
         private Texture2D noseButton;
         private string comment;
 
+        //items
+        private Texture2D healthUpgrade;
+        private Texture2D speedUpgrade;
+        private Texture2D energyUpgrade;
+
         // Level Assets
         private LevelEditor editor;
         private Texture2D tileSprites;
@@ -139,6 +144,10 @@ namespace Strike_12
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
             noseButton = Content.Load<Texture2D>("CatNose");
 
+            healthUpgrade = Content.Load<Texture2D>("HealthBottle");
+            speedUpgrade = Content.Load<Texture2D>("SpeedBottle");
+            energyUpgrade = Content.Load<Texture2D>("EnergyBottle");
+
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height - 192);
 
@@ -174,25 +183,26 @@ namespace Strike_12
             shop = new Shop(points);
 
             buttons.Add(new Button("health", 
-                buttonTexture, 
-                new Rectangle(1100, 150, 100, 50), 
+                healthUpgrade, 
+                new Rectangle(1100, 150, healthUpgrade.Width, healthUpgrade.Height), 
                 10));
 
             buttons.Add(new Button("speed", 
-                buttonTexture, 
-                new Rectangle(1250, 150, 100, 50),
+                speedUpgrade, 
+                new Rectangle(1250, 150, speedUpgrade.Width, speedUpgrade.Height),
                 10));
 
             buttons.Add(new Button("energy", 
-                buttonTexture, 
-                new Rectangle(1400, 150, 100, 50), 
+                energyUpgrade, 
+                new Rectangle(1400, 150, energyUpgrade.Width, energyUpgrade.Height), 
                 10));
 
             buttons.Add(new Button("dash", 
                 buttonTexture, 
-                new Rectangle(1100, 300, 100, 50), 
+                new Rectangle(1100, 400, 100, 50), 
                 50));
 
+            /*        NOT FOR SPRINT 3
             buttons.Add(new Button("heal", 
                 buttonTexture, 
                 new Rectangle(1250, 300, 100, 50), 
@@ -201,7 +211,7 @@ namespace Strike_12
             buttons.Add(new Button("slow", 
                 buttonTexture, 
                 new Rectangle(1400, 300, 100, 50), 
-                10));
+                10));*/
 
             buttons.Add(new Button("cat",
                 buttonTexture, 
@@ -670,7 +680,12 @@ namespace Strike_12
                     //draws each button
                     foreach (Button button in buttons)
                     {
-                        button.Draw(_spriteBatch, displayFont, buttonTexture);
+                        button.Draw(_spriteBatch, displayFont);
+
+                        if (button.IsHighlight && shop.Points < button.Cost)
+                        {
+                            _spriteBatch.DrawString(displayFont,"NOT ENOUGH POINTS!", new Vector2(400, 100), Color.White);
+                        }
                     }
 
                     break;
