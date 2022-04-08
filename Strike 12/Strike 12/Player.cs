@@ -50,7 +50,6 @@ namespace Strike_12
 
         //other
         private int dashCounter = 20;
-        private float energyCount = 20f;
         private Keys moveDirection;
         private int iCounter = 0;
         private Rectangle platformPos;
@@ -366,7 +365,7 @@ namespace Strike_12
                 // Air Dash
                 if (kbState.IsKeyDown(Keys.Enter) &&
                     dashCounter > 0 &&
-                    energyCount > 0 &&
+                    energy > 0 &&
                     playerState != PlayerStates.airdash &&
                     !isGrounded)
                 {

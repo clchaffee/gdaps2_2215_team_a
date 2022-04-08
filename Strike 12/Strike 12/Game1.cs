@@ -708,7 +708,7 @@ namespace Strike_12
                        new Vector2(100, 150), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
                        new Vector2(100, 100), Color.Black);
-                    _spriteBatch.DrawString(displayFont, $"\nEnergy: {player.Energy}",
+                    _spriteBatch.DrawString(displayFont, $"\nEnergy: {player.CurrentEnergy}",
                        new Vector2(100, 50), Color.Black);
 
                     _spriteBatch.DrawString(displayFont, $"\nCount: {eManager.Enemies.Count}",
