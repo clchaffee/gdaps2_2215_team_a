@@ -421,22 +421,22 @@ namespace Strike_12
                     //foreach (Enemy enemy in eManager.Enemies)
                     //{
 
-                    //    if (enemy.IsCollidingBottom(enemy, player) ||
-                    //        enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
-                    //        enemy.IsCollidingRight(enemy, player, player.VelocityX))
-                    //    {
+                        //if (enemy.IsCollidingBottom(enemy, player) ||
+                        //    enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
+                        //    enemy.IsCollidingRight(enemy, player, player.VelocityX))
+                        //{
 
-                    //        if (player.TakeDamage(gameTime))
-                    //        {
-                    //            player.Health -= 1;
-                    //        }
+                        //    if (player.TakeDamage(gameTime))
+                        //    {
+                        //        player.Health -= 1;
+                        //    }
 
-                    //    }
-                    //    else if (enemy.IsCollidingTop(enemy, player))
-                    //    {
-                    //        player.Jump();
-                    //    }
-                    //}
+                        //}
+                        //else if (enemy.IsCollidingTop(enemy, player))
+                        //{
+                        //    player.Jump();
+                        //}
+                    }
 
                     //if the player has no more health, go to shop
                     if (player.Health <= 0)
@@ -707,6 +707,7 @@ namespace Strike_12
                     //key presses to change between gamestates
                     if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
                     {
+                        player.Reset();
                         state = GameState.Arena;
                     }
                     if (kbState.IsKeyDown(Keys.Q) && prevKbState.IsKeyUp(Keys.Q))
@@ -810,7 +811,9 @@ namespace Strike_12
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
                         new Vector2(100, 150), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
-                        new Vector2(100, 100), Color.Black);
+                       new Vector2(100, 100), Color.Black);
+                    _spriteBatch.DrawString(displayFont, $"\nEnergy: {player.CurrentEnergy}",
+                       new Vector2(100, 50), Color.Black);
 
                     _spriteBatch.DrawString(displayFont, $"\nWave: {wave}",
                         new Vector2(100, 200), Color.Black);
