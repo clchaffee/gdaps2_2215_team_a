@@ -325,7 +325,7 @@ namespace Strike_12
                     //eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
-                    // Temp player and enemy update call
+                    // Update the player
                     player.Update(gameTime);
 
                     // Increment the player's energy if it is currently under the maximum
@@ -354,10 +354,56 @@ namespace Strike_12
                         {
                             if (editor[i, j] != null)
                             {
+                                // Check for top collisions
+                                if (player.IsCollidingTop(player, editor[i, j]) &&
+                                    (!isCollidingUp))
+                                {
+                                    while (player.Size.Bottom != editor[i, j].Size.Top)
+                                    {
+                                        player.SizeY -= 1;
+                                    }
+
+                                    player.VelocityY = 0;
+                                    player.PositionY = player.SizeY;
+
+                                    player.IsGrounded = true;
+                                    isCollidingUp = true;
+                                }
+                                else
+                                {
+                                    //if (player.Size.Bottom > editor[i, j].Size.Top)
+                                    //{
+                                    //    isCollidingUp = false;
+                                    //}
+                                }
+
+                                // Check for bottom collisions
+                                if (player.IsCollidingBottom(player, editor[i, j]) &&
+                                    (!isCollidingDown))
+                                {
+                                    while (player.Size.Top != editor[i, j].Size.Bottom)
+                                    {
+                                        player.SizeY++;
+                                    }
+
+                                    player.PositionY = player.SizeY;
+
+                                    player.VelocityY = 0;
+                                    player.CanJump = false;
+                                    player.IsGrounded = false;
+                                    isCollidingDown = true;
+                                }
+                                else
+                                {
+                                    //if (player.Size.Top < editor[i, j].Size.Bottom)
+                                    //{
+                                    //    isCollidingDown = false;
+                                    //}
+                                }
 
                                 // Check for left collisions
                                 if (player.IsCollidingLeft(player, editor[i, j], player.VelocityX) &&
-                                    (!isCollidingLeft))
+                                        (!isCollidingLeft))
                                 {
                                     player.LeftCollided = true;
 
@@ -372,7 +418,10 @@ namespace Strike_12
                                 }
                                 else
                                 {
-                                    player.LeftCollided = false;
+                                    if (player.Size.Left > editor[i, j].Size.Right)
+                                    {
+                                        player.LeftCollided = false;
+                                    }
                                 }
 
                                 // Check for right collisions
@@ -392,44 +441,15 @@ namespace Strike_12
                                 }
                                 else
                                 {
-                                    player.RightCollided = false;
-                                }
-
-                                // Check for top collisions
-                                if (player.IsCollidingTop(player, editor[i, j]) &&
-                                    (!isCollidingUp))
-                                {
-                                    while (player.Size.Bottom != editor[i, j].Size.Top)
+                                    if (player.Size.Right < editor[i, j].Size.Left)
                                     {
-                                        player.SizeY -= 1;
+                                        player.RightCollided = false;
                                     }
-
-                                    player.VelocityY = 0;
-                                    player.PositionY = player.SizeY;
-
-                                    player.IsGrounded = true;
-                                    isCollidingUp = true;
-                                }
-
-                                // Check for bottom collisions
-                                if (player.IsCollidingBottom(player, editor[i, j]) &&
-                                    (!isCollidingDown))
-                                {
-                                    while (player.Size.Top != editor[i, j].Size.Bottom)
-                                    {
-                                        player.SizeY++;
-                                    }
-
-                                    player.PositionY = player.SizeY;
-
-                                    player.VelocityY = 0;
-                                    player.CanJump = false;
-                                    player.IsGrounded = false;
-                                    isCollidingDown = true;
                                 }
                             }
                         }
                     }
+
                     //checks if player fell in a pit
                     if (player.Size.Y > windowHeight)
                     {
@@ -879,6 +899,15 @@ namespace Strike_12
                     {
                         enemy.Draw(_spriteBatch, enemySprites);
                     }
+
+                    _spriteBatch.DrawString(displayFont, $"{String.Format(player.LeftCollided.ToString())}",
+                        new Vector2(100, 300), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, $"{String.Format(player.RightCollided.ToString())}",
+                        new Vector2(100, 350), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, $"{String.Format(isCollidingUp.ToString())}",
+                        new Vector2(100, 400), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, $"{String.Format(isCollidingDown.ToString())}",
+                        new Vector2(100, 450), Color.LightGray);
 
                     break;
 
