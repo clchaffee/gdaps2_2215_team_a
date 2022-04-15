@@ -42,6 +42,7 @@ namespace Strike_12
         private Texture2D playerSprite;
         private float baseSpeed = 1f;
         private float moveSpeed = 8f;
+        private int maxHealth = 10;
         private int health = 10;
         private float energy = 20f;
         private float maxEnergy = 20f;
@@ -53,6 +54,8 @@ namespace Strike_12
         private Keys moveDirection;
         private int iCounter = 0;
         private Rectangle platformPos;
+        private bool timeStopActive = false;
+        private int timeStopCooldown = 0;
 
         //fields for gravity
         private float gravityMultiplier = 1f;
@@ -73,11 +76,18 @@ namespace Strike_12
 
         //shop related functions
         public bool dashPurchased = false;
+        public bool timeStopPurchased = false;
 
         public int Health
         {
             get { return health; }
             set { health = value; }
+        }
+
+        public int MaxHealth
+        {
+            get { return maxHealth; }
+            set { maxHealth = value; }
         }
 
         public float BaseSpeed
@@ -151,6 +161,12 @@ namespace Strike_12
             set { canJump = value; }
         }
 
+        public bool TimeStopActive
+        {
+            get { return timeStopActive; }
+            set { timeStopActive = value; }
+        }
+
         // ------------------------------------------
 
         public float VelocityX
@@ -175,7 +191,6 @@ namespace Strike_12
             get { return position.Y; }
             set { position.Y = value; }
         }
-
 
         // ----- | Constructor | -----
         public Player(Texture2D texture, Rectangle size, int windowWidth, int windowHeight,
@@ -271,7 +286,7 @@ namespace Strike_12
             //if A is pressed, moves player left, changes player state depending on if jumping or not.
             if (kbState.IsKeyDown(Keys.A) && !leftCollided && playerState != PlayerStates.airdash)
             {
-                velocity.X = -moveSpeed;
+                velocity.X = -(baseSpeed*moveSpeed);
 
                 if (!isGrounded && previousPlayerState != PlayerStates.moveLeft)
                 {
@@ -285,7 +300,7 @@ namespace Strike_12
             //if D is pressed, moves player right, changes player state depending on if jumping or not.
             else if (kbState.IsKeyDown(Keys.D) && !rightCollided && playerState != PlayerStates.airdash)
             {
-                velocity.X = moveSpeed;
+                velocity.X = (baseSpeed*moveSpeed);
 
                 if (!isGrounded && previousPlayerState != PlayerStates.moveRight)
                 {
@@ -335,7 +350,7 @@ namespace Strike_12
             {
                 //position.Y = this.SizeY - playerSprite.Height;
                 gravityMultiplier = 1f;
-                moveSpeed = 10f;
+                moveSpeed = baseSpeed*10f;
                 dashCounter = 20;
                 velocity.Y = 0;
                 canJump = true;
@@ -352,22 +367,37 @@ namespace Strike_12
                 // If the player is falling, lower their movespeed to allow for precise landing
                 if (velocity.Y <= 10 && velocity.Y >= 0)
                 {
-                    moveSpeed += 0.3f;
+                    moveSpeed += baseSpeed*0.3f;
                 }
                 else if (velocity.Y > 0)
                 {
-                    moveSpeed = 8.7f;
+                    moveSpeed = baseSpeed * 8.7f;
                 }
 
                 // Update the player's Y velocity according to the multiplier
                 velocity.Y += 0.15f * gravityMultiplier;
 
+                // Timestop Check
+                if (kbState.IsKeyDown(Keys.Space) &&
+                    timeStopPurchased &&
+                    !timeStopActive &&
+                    timeStopCooldown > 300)
+                {
+                    timeStopActive = true;
+                    timeStopCooldown = 0;
+                }
+                else
+                {
+                    timeStopCooldown++;
+                }
+
                 // Air Dash
-                if (kbState.IsKeyDown(Keys.Enter) &&
+                if (kbState.IsKeyDown(Keys.RightShift) &&
                     dashCounter > 0 &&
-                    energy > 0 &&
+                    energy - 5 >= 0 &&
                     playerState != PlayerStates.airdash &&
-                    !isGrounded)
+                    !isGrounded &&
+                    dashPurchased)
                 {
                     energy -= 5;
                     velocity.Y = 0;
@@ -531,11 +561,13 @@ namespace Strike_12
         {
             position.X = 64;
             position.Y = windowHeight - 196;
+            playerState = PlayerStates.faceRight;
             velocity.X = 0f;
             velocity.Y = 0f;
             dashCounter = 20;
+            timeStopActive = false;
             energy = maxEnergy;
-            Health = 10;
+            Health = maxHealth;
         }
     }
 }

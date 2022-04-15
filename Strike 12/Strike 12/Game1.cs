@@ -48,7 +48,6 @@ namespace Strike_12
         private int pStartX;
         private int pStartY;
 
-
         bool isCollidingUp;
         bool isCollidingDown;
         bool isCollidingRight;
@@ -108,6 +107,8 @@ namespace Strike_12
 
         //variables
         double timer = 0;
+        int energyTimer = 0;
+        int stoppedTimer = 0;
 
         public Game1()
         {
@@ -150,7 +151,7 @@ namespace Strike_12
             tileSprites = Content.Load<Texture2D>("brick");
             titleScreen = Content.Load<Texture2D>("Logo (1)");
             titleBG = Content.Load<Texture2D>("tempTS");
-            arenaBackground = Content.Load<Texture2D>("Temp Arena Background");
+            arenaBackground = Content.Load<Texture2D>("ArenaBG");
             shopWall = Content.Load<Texture2D>("ShopWall");
             shopFG = Content.Load<Texture2D>("ShopFG");
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
@@ -219,18 +220,23 @@ namespace Strike_12
                 new Rectangle(1100, 400, 100, 50),
                 50));
 
-            /*        NOT FOR SPRINT 3
-            buttons.Add(new Button("heal", 
-                buttonTexture, 
-                new Rectangle(1250, 300, 100, 50), 
-                10));
+            buttons.Add(new Button("timestop",
+                  buttonTexture,
+                  new Rectangle(1400, 400, 100, 50),
+                  100)); 
 
-            buttons.Add(new Button("slow", 
-                buttonTexture, 
-                new Rectangle(1400, 300, 100, 50), 
-                10));*/
+               /*        NOT FOR SPRINT 3
+               buttons.Add(new Button("heal", 
+                   buttonTexture, 
+                   new Rectangle(1250, 300, 100, 50), 
+                   10));
 
-            buttons.Add(new Button("cat",
+               buttons.Add(new Button("slow", 
+                   buttonTexture, 
+                   new Rectangle(1400, 300, 100, 50), 
+                   10));*/
+
+               buttons.Add(new Button("cat",
                 noseButton,
                 new Rectangle(197, 625, noseButton.Width / 4, noseButton.Height / 4), 0));
         }
@@ -320,9 +326,22 @@ namespace Strike_12
                     //eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
-
-                    // Temp player and enemy update call
+                    // Update the player
                     player.Update(gameTime);
+
+                    // Increment the player's energy if it is currently under the maximum
+                    if (player.CurrentEnergy < player.Energy)
+                    {
+                        if (energyTimer > 60)
+                        {
+                            player.CurrentEnergy++;
+                            energyTimer = 0;
+                        }
+                        else
+                        {
+                            energyTimer++;
+                        }
+                    }
 
                     isCollidingUp = false;
                     isCollidingDown = false;
@@ -336,10 +355,56 @@ namespace Strike_12
                         {
                             if (editor[i, j] != null)
                             {
+                                // Check for top collisions
+                                if (player.IsCollidingTop(player, editor[i, j]) &&
+                                    (!isCollidingUp))
+                                {
+                                    while (player.Size.Bottom != editor[i, j].Size.Top)
+                                    {
+                                        player.SizeY -= 1;
+                                    }
+
+                                    player.VelocityY = 0;
+                                    player.PositionY = player.SizeY;
+
+                                    player.IsGrounded = true;
+                                    isCollidingUp = true;
+                                }
+                                else
+                                {
+                                    //if (player.Size.Bottom > editor[i, j].Size.Top)
+                                    //{
+                                    //    isCollidingUp = false;
+                                    //}
+                                }
+
+                                // Check for bottom collisions
+                                if (player.IsCollidingBottom(player, editor[i, j]) &&
+                                    (!isCollidingDown))
+                                {
+                                    while (player.Size.Top != editor[i, j].Size.Bottom)
+                                    {
+                                        player.SizeY++;
+                                    }
+
+                                    player.PositionY = player.SizeY;
+
+                                    player.VelocityY = 0;
+                                    player.CanJump = false;
+                                    player.IsGrounded = false;
+                                    isCollidingDown = true;
+                                }
+                                else
+                                {
+                                    //if (player.Size.Top < editor[i, j].Size.Bottom)
+                                    //{
+                                    //    isCollidingDown = false;
+                                    //}
+                                }
 
                                 // Check for left collisions
                                 if (player.IsCollidingLeft(player, editor[i, j], player.VelocityX) &&
-                                    (!isCollidingLeft))
+                                        (!isCollidingLeft))
                                 {
                                     player.LeftCollided = true;
 
@@ -354,7 +419,10 @@ namespace Strike_12
                                 }
                                 else
                                 {
-                                    player.LeftCollided = false;
+                                    if (player.Size.Left > editor[i, j].Size.Right)
+                                    {
+                                        player.LeftCollided = false;
+                                    }
                                 }
 
                                 // Check for right collisions
@@ -374,44 +442,15 @@ namespace Strike_12
                                 }
                                 else
                                 {
-                                    player.RightCollided = false;
-                                }
-
-                                // Check for top collisions
-                                if (player.IsCollidingTop(player, editor[i, j]) &&
-                                    (!isCollidingUp))
-                                {
-                                    while (player.Size.Bottom != editor[i, j].Size.Top)
+                                    if (player.Size.Right < editor[i, j].Size.Left)
                                     {
-                                        player.SizeY -= 1;
+                                        player.RightCollided = false;
                                     }
-
-                                    player.VelocityY = 0;
-                                    player.PositionY = player.SizeY;
-
-                                    player.IsGrounded = true;
-                                    isCollidingUp = true;
-                                }
-
-                                // Check for bottom collisions
-                                if (player.IsCollidingBottom(player, editor[i, j]) &&
-                                    (!isCollidingDown))
-                                {
-                                    while (player.Size.Top != editor[i, j].Size.Bottom)
-                                    {
-                                        player.SizeY++;
-                                    }
-
-                                    player.PositionY = player.SizeY;
-
-                                    player.VelocityY = 0;
-                                    player.CanJump = false;
-                                    player.IsGrounded = false;
-                                    isCollidingDown = true;
                                 }
                             }
                         }
                     }
+
                     //checks if player fell in a pit
                     if (player.Size.Y > windowHeight)
                     {
@@ -424,30 +463,31 @@ namespace Strike_12
                     if (collidable == true)
                     foreach (Enemy enemy in eManager.Enemies)
                     {
-
-                        if (enemy.IsCollidingBottom(enemy, player) ||
-                            enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
-                            enemy.IsCollidingRight(enemy, player, player.VelocityX))
+                    if (!player.TimeStopActive)
+                    {
+                        foreach (Enemy enemy in eManager.Enemies)
                         {
 
-                            if (player.TakeDamage(gameTime))
+                            if (enemy.IsCollidingBottom(enemy, player) ||
+                                enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
+                                enemy.IsCollidingRight(enemy, player, player.VelocityX))
                             {
-                                player.Health -= 1;
-                            }
 
-                        }
-                        else if (enemy.IsCollidingTop(enemy, player))
-                        {
-                            player.Jump();
+                                if (player.TakeDamage(gameTime))
+                                {
+                                    player.Health -= 1;
+                                }
+
+                            }
+                            else if (enemy.IsCollidingTop(enemy, player))
+                            {
+                                //player.Jump();
+                            }
                         }
                     }
-
-
-                    //if the player has no more health, go to shop
-                    if (player.Health <= 0)
+                    else
                     {
-
-                        state = GameState.GameOver;
+                        
                     }
 
                     // Temp player and enemy update call
@@ -455,19 +495,23 @@ namespace Strike_12
                     //lEnemy.Update(gameTime, player.Size.Y);
                     //pEnemy.Update(gameTime);
                     //fEnemy.Update(gameTime, player);
-                    foreach (Enemy enemy in eManager.Enemies)
+
+                    if (!player.TimeStopActive)
                     {
-                        if (enemy is FollowEnemy)
+                        foreach (Enemy enemy in eManager.Enemies)
                         {
-                            ((FollowEnemy)enemy).Update(gameTime, player);
-                        }
-                        else if (enemy is LaserEnemy)
-                        {
-                            ((LaserEnemy)enemy).Update(gameTime, player.Size.Y);
-                        }
-                        else
-                        {
-                            enemy.Update(gameTime);
+                            if (enemy is FollowEnemy)
+                            {
+                                ((FollowEnemy)enemy).Update(gameTime, player);
+                            }
+                            else if (enemy is LaserEnemy)
+                            {
+                                ((LaserEnemy)enemy).Update(gameTime, player.Size.Y);
+                            }
+                            else
+                            {
+                                enemy.Update(gameTime);
+                            }
                         }
                     }
 
@@ -671,25 +715,30 @@ namespace Strike_12
                                 spawnCap = true;
                             }
                         }
+                    }
 
+                    //if the player has no more health, go to shop
+                    if (player.Health <= 0)
+                    {
+
+                        state = GameState.GameOver;
+                    }
+
+                    // If time is stopped, increased the stopped time timer (aka, the stoppedTimer)
+                    if (player.TimeStopActive)
+                    {
+                        if(stoppedTimer < 180)
+                        {
+                            stoppedTimer++;
+                        }
+                        else
+                        {
+                            player.TimeStopActive = false;
+                            stoppedTimer = 0;
+                        }
                     }
 
                     break;
-
-
-
-
-                /*
-                //if the count divided by 60 if equal to or greater than the wave length, adds another to the list
-                if (eManager.Count/60 >= waveLength)
-                {
-                    enemy = new Enemy(enemySprites, new Rectangle(rng.Next(64, windowWidth - 64), rng.Next(0, windowHeight - 64), 64, 64), windowWidth, windowHeight);
-                    eManager.SpawnEnemy(enemy);
-                    waveDelta /= 1.5;
-                    waveLength += waveDelta;
-                }
-                */
-
 
                 // Game Winner: appears when timer is greater than 30
                 case GameState.GameWinner:
@@ -769,20 +818,33 @@ namespace Strike_12
                         //if the button has been prssed and the player has enough points to purchase the item
                         if (button.IsPressed && shop.Points >= button.Cost)
                         {
-                            shop.Points -= button.Cost;
-                            shop.Spendings += button.Cost;
-
+                            if(button.Type != "dash" && button.Type !="timestop")
+                            {
+                                shop.Points -= button.Cost;
+                                shop.Spendings += button.Cost;
+                            }
+                            else if(button.Type == "dash" && !shop.AirDash)
+                            {
+                                shop.Points -= button.Cost;
+                                shop.Spendings += button.Cost;
+                            }
+                            else if(button.Type == "timestop" && !shop.TimeSlow)
+                            {
+                                shop.Points -= button.Cost;
+                                shop.Spendings += button.Cost;
+                            }
+                            //switch statement for each button to increase cost
                             switch (button.Type)
                             {
                                 case "health":
                                     button.Cost += 10;
                                     shop.MaxHealth += 1;
-                                    player.Health = player.Health + shop.MaxHealth;
+                                    player.MaxHealth += 1;
                                     break;
 
                                 case "speed":
                                     button.Cost += 20;
-                                    player.BaseSpeed += 0.1f;
+                                    player.BaseSpeed += 0.05f;
                                     break;
 
                                 case "energy":
@@ -792,6 +854,12 @@ namespace Strike_12
 
                                 case "dash":
                                     player.dashPurchased = true;
+                                    shop.AirDash = true;
+                                    break;
+
+                                case "timestop":
+                                    player.timeStopPurchased = true;
+                                    shop.TimeSlow = true;
                                     break;
 
                                 case "heal":
@@ -849,12 +917,12 @@ namespace Strike_12
                     _spriteBatch.Draw(titleBG, new Rectangle(0, 0, titleBG.Width * 4, titleBG.Height * 4), Color.White); 
                     //_spriteBatch.Draw(titleScreen, new Rectangle((windowWidth/2 - titleScreen.Width/2 - 250), (windowHeight/2 - titleScreen.Height/2 - 200), 1500, 750), Color.White);
                     _spriteBatch.DrawString(displayFont, "Press Enter to continue\nTo learn the controls, press Space",
-                        new Vector2(100, 800), Color.Black);
+                        new Vector2(100, 800), Color.LightGray);
 
                     player.Draw(_spriteBatch, playerSprites);
                     break;
 
-                //text for control screen
+                // text for control screen
                 case GameState.Controls:
                     _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right" +
                         "\nPress Up Arrow to dash in your direction\n\nPress Space to go back to the Menu",
@@ -904,23 +972,21 @@ namespace Strike_12
                 //text for arena screen
                 case GameState.Arena:
 
-                    _spriteBatch.Draw(arenaBackground, new Rectangle(64, 64, 1536, 832), Color.White);
+                    _spriteBatch.Draw(arenaBackground, new Vector2(0,0), Color.White);
                     // Draw the tiles
                     editor.Draw(_spriteBatch, tileSprites);
 
-                    _spriteBatch.DrawString(displayFont, "Go to the shop page (happens upon character death)",
-                        new Vector2(100, 400), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
-                        new Vector2(100, 150), Color.Black);
+                        new Vector2(100, 150), Color.LightGray);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
-                       new Vector2(100, 100), Color.Black);
+                       new Vector2(100, 50), Color.LightGray);
                     _spriteBatch.DrawString(displayFont, $"\nEnergy: {player.CurrentEnergy}",
-                       new Vector2(100, 50), Color.Black);
+                       new Vector2(100, 100), Color.LightGray);
 
                     _spriteBatch.DrawString(displayFont, $"\nWave: {eManager.WaveNum}",
                         new Vector2(100, 200), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\n# of enemies in wave: {eManager.Enemies.Count}",
-                        new Vector2(100, 250), Color.Black);
+                        new Vector2(100, 250), Color.LightGray);
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     player.Draw(_spriteBatch, playerSprites);
@@ -929,6 +995,15 @@ namespace Strike_12
                     {
                         enemy.Draw(_spriteBatch, enemySprites);
                     }
+
+                    _spriteBatch.DrawString(displayFont, $"{String.Format(player.LeftCollided.ToString())}",
+                        new Vector2(100, 300), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, $"{String.Format(player.RightCollided.ToString())}",
+                        new Vector2(100, 350), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, $"{String.Format(isCollidingUp.ToString())}",
+                        new Vector2(100, 400), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, $"{String.Format(isCollidingDown.ToString())}",
+                        new Vector2(100, 450), Color.LightGray);
 
                     break;
 
@@ -942,16 +1017,16 @@ namespace Strike_12
 
                 // Text for game over state
                 case GameState.GameOver:
-                    _spriteBatch.Draw(arenaBackground, new Rectangle(64, 64, 1536, 832), Color.White);
+                    _spriteBatch.Draw(arenaBackground, new Vector2(0,0), Color.White);
                     // Draw the tiles
                     editor.Draw(_spriteBatch, tileSprites);
 
                     _spriteBatch.DrawString(displayFont, "Go to the shop page (happens upon character death)",
-                        new Vector2(100, 400), Color.Black);
+                        new Vector2(100, 400), Color.LightGray);
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
-                       new Vector2(100, 150), Color.Black);
+                       new Vector2(100, 150), Color.LightGray);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
-                       new Vector2(100, 100), Color.Black);
+                       new Vector2(100, 100), Color.LightGray);
                     break;
 
                 //text for shop screen
@@ -965,7 +1040,7 @@ namespace Strike_12
 
                     _spriteBatch.DrawString(displayFont, $"\nKromer: {shop.Points} " +
                         $"\nHealth: {player.Health}" +
-                        $"\n{String.Format("Speed: {0:0.0}", player.BaseSpeed)}" +
+                        $"\n{String.Format("Speed: {0:0.00}", player.BaseSpeed)}" +
                         $"\nEnergy: {player.Energy}\n" +
                         $"\nDeaths: {player.Deaths}" +
                         $"\n{String.Format("Best Time: {0:0.00}", player.BestTime)}" +
@@ -982,12 +1057,12 @@ namespace Strike_12
                     {
                         button.Draw(_spriteBatch, displayFont);
 
+                        //if the player doesnt have enough points to by the item
                         if (button.IsHighlight && shop.Points < button.Cost)
                         {
-                            _spriteBatch.DrawString(displayFont, "Sorry hun, you don't have enough kromer.", new Vector2(600, 80), Color.White);
+                            _spriteBatch.DrawString(displayFont, "Sorry hun, you don't have enough to buy that.", new Vector2(600, 80), Color.White);
                         }
                     }
-
                     break;
 
                 default:
