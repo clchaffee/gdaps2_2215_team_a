@@ -349,7 +349,7 @@ namespace Strike_12
                     buttons[2].Update(gameTime);
 
                     break;
-
+                
                 //start animation
                 case GameState.Start:
 
@@ -544,12 +544,31 @@ namespace Strike_12
                     //TODO: Reimplement enemy collision 
                     //collision for each enemy in the Enemy class
                     if (collidable == true)
+                    foreach (Enemy enemy in eManager.Enemies)
+                    {
+                            if (enemy.IsCollidingBottom(enemy, player) ||
+                                enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
+                                enemy.IsCollidingRight(enemy, player, player.VelocityX))
+                            {
+
+                                if (player.TakeDamage(gameTime))
+                                {
+                                    player.Health -= 1;
+                                }
+
+                            }
+                            else if (enemy.IsCollidingTop(enemy, player))
+                            {
+                                //player.Jump();
+                            }
+                    }
+                    
+ 
+                    
+                    if (!player.TimeStopActive)
+                    {
                         foreach (Enemy enemy in eManager.Enemies)
                         {
-                            if (!player.TimeStopActive)
-                            {
-                                foreach (Enemy enemy in eManager.Enemies)
-                                {
 
                                     if (enemy.IsCollidingBottom(enemy, player) ||
                                         enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
@@ -561,17 +580,13 @@ namespace Strike_12
                                             player.Health -= 1;
                                         }
 
-                                    }
-                                    else if (enemy.IsCollidingTop(enemy, player))
-                                    {
-                                        //player.Jump();
-                                    }
-                                }
                             }
-                            else
+                            else if (enemy.IsCollidingTop(enemy, player))
                             {
-
+                                //player.Jump();
                             }
+                        }
+                    }
 
                             // Temp player and enemy update call
                             //bEnemy.Update(gameTime);
