@@ -32,10 +32,11 @@ namespace Strike_12
         Random rng = new Random();
         private Texture2D titleScreen;
         private int Interval { get; set; } = 0;
-        private bool easy = false;
-        private bool medium = true;
+        private bool easy = true;
+        private bool medium = false;
         private bool hard = false;
         private bool impossible = false;
+        private bool collidable = false;
 
         int count;
         bool spawnCap = true;
@@ -420,6 +421,7 @@ namespace Strike_12
 
                     //TODO: Reimplement enemy collision 
                     //collision for each enemy in the Enemy class
+                    if (collidable == true)
                     foreach (Enemy enemy in eManager.Enemies)
                     {
 
@@ -486,59 +488,153 @@ namespace Strike_12
 
                         if (spawnCap)
                         {
-                            switch (wave)
+                            switch (eManager.WaveNum)
                             {
+                                //wave 1 always spawns regular enemies
                                 case 1:
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {
+                                        eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                    }
 
-                                    if (easy == true)
-                                    {
-                                        eManager.SpawnFormula(.1);
-                                        eManager.Enemies.Clear();
-                                        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
-                                        {
-                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
-                                        }
-                                    }
-                                    if (medium == true)
-                                    {
-                                        eManager.SpawnFormula(.1);
-                                        //eManager.limitation = .1;
-                                        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
-                                        {
-                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
-                                        }
-                                    }
-                                    if (hard == true)
-                                    {
-                                        eManager.SpawnFormula(.125);
-                                        //eManager.limitation = .3;
-                                        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
-                                        {
-                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
-                                        }
-                                    }
-                                    if (impossible == true)
-                                    {
-                                        eManager.SpawnFormula(.2);
-                                        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
-                                        {
-                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
-                                        }
-                                    }
                                     break;
+                                //    if (medium == true)
+                                //    {
+                                //        eManager.SpawnFormula(.1);
+                                //        //eManager.limitation = .1;
+                                //        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
+                                //        {
+                                //            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                //        }
+                                //    }
+                                //    if (hard == true)
+                                //    {
+                                //        eManager.SpawnFormula(.125);
+                                //        //eManager.limitation = .3;
+                                //        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
+                                //        {
+                                //            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                //        }
+                                //    }
+                                //    if (impossible == true)
+                                //    {
+                                //        eManager.SpawnFormula(.2);
+                                //        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
+                                //        {
+                                //            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                //        }
+                                //    }
+                                //    break;
 
+                                
+                                //wave 2 has a 20 percent chance to spawn a bullet enemy
                                 case 2:
-                                    eManager.SpawnEnemy(new BounceEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight));
-                                    eManager.SpawnEnemy(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight));
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {
+                                        if (rng.Next(0, 100) > 19)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                        else
+                                        {
+                                            eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, (int)player.PositionX, (int)player.PositionY), Interval);
+                                        }
+                                    }
+
                                     break;
 
+                                //wave 3: 60% for normal, 40% for bullet
                                 case 3:
-                                    eManager.SpawnEnemy(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight));
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {
+                                        if (rng.Next(0, 100) > 39)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                        else
+                                        {
+                                            eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                    }
+
                                     break;
 
+                                //wave 4: 40% normal, 40% projectile, 20% bounce
                                 case 4:
-                                    eManager.SpawnEnemy(new LaserEnemy(buttonTexture, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.Size.Y));
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {
+                                        if (rng.Next(0, 100) < 40)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                        else if(rng.Next(0, 100) < 40)
+                                        {
+                                            eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                        else
+                                        {
+                                            eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                    }
+
                                     break;
+                            
+                                //wave 5: 30% normal, 30% bounce, 40% bullet
+                                case 5:
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {
+                                        if (rng.Next(0, 100) < 30)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                        else if(rng.Next(0, 100) < 30)
+                                        {
+                                            eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                        else
+                                        {
+                                            eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                    }
+
+                                    break;
+
+                                //Wave 6: 40% normal, 20% bounce, 30% bullet, 10% follow
+                                case 6:
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {
+                                        if (rng.Next(0, 100) < 40)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                        else if(rng.Next(0 ,100) < 30)
+                                        {
+                                            eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                        else if (rng.Next(0, 100) < 20)
+                                        {
+                                            eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                        else
+                                        {
+                                            eManager.WaveProgress(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                    }
+
+                                    break;
+                                     
                                 default:
                                     break;
                             }
@@ -548,14 +644,16 @@ namespace Strike_12
 
                             count++;
                             spawnCap = false;
-                            waitTime = 59;
+                            waitTime = 59
+                                ;
                             if (Interval == 7)
                             {
                                 eManager.Start += 5;
                                 eManager.End += 5;
-                                Interval = 1;
+                                Interval = 0;
                                 eManager.Enemies.Clear();
-                                wave++;
+                                eManager.NumEnemies.Clear();
+                                eManager.WaveNum++;
                                 spawnCap = true;
                             }
                             //else if (Interval == 7)
@@ -634,7 +732,7 @@ namespace Strike_12
                     eManager.End += 30;
                     Interval = 0;
                     eManager.Enemies.Clear();
-                    wave = 1;
+                    eManager.WaveNum = 1;
 
                     //resets data from Arena
                     eManager.Enemies.Clear();
@@ -761,46 +859,46 @@ namespace Strike_12
                     _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right" +
                         "\nPress Up Arrow to dash in your direction\n\nPress Space to go back to the Menu",
                         new Vector2(150, 200), Color.Black);
-                    if (easy)
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
-                            new Vector2(100, 500), Color.Green);
-                    }
-                    else
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
-                            new Vector2(100, 500), Color.Black);
-                    }
-                    if (medium)
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 2 for Medium Difficulty",
-                            new Vector2(100, 525), Color.Green);
-                    }
-                    else
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 2 for Medium Difficulty",
-                            new Vector2(100, 525), Color.Black);
-                    }
-                    if (hard)
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 4 for Hard Difficulty",
-                            new Vector2(100, 550), Color.Green);
-                    }
-                    else
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 3 for Hard Difficulty",
-                            new Vector2(100, 550), Color.Black);
-                    }
-                    if (impossible)
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 0 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
-                            new Vector2(100, 575), Color.Green);
-                    }
-                    else
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 0 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
-                            new Vector2(100, 575), Color.Black);
-                    }
+                    //if (easy)
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
+                    //        new Vector2(100, 500), Color.Green);
+                    //}
+                    //else
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
+                    //        new Vector2(100, 500), Color.Black);
+                    //}
+                    //if (medium)
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 2 for Medium Difficulty",
+                    //        new Vector2(100, 525), Color.Green);
+                    //}
+                    //else
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 2 for Medium Difficulty",
+                    //        new Vector2(100, 525), Color.Black);
+                    //}
+                    //if (hard)
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 4 for Hard Difficulty",
+                    //        new Vector2(100, 550), Color.Green);
+                    //}
+                    //else
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 3 for Hard Difficulty",
+                    //        new Vector2(100, 550), Color.Black);
+                    //}
+                    //if (impossible)
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 0 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
+                    //        new Vector2(100, 575), Color.Green);
+                    //}
+                    //else
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 0 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
+                    //        new Vector2(100, 575), Color.Black);
+                    //}
                     break;
 
                 //text for arena screen
@@ -819,7 +917,7 @@ namespace Strike_12
                     _spriteBatch.DrawString(displayFont, $"\nEnergy: {player.CurrentEnergy}",
                        new Vector2(100, 50), Color.Black);
 
-                    _spriteBatch.DrawString(displayFont, $"\nWave: {wave}",
+                    _spriteBatch.DrawString(displayFont, $"\nWave: {eManager.WaveNum}",
                         new Vector2(100, 200), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\n# of enemies in wave: {eManager.Enemies.Count}",
                         new Vector2(100, 250), Color.Black);
