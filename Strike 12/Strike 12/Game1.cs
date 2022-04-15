@@ -321,7 +321,7 @@ namespace Strike_12
                         impossible = true;
                     }
                     break;
-
+                
                 //start animation
                 case GameState.Start:
 
@@ -495,6 +495,25 @@ namespace Strike_12
                     if (collidable == true)
                     foreach (Enemy enemy in eManager.Enemies)
                     {
+                            if (enemy.IsCollidingBottom(enemy, player) ||
+                                enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
+                                enemy.IsCollidingRight(enemy, player, player.VelocityX))
+                            {
+
+                                if (player.TakeDamage(gameTime))
+                                {
+                                    player.Health -= 1;
+                                }
+
+                            }
+                            else if (enemy.IsCollidingTop(enemy, player))
+                            {
+                                //player.Jump();
+                            }
+                    }
+                    
+ 
+                    
                     if (!player.TimeStopActive)
                     {
                         foreach (Enemy enemy in eManager.Enemies)
@@ -516,10 +535,6 @@ namespace Strike_12
                                 //player.Jump();
                             }
                         }
-                    }
-                    else
-                    {
-                        
                     }
 
                     // Temp player and enemy update call
