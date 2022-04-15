@@ -81,6 +81,11 @@ namespace Strike_12
         private Texture2D noseButton;
         private string comment;
 
+        //other buttons
+        private Texture2D startButton;
+        private Texture2D optionButton;
+        private Texture2D menuButton;
+
         //items
         private Texture2D healthUpgrade;
         private Texture2D speedUpgrade;
@@ -90,6 +95,8 @@ namespace Strike_12
         private LevelEditor editor;
         private Texture2D tileSprites;
         private Tile tile;
+        private List<LevelEditor> levels;
+        private int lvlNum;
 
         // Other Assets
         private Texture2D arenaBackground;
@@ -146,7 +153,7 @@ namespace Strike_12
             enemySprites = Content.Load<Texture2D>("enemySpriteSheet");
             buttonTexture = Content.Load<Texture2D>("tempTile");
 
-            //other assests
+            //other assests and buttons
             tileSprites = Content.Load<Texture2D>("brick");
             titleScreen = Content.Load<Texture2D>("Logo (1)");
             titleBG = Content.Load<Texture2D>("tempTS");
@@ -155,6 +162,10 @@ namespace Strike_12
             shopFG = Content.Load<Texture2D>("ShopFG");
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
             noseButton = Content.Load<Texture2D>("CatNose");
+
+            startButton = Content.Load<Texture2D>("Start");
+            optionButton = Content.Load<Texture2D>("Options");
+            menuButton = Content.Load<Texture2D>("Menu");
 
             healthUpgrade = Content.Load<Texture2D>("HealthBottle");
             speedUpgrade = Content.Load<Texture2D>("SpeedBottle");
@@ -193,11 +204,21 @@ namespace Strike_12
 
 
             // -- LEVEL LOADING --
-            editor = new LevelEditor();
-            editor.Load(1, tileSprites, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            levels = new List<LevelEditor>();
+            for (int i = 0; i < 6; i++)
+            {
+                levels.Add(new LevelEditor());
+                levels[i].Load(i+1, tileSprites, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            }
+            lvlNum = 0;
 
             //makes a new shop and buttons for each of the purchases
             shop = new Shop(points);
+
+            //other buttons at the start of the list for the start screen
+            buttons.Add(new Button("start", startButton, new Rectangle(windowWidth / 2 - 256 / 2, 450, 256, 124), 0));
+            buttons.Add(new Button("options", optionButton, new Rectangle(windowWidth / 2 - 256 / 2, 600, 256, 124), 0));
+            buttons.Add(new Button("menu", menuButton, new Rectangle(300, 800, 256, 124), 0));
 
             buttons.Add(new Button("health",
                 healthUpgrade,
@@ -222,22 +243,22 @@ namespace Strike_12
             buttons.Add(new Button("timestop",
                   buttonTexture,
                   new Rectangle(1400, 400, 100, 50),
-                  100)); 
+                  100));
 
-               /*        NOT FOR SPRINT 3
-               buttons.Add(new Button("heal", 
-                   buttonTexture, 
-                   new Rectangle(1250, 300, 100, 50), 
-                   10));
+            /*        NOT FOR SPRINT 3
+            buttons.Add(new Button("heal", 
+                buttonTexture, 
+                new Rectangle(1250, 300, 100, 50), 
+                10));
 
-               buttons.Add(new Button("slow", 
-                   buttonTexture, 
-                   new Rectangle(1400, 300, 100, 50), 
-                   10));*/
+            buttons.Add(new Button("slow", 
+                buttonTexture, 
+                new Rectangle(1400, 300, 100, 50), 
+                10));*/
 
-               buttons.Add(new Button("cat",
-                noseButton,
-                new Rectangle(197, 625, noseButton.Width / 4, noseButton.Height / 4), 0));
+            buttons.Add(new Button("cat",
+             noseButton,
+             new Rectangle(197, 625, noseButton.Width / 4, noseButton.Height / 4), 0));
         }
 
         /// <summary>
@@ -262,19 +283,23 @@ namespace Strike_12
                 case GameState.Menu:
 
                     eManager.Count = 0;
-                    if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
+                    if (buttons[0].IsPressed)
                     {
                         state = GameState.Start;
                     }
-                    if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
+                    if (buttons[1].IsPressed)
                     {
                         state = GameState.Controls;
                     }
+
+                    buttons[0].Update(gameTime);
+                    buttons[1].Update(gameTime);
+
                     break;
 
                 //while in the control screen, press enter to return to the menu
                 case GameState.Controls:
-                    if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
+                    if (buttons[2].IsPressed)
                     {
                         state = GameState.Menu;
                     }
@@ -306,6 +331,9 @@ namespace Strike_12
                         hard = false;
                         impossible = true;
                     }
+
+                    buttons[2].Update(gameTime);
+
                     break;
 
                 //start animation
@@ -324,6 +352,29 @@ namespace Strike_12
 
                     //eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
+
+                    //updates levels every 2 minutes, would use % but game time is too fast to process that
+                    // REMOVE /10 AT THE END
+                    if (timer >= 600/10)
+                    {
+                        lvlNum = 5;
+                    }
+                    else if (timer >= 480/10)
+                    {
+                        lvlNum = 4;
+                    }
+                    else if (timer >= 360/10)
+                    {
+                        lvlNum = 3;
+                    }
+                    else if (timer >= 240/10)
+                    {
+                        lvlNum = 2;
+                    }
+                    else if (timer >= 120/10)
+                    {
+                        lvlNum = 1;
+                    }
 
                     // Temp player and enemy update call
                     player.Update(gameTime);
@@ -348,20 +399,20 @@ namespace Strike_12
                     isCollidingLeft = false;
 
                     // Collision Detection
-                    for (int i = 0; i < editor.LayoutRows; i++)
+                    for (int i = 0; i < levels[lvlNum].LayoutRows; i++)
                     {
-                        for (int j = 0; j < editor.LayoutColumns; j++)
+                        for (int j = 0; j < levels[lvlNum].LayoutColumns; j++)
                         {
-                            if (editor[i, j] != null)
+                            if (levels[lvlNum][i, j] != null)
                             {
 
                                 // Check for left collisions
-                                if (player.IsCollidingLeft(player, editor[i, j], player.VelocityX) &&
+                                if (player.IsCollidingLeft(player, levels[lvlNum][i, j], player.VelocityX) &&
                                     (!isCollidingLeft))
                                 {
                                     player.LeftCollided = true;
 
-                                    while (player.Size.Left != editor[i, j].Size.Right)
+                                    while (player.Size.Left != levels[lvlNum][i, j].Size.Right)
                                     {
                                         player.SizeX += 1;
                                     }
@@ -376,12 +427,12 @@ namespace Strike_12
                                 }
 
                                 // Check for right collisions
-                                if (player.IsCollidingRight(player, editor[i, j], player.VelocityX) &&
+                                if (player.IsCollidingRight(player, levels[lvlNum][i, j], player.VelocityX) &&
                                     (!isCollidingRight))
                                 {
                                     player.RightCollided = true;
 
-                                    while (player.Size.Right != editor[i, j].Size.Left)
+                                    while (player.Size.Right != levels[lvlNum][i, j].Size.Left)
                                     {
                                         player.SizeX -= 1;
                                     }
@@ -396,10 +447,10 @@ namespace Strike_12
                                 }
 
                                 // Check for top collisions
-                                if (player.IsCollidingTop(player, editor[i, j]) &&
+                                if (player.IsCollidingTop(player, levels[lvlNum][i, j]) &&
                                     (!isCollidingUp))
                                 {
-                                    while (player.Size.Bottom != editor[i, j].Size.Top)
+                                    while (player.Size.Bottom != levels[lvlNum][i, j].Size.Top)
                                     {
                                         player.SizeY -= 1;
                                     }
@@ -412,10 +463,10 @@ namespace Strike_12
                                 }
 
                                 // Check for bottom collisions
-                                if (player.IsCollidingBottom(player, editor[i, j]) &&
+                                if (player.IsCollidingBottom(player, levels[lvlNum][i, j]) &&
                                     (!isCollidingDown))
                                 {
-                                    while (player.Size.Top != editor[i, j].Size.Bottom)
+                                    while (player.Size.Top != levels[lvlNum][i, j].Size.Bottom)
                                     {
                                         player.SizeY++;
                                     }
@@ -600,7 +651,6 @@ namespace Strike_12
                     //if the player has no more health, go to shop
                     if (player.Health <= 0)
                     {
-
                         state = GameState.GameOver;
                     }
 
@@ -635,6 +685,9 @@ namespace Strike_12
                     waveDelta = 10;
                     eManager.Count = 0;
 
+                    //level reset
+                    lvlNum = 0;
+
                     //you get 5 points per second spent alive in the arena
                     shop.Points += 5 * (int)timer;
                     timer = 0;
@@ -662,6 +715,9 @@ namespace Strike_12
                     Interval = 0;
                     eManager.Enemies.Clear();
                     wave = 1;
+
+                    //level reset
+                    lvlNum = 0;
 
                     //resets data from Arena
                     eManager.Enemies.Clear();
@@ -693,7 +749,10 @@ namespace Strike_12
                     // for each button calls update method, checks if pressed and gives upgrade if you have enough points
                     foreach (Button button in buttons)
                     {
-                        button.Update(gameTime);
+                        if (button.Type != "start" || button.Type != "options" || button.Type != "menu")
+                        {
+                            button.Update(gameTime);
+                        }
 
                         //if the button has been prssed and the player has enough points to purchase the item
                         if (button.IsPressed && shop.Points >= button.Cost)
@@ -796,8 +855,10 @@ namespace Strike_12
                 case GameState.Start:
                     _spriteBatch.Draw(titleBG, new Rectangle(0, 0, titleBG.Width * 4, titleBG.Height * 4), Color.White); 
                     //_spriteBatch.Draw(titleScreen, new Rectangle((windowWidth/2 - titleScreen.Width/2 - 250), (windowHeight/2 - titleScreen.Height/2 - 200), 1500, 750), Color.White);
-                    _spriteBatch.DrawString(displayFont, "Press Enter to continue\nTo learn the controls, press Space",
-                        new Vector2(100, 800), Color.LightGray);
+
+                    //draw buttons
+                    buttons[0].Draw(_spriteBatch, displayFont);
+                    buttons[1].Draw(_spriteBatch, displayFont);
 
                     player.Draw(_spriteBatch, playerSprites);
                     break;
@@ -805,9 +866,8 @@ namespace Strike_12
                 // text for control screen
                 case GameState.Controls:
                     _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right" +
-                        "\nPress Left Shift and a direction to airdash (WHEN UNLOCKED)" +
-                        "\nPress Space to stop time for a short period (WHEN UNLOCKED)\n" +
-                        "\nPress Space to go back to the Menu",
+                        "\nPress Right Shift and a direction to airdash (WHEN UNLOCKED)" +
+                        "\nPress Space to stop time for a short period (WHEN UNLOCKED)\n",
                         new Vector2(100, 50), Color.Black);
 
                     //changes color based on what difficulty was selected
@@ -851,6 +911,9 @@ namespace Strike_12
                         _spriteBatch.DrawString(displayFont, "Press 0 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
                             new Vector2(100, 575), Color.Black);
                     }
+
+                    buttons[2].Draw(_spriteBatch, displayFont);
+
                     break;
 
                 //text for arena screen
@@ -858,7 +921,7 @@ namespace Strike_12
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0,0), Color.White);
                     // Draw the tiles
-                    editor.Draw(_spriteBatch, tileSprites);
+                    levels[lvlNum].Draw(_spriteBatch, tileSprites);
 
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
                         new Vector2(100, 150), Color.LightGray);
@@ -894,7 +957,7 @@ namespace Strike_12
                 case GameState.GameOver:
                     _spriteBatch.Draw(arenaBackground, new Vector2(0,0), Color.White);
                     // Draw the tiles
-                    editor.Draw(_spriteBatch, tileSprites);
+                    levels[lvlNum].Draw(_spriteBatch, tileSprites);
 
                     _spriteBatch.DrawString(displayFont, "Go to the shop page (happens upon character death)",
                         new Vector2(100, 400), Color.LightGray);
@@ -928,15 +991,14 @@ namespace Strike_12
                         new Vector2(40, 400), Color.White);
 
                     //draws each button
-                    foreach (Button button in buttons)
+                    for (int i = 3; i < buttons.Count;i++)
                     {
-                        button.Draw(_spriteBatch, displayFont);
-
-                        //if the player doesnt have enough points to by the item
-                        if (button.IsHighlight && shop.Points < button.Cost)
-                        {
-                            _spriteBatch.DrawString(displayFont, "Sorry hun, you don't have enough to buy that.", new Vector2(600, 80), Color.White);
-                        }
+                            buttons[i].Draw(_spriteBatch, displayFont);
+                            //if the player doesnt have enough points to by the item
+                            if (buttons[i].IsHighlight && shop.Points < buttons[i].Cost)
+                            {
+                                _spriteBatch.DrawString(displayFont, "Sorry hun, you don't have enough to buy that.", new Vector2(600, 80), Color.White);
+                            }
                     }
                     break;
 
