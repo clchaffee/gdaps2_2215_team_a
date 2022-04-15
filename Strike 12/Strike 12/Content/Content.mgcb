@@ -80,6 +80,12 @@
 /processorParam:TextureFormat=Color
 /build:EnergyBottle.png
 
+#begin File.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:File.fx
+
 #begin HealthBottle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -116,6 +122,18 @@
 /processorParam:TextureFormat=Color
 /build:Logo.png
 
+#begin playerIdle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:playerIdle.png
+
 #begin playerSpriteSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -127,6 +145,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:playerSpriteSheet.png
+
+#begin playerWalk.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:playerWalk.png
 
 #begin ShopFG.png
 /importer:TextureImporter

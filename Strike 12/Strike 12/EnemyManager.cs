@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Strike_12
 {
-    class EnemyManager
+    class EnemyManager 
     {
         public List<Enemy> Enemies { get; set; }//= new List<Enemy>()
         public double Count { get; set; }
@@ -18,11 +18,11 @@ namespace Strike_12
         Random rng = new Random();
         public int Start { get; set; } = 0;
         public int End { get; set; } = 30;
-        public List<decimal> numEnemies = new List<decimal>();
+        public List<decimal> NumEnemies { get; set; } = new List<decimal>();
         public double limitation { get; set; } = .1;
 
 
-        public int WaveNum { get; set; }
+        public int WaveNum { get; set; } = 1;
 
         public void Initialize()
         {
@@ -57,7 +57,30 @@ namespace Strike_12
 
             SpawnEnemy(enemy);
 
-            
+
+            //when a bullet enemy spawns, removes 2 from the list
+            if (enemy is BulletEnemy && Enemies.Count > 2)
+            {
+                Enemies.RemoveRange(0, 1);
+            }
+            //when a bounce enemy spawns, removes 4 from the list
+            if (enemy is BounceEnemy && Enemies.Count > 4)
+            {
+                Enemies.RemoveRange(0, 2);
+            }
+            //when a follow enemy spawns, removes 8 from the list
+            if (enemy is FollowEnemy && Enemies.Count > 8)
+            {
+                Enemies.RemoveRange(0, 8);
+            }
+            //when a laser enemy spawns, removes 16 from the list
+            if (enemy is LaserEnemy && Enemies.Count > 16)
+            {
+                Enemies.RemoveRange(0, 16);
+            }
+
+
+
 
         }
 
@@ -70,11 +93,11 @@ namespace Strike_12
 
                     decimal value = Math.Ceiling((decimal)Math.Exp(i * dampener));
 
-                    numEnemies.Add(value); 
+                    NumEnemies.Add(value); 
 
                 }
             }
-            return numEnemies;
+            return NumEnemies;
 
         }
 

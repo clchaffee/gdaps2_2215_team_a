@@ -27,38 +27,74 @@ namespace Strike_12
 
         // ----- | Constructor | -----
         // Paramatarized Constructor
-        public BulletEnemy(Texture2D texture, Rectangle size, int windowWidth, int windowHeight)
+        public BulletEnemy(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, int playerX, int playerY)
             : base(texture, size, windowWidth, windowHeight)
         {
             enemySprite = texture;
             // Chooses a random corner to for the block
             location = (CornerState)rng.Next(0, 4);
-            xSpeed = rng.Next(2, 11);
-            ySpeed = rng.Next(2, 11);
+            //xSpeed = rng.Next(2, 11);
+            //ySpeed = rng.Next(2, 11);
+            // 0o0
+            Vector2 enemyPos = new Vector2(size.X, size.Y);
+            Vector2 playerPos = new Vector2(playerX, playerY);
 
-            // Cases for random corner
+            float xDistance = enemyPos.X - playerPos.X;
+            float yDistance = enemyPos.Y - playerPos.Y;
+
+            float length = (float)Math.Sqrt(Math.Pow(xDistance, 2) + Math.Pow(yDistance, 2));
+
+            float nomX = Math.Abs(xDistance / length);
+            float nomY = Math.Abs(yDistance / length);
             switch (location)
             {
                 case CornerState.TLeft:
                     this.size.X = 0 - size.Width;
                     this.size.Y = 0 - size.Height;
+
+                        xSpeed = (int)(6 * nomX);
+
+                        ySpeed = (int)(6 * nomY);
+                    
                     break;
 
                 case CornerState.TRight:
                     this.size.X = windowWidth;
                     this.size.Y = 0- size.Height;
+                        
+                    xSpeed = -(int)(6 * nomX);
+                    
+                    ySpeed = (int)(6 * nomY);
+                    
                     break;
 
                 case CornerState.BLeft:
                     this.size.X = 0 - size.Width;
                     this.size.Y = windowHeight;
+
+                        xSpeed = (int)(6 * nomX);
+                    
+                    
+                        ySpeed = -(int)(6 * nomY);
+
                     break;
 
                 case CornerState.BRight:
                     this.size.X = windowWidth;
                     this.size.Y = windowHeight;
+
+                        xSpeed = -(int)(6 * nomX);
+
+                        ySpeed = -(int)(6 * nomX);
+                    
                     break;
             }
+
+
+
+
+            // Cases for random corner
+
 
         }
 
@@ -67,28 +103,8 @@ namespace Strike_12
         // Update():
         public override void Update(GameTime gameTime)
         {
-            switch (location)
-            {
-                case CornerState.TLeft:
-                    size.X += xSpeed;
-                    size.Y += ySpeed;
-                    break;
-
-                case CornerState.TRight:
-                    size.X -= xSpeed;
-                    size.Y += ySpeed;
-                    break;
-
-                case CornerState.BLeft:
-                    size.X += xSpeed;
-                    size.Y -= ySpeed;
-                    break;
-
-                case CornerState.BRight:
-                    size.X -= xSpeed;
-                    size.Y -= ySpeed;
-                    break;
-            }
+            size.X += xSpeed;
+            size.Y += ySpeed;
         }
 
         // Draw():
