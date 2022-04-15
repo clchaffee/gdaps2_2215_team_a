@@ -109,6 +109,12 @@ namespace Strike_12
         int energyTimer = 0;
         int stoppedTimer = 0;
 
+        // Animation Fields
+        AnimationManager playerAnimation;
+        Texture2D playerIdle;
+        Texture2D playerWalk;
+        PlayerStates playerState;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -238,6 +244,11 @@ namespace Strike_12
                buttons.Add(new Button("cat",
                 noseButton,
                 new Rectangle(197, 625, noseButton.Width / 4, noseButton.Height / 4), 0));
+
+            // For animation
+            playerAnimation = new AnimationManager();
+            playerIdle = Content.Load<Texture2D>("playerIdle");
+            playerWalk = Content.Load<Texture2D>("playerWalk");
         }
 
         /// <summary>
@@ -270,6 +281,8 @@ namespace Strike_12
                     {
                         state = GameState.Controls;
                     }
+
+                    playerAnimation.Update(gameTime, 3, .09);
                     break;
 
                 //while in the control screen, press enter to return to the menu
@@ -311,6 +324,7 @@ namespace Strike_12
                 //start animation
                 case GameState.Start:
 
+                    playerAnimation.Update(gameTime, 8, .09);
                     player.SizeX = player.SizeX + 10;
                     if (player.SizeX > _graphics.PreferredBackBufferWidth)
                     {
@@ -327,6 +341,27 @@ namespace Strike_12
 
                     // Temp player and enemy update call
                     player.Update(gameTime);
+
+                    playerState = player.State;
+
+                    switch(playerState)
+                    {
+                        case PlayerStates.moveRight:
+                        case PlayerStates.jumpRight:
+                            playerAnimation.Update(gameTime, 8, .1);
+                            break;
+                        case PlayerStates.moveLeft:
+                        case PlayerStates.jumpLeft:
+                            playerAnimation.Update(gameTime, 8, .1);
+                            break;
+                        case PlayerStates.faceRight:
+                            playerAnimation.Update(gameTime, 3, .09);
+                            break;
+                        case PlayerStates.faceLeft:
+                            playerAnimation.Update(gameTime, 3, .09);
+                            break;
+                    }
+
 
                     // Increment the player's energy if it is currently under the maximum
                     if (player.CurrentEnergy < player.Energy)
@@ -794,12 +829,28 @@ namespace Strike_12
                 //text for menu screen
                 case GameState.Menu:
                 case GameState.Start:
-                    _spriteBatch.Draw(titleBG, new Rectangle(0, 0, titleBG.Width * 4, titleBG.Height * 4), Color.White); 
+                    _spriteBatch.Draw(titleBG, new Rectangle(0, 0, titleBG.Width * 4, titleBG.Height * 4), Color.White);
                     //_spriteBatch.Draw(titleScreen, new Rectangle((windowWidth/2 - titleScreen.Width/2 - 250), (windowHeight/2 - titleScreen.Height/2 - 200), 1500, 750), Color.White);
                     _spriteBatch.DrawString(displayFont, "Press Enter to continue\nTo learn the controls, press Space",
                         new Vector2(100, 800), Color.LightGray);
 
-                    player.Draw(_spriteBatch, playerSprites);
+                    _spriteBatch.DrawString(displayFont, $"Frame: {playerAnimation.Frames}",
+                        new Vector2(10, 10), Color.White);
+                    _spriteBatch.DrawString(displayFont, $"Current Time: {playerAnimation.CurrentTime}",
+                        new Vector2(10, 50), Color.White);
+
+                    //player.Draw(_spriteBatch, playerSprites);
+                    switch (state)
+                    {
+                        case GameState.Menu:
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None);
+                            break;
+
+                        case GameState.Start:
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None);
+                            break;
+                    }
+
                     break;
 
                 // text for control screen
@@ -873,7 +924,25 @@ namespace Strike_12
                         new Vector2(100, 250), Color.LightGray);
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
-                    player.Draw(_spriteBatch, playerSprites);
+                    //player.Draw(_spriteBatch, playerSprites);
+
+                    switch (playerState)
+                    {
+                        case PlayerStates.moveRight:
+                        case PlayerStates.jumpRight:
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None);
+                            break;
+                        case PlayerStates.moveLeft:
+                        case PlayerStates.jumpLeft:
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.FlipHorizontally);
+                            break;
+                        case PlayerStates.faceRight:
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None);
+                            break;
+                        case PlayerStates.faceLeft:
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally);
+                            break;
+                    }
 
                     foreach (Enemy enemy in eManager.Enemies)
                     {

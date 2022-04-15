@@ -167,6 +167,11 @@ namespace Strike_12
             set { timeStopActive = value; }
         }
 
+        public PlayerStates State
+        {
+            get { return playerState; }
+        }
+
         // ------------------------------------------
 
         public float VelocityX
