@@ -395,10 +395,7 @@ namespace Strike_12
                                 }
                                 else
                                 {
-                                    //if (player.Size.Top < editor[i, j].Size.Bottom)
-                                    //{
-                                    //    isCollidingDown = false;
-                                    //}
+                                    
                                 }
 
                                 // Check for left collisions
@@ -899,15 +896,6 @@ namespace Strike_12
                     {
                         enemy.Draw(_spriteBatch, enemySprites);
                     }
-
-                    _spriteBatch.DrawString(displayFont, $"{String.Format(player.LeftCollided.ToString())}",
-                        new Vector2(100, 300), Color.LightGray);
-                    _spriteBatch.DrawString(displayFont, $"{String.Format(player.RightCollided.ToString())}",
-                        new Vector2(100, 350), Color.LightGray);
-                    _spriteBatch.DrawString(displayFont, $"{String.Format(isCollidingUp.ToString())}",
-                        new Vector2(100, 400), Color.LightGray);
-                    _spriteBatch.DrawString(displayFont, $"{String.Format(isCollidingDown.ToString())}",
-                        new Vector2(100, 450), Color.LightGray);
 
                     break;
 

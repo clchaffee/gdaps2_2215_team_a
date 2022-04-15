@@ -24,6 +24,7 @@ namespace Strike_12
         faceRight,
         jumpLeft,
         jumpRight,
+        crouch,
         airdash
     }
 
@@ -247,6 +248,7 @@ namespace Strike_12
             // If the player is in the airdash state,
             if (playerState == PlayerStates.airdash)
             {
+                // Air Dash Logic
                 if (dashCounter > 0)
                 {
                     switch (moveDirection)
@@ -279,6 +281,12 @@ namespace Strike_12
                 }
                 else
                 {
+                    // Reset the player's height and width
+                    if (moveDirection == Keys.A || moveDirection == Keys.D)
+                    {
+                        size = new Rectangle(size.X, size.Y, size.Height, size.Width);
+                    }
+
                     playerState = dashDirection;
                 }
             }
@@ -286,7 +294,7 @@ namespace Strike_12
             //if A is pressed, moves player left, changes player state depending on if jumping or not.
             if (kbState.IsKeyDown(Keys.A) && !leftCollided && playerState != PlayerStates.airdash)
             {
-                velocity.X = -(baseSpeed*moveSpeed);
+                velocity.X = -(baseSpeed * moveSpeed);
 
                 if (!isGrounded && previousPlayerState != PlayerStates.moveLeft)
                 {
@@ -300,7 +308,7 @@ namespace Strike_12
             //if D is pressed, moves player right, changes player state depending on if jumping or not.
             else if (kbState.IsKeyDown(Keys.D) && !rightCollided && playerState != PlayerStates.airdash)
             {
-                velocity.X = (baseSpeed*moveSpeed);
+                velocity.X = (baseSpeed * moveSpeed);
 
                 if (!isGrounded && previousPlayerState != PlayerStates.moveRight)
                 {
@@ -330,7 +338,7 @@ namespace Strike_12
             }
 
             //if W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
-            if (kbState.IsKeyDown(Keys.W) && isGrounded /*&& playerState != PlayerStates.airdash*/)
+            if (kbState.IsKeyDown(Keys.W) && !previousKBState.IsKeyDown(Keys.W) && velocity.Y == 0)
             {
                 isGrounded = false;
                 position.Y -= 60f;
@@ -346,11 +354,23 @@ namespace Strike_12
                 }
             }
 
+            // Crouching
+            if (kbState.IsKeyDown(Keys.S) && !previousKBState.IsKeyDown(Keys.S) /*&& isGrounded*/)
+            {
+                size = new Rectangle(size.X, size.Y, size.Width, 64);
+                position.Y += 64;
+            }
+            else if (!kbState.IsKeyDown(Keys.S) && previousKBState.IsKeyDown(Keys.S))
+            {
+                size = new Rectangle(size.X, size.Y, size.Width, 128);
+            }
+
+            // Grounded Player Logic
             if (isGrounded)
             {
                 //position.Y = this.SizeY - playerSprite.Height;
                 gravityMultiplier = 1f;
-                moveSpeed = baseSpeed*10f;
+                moveSpeed = baseSpeed * 10f;
                 dashCounter = 20;
                 velocity.Y = 0;
                 canJump = true;
@@ -367,7 +387,7 @@ namespace Strike_12
                 // If the player is falling, lower their movespeed to allow for precise landing
                 if (velocity.Y <= 10 && velocity.Y >= 0)
                 {
-                    moveSpeed += baseSpeed*0.3f;
+                    moveSpeed += baseSpeed * 0.3f;
                 }
                 else if (velocity.Y > 0)
                 {
@@ -412,6 +432,7 @@ namespace Strike_12
                     }
                     else if (kbState.IsKeyDown(Keys.A))
                     {
+                        size = new Rectangle(size.X, size.Y, size.Height, size.Width);
                         moveDirection = Keys.A;
                     }
                     else if (kbState.IsKeyDown(Keys.S))
@@ -420,6 +441,7 @@ namespace Strike_12
                     }
                     else if (kbState.IsKeyDown(Keys.D))
                     {
+                        size = new Rectangle(size.X, size.Y, size.Height, size.Width);
                         moveDirection = Keys.D;
                     }
 
