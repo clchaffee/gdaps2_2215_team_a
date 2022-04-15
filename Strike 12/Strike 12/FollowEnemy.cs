@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Strike_12
 {
-    class FollowEnemy : BounceEnemy
+    class FollowEnemy : Enemy
     {
         // ----- Fields -----
         private Texture2D enemySprite;

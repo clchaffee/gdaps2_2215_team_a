@@ -16,8 +16,8 @@ namespace Strike_12
 
         // ----- | Constructor | -----
         // Paramatarized Constructor
-        public BounceEnemy(Texture2D texture, Rectangle size, int windowWidth, int windowHeight)
-            : base(texture, size, windowWidth, windowHeight)
+        public BounceEnemy(Texture2D texture, Rectangle size, int windowWidth, int windowHeight, int playerX, int playerY)
+            : base(texture, size, windowWidth, windowHeight, playerX, playerY)
         {
             enemySprite = texture;
             // Chooses a random corner to for the block

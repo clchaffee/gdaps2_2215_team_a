@@ -19,7 +19,7 @@ namespace Strike_12
         protected Rectangle size;
         protected int windowWidth;
         protected int windowHeight;
-        protected Random rng;
+        protected Random rng = new Random();
 
         //property
         public Rectangle Size

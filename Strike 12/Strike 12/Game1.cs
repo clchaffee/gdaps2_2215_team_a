@@ -32,10 +32,11 @@ namespace Strike_12
         Random rng = new Random();
         private Texture2D titleScreen;
         private int Interval { get; set; } = 0;
-        private bool easy = false;
-        private bool medium = true;
+        private bool easy = true;
+        private bool medium = false;
         private bool hard = false;
         private bool impossible = false;
+        private bool collidable = false;
 
         int count;
         bool spawnCap = true;
@@ -339,7 +340,7 @@ namespace Strike_12
                     //eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
-                    // Temp player and enemy update call
+                    // Update the player
                     player.Update(gameTime);
 
                     playerState = player.State;
@@ -389,10 +390,56 @@ namespace Strike_12
                         {
                             if (editor[i, j] != null)
                             {
+                                // Check for top collisions
+                                if (player.IsCollidingTop(player, editor[i, j]) &&
+                                    (!isCollidingUp))
+                                {
+                                    while (player.Size.Bottom != editor[i, j].Size.Top)
+                                    {
+                                        player.SizeY -= 1;
+                                    }
+
+                                    player.VelocityY = 0;
+                                    player.PositionY = player.SizeY;
+
+                                    player.IsGrounded = true;
+                                    isCollidingUp = true;
+                                }
+                                else
+                                {
+                                    //if (player.Size.Bottom > editor[i, j].Size.Top)
+                                    //{
+                                    //    isCollidingUp = false;
+                                    //}
+                                }
+
+                                // Check for bottom collisions
+                                if (player.IsCollidingBottom(player, editor[i, j]) &&
+                                    (!isCollidingDown))
+                                {
+                                    while (player.Size.Top != editor[i, j].Size.Bottom)
+                                    {
+                                        player.SizeY++;
+                                    }
+
+                                    player.PositionY = player.SizeY;
+
+                                    player.VelocityY = 0;
+                                    player.CanJump = false;
+                                    player.IsGrounded = false;
+                                    isCollidingDown = true;
+                                }
+                                else
+                                {
+                                    //if (player.Size.Top < editor[i, j].Size.Bottom)
+                                    //{
+                                    //    isCollidingDown = false;
+                                    //}
+                                }
 
                                 // Check for left collisions
                                 if (player.IsCollidingLeft(player, editor[i, j], player.VelocityX) &&
-                                    (!isCollidingLeft))
+                                        (!isCollidingLeft))
                                 {
                                     player.LeftCollided = true;
 
@@ -407,7 +454,10 @@ namespace Strike_12
                                 }
                                 else
                                 {
-                                    player.LeftCollided = false;
+                                    if (player.Size.Left > editor[i, j].Size.Right)
+                                    {
+                                        player.LeftCollided = false;
+                                    }
                                 }
 
                                 // Check for right collisions
@@ -427,44 +477,15 @@ namespace Strike_12
                                 }
                                 else
                                 {
-                                    player.RightCollided = false;
-                                }
-
-                                // Check for top collisions
-                                if (player.IsCollidingTop(player, editor[i, j]) &&
-                                    (!isCollidingUp))
-                                {
-                                    while (player.Size.Bottom != editor[i, j].Size.Top)
+                                    if (player.Size.Right < editor[i, j].Size.Left)
                                     {
-                                        player.SizeY -= 1;
+                                        player.RightCollided = false;
                                     }
-
-                                    player.VelocityY = 0;
-                                    player.PositionY = player.SizeY;
-
-                                    player.IsGrounded = true;
-                                    isCollidingUp = true;
-                                }
-
-                                // Check for bottom collisions
-                                if (player.IsCollidingBottom(player, editor[i, j]) &&
-                                    (!isCollidingDown))
-                                {
-                                    while (player.Size.Top != editor[i, j].Size.Bottom)
-                                    {
-                                        player.SizeY++;
-                                    }
-
-                                    player.PositionY = player.SizeY;
-
-                                    player.VelocityY = 0;
-                                    player.CanJump = false;
-                                    player.IsGrounded = false;
-                                    isCollidingDown = true;
                                 }
                             }
                         }
                     }
+
                     //checks if player fell in a pit
                     if (player.Size.Y > windowHeight)
                     {
@@ -474,6 +495,9 @@ namespace Strike_12
 
                     //TODO: Reimplement enemy collision 
                     //collision for each enemy in the Enemy class
+                    if (collidable == true)
+                    foreach (Enemy enemy in eManager.Enemies)
+                    {
                     if (!player.TimeStopActive)
                     {
                         foreach (Enemy enemy in eManager.Enemies)
@@ -543,59 +567,153 @@ namespace Strike_12
 
                         if (spawnCap)
                         {
-                            switch (wave)
+                            switch (eManager.WaveNum)
                             {
+                                //wave 1 always spawns regular enemies
                                 case 1:
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {
+                                        eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                    }
 
-                                    if (easy == true)
-                                    {
-                                        eManager.SpawnFormula(.1);
-                                        eManager.Enemies.Clear();
-                                        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
-                                        {
-                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
-                                        }
-                                    }
-                                    if (medium == true)
-                                    {
-                                        eManager.SpawnFormula(.1);
-                                        //eManager.limitation = .1;
-                                        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
-                                        {
-                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
-                                        }
-                                    }
-                                    if (hard == true)
-                                    {
-                                        eManager.SpawnFormula(.125);
-                                        //eManager.limitation = .3;
-                                        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
-                                        {
-                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
-                                        }
-                                    }
-                                    if (impossible == true)
-                                    {
-                                        eManager.SpawnFormula(.2);
-                                        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
-                                        {
-                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
-                                        }
-                                    }
                                     break;
+                                //    if (medium == true)
+                                //    {
+                                //        eManager.SpawnFormula(.1);
+                                //        //eManager.limitation = .1;
+                                //        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
+                                //        {
+                                //            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                //        }
+                                //    }
+                                //    if (hard == true)
+                                //    {
+                                //        eManager.SpawnFormula(.125);
+                                //        //eManager.limitation = .3;
+                                //        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
+                                //        {
+                                //            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                //        }
+                                //    }
+                                //    if (impossible == true)
+                                //    {
+                                //        eManager.SpawnFormula(.2);
+                                //        for (int i = 0; i < eManager.numEnemies[Interval]; i++)
+                                //        {
+                                //            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                //        }
+                                //    }
+                                //    break;
 
+                                
+                                //wave 2 has a 20 percent chance to spawn a bullet enemy
                                 case 2:
-                                    eManager.SpawnEnemy(new BounceEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight));
-                                    eManager.SpawnEnemy(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight));
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {
+                                        if (rng.Next(0, 100) > 19)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                        else
+                                        {
+                                            eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, (int)player.PositionX, (int)player.PositionY), Interval);
+                                        }
+                                    }
+
                                     break;
 
+                                //wave 3: 60% for normal, 40% for bullet
                                 case 3:
-                                    eManager.SpawnEnemy(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight));
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {
+                                        if (rng.Next(0, 100) > 39)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                        else
+                                        {
+                                            eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                    }
+
                                     break;
 
+                                //wave 4: 40% normal, 40% projectile, 20% bounce
                                 case 4:
-                                    eManager.SpawnEnemy(new LaserEnemy(buttonTexture, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.Size.Y));
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {
+                                        if (rng.Next(0, 100) < 40)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(128, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                        else if(rng.Next(0, 100) < 40)
+                                        {
+                                            eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                        else
+                                        {
+                                            eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                    }
+
                                     break;
+                            
+                                //wave 5: 30% normal, 30% bounce, 40% bullet
+                                case 5:
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {
+                                        if (rng.Next(0, 100) < 30)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                        else if(rng.Next(0, 100) < 30)
+                                        {
+                                            eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                        else
+                                        {
+                                            eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                    }
+
+                                    break;
+
+                                //Wave 6: 40% normal, 20% bounce, 30% bullet, 10% follow
+                                case 6:
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {
+                                        if (rng.Next(0, 100) < 40)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                        else if(rng.Next(0 ,100) < 30)
+                                        {
+                                            eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                        else if (rng.Next(0, 100) < 20)
+                                        {
+                                            eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                        else
+                                        {
+                                            eManager.WaveProgress(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                    }
+
+                                    break;
+                                     
                                 default:
                                     break;
                             }
@@ -605,14 +723,16 @@ namespace Strike_12
 
                             count++;
                             spawnCap = false;
-                            waitTime = 59;
+                            waitTime = 59
+                                ;
                             if (Interval == 7)
                             {
                                 eManager.Start += 5;
                                 eManager.End += 5;
-                                Interval = 1;
+                                Interval = 0;
                                 eManager.Enemies.Clear();
-                                wave++;
+                                eManager.NumEnemies.Clear();
+                                eManager.WaveNum++;
                                 spawnCap = true;
                             }
                             //else if (Interval == 7)
@@ -696,7 +816,7 @@ namespace Strike_12
                     eManager.End += 30;
                     Interval = 0;
                     eManager.Enemies.Clear();
-                    wave = 1;
+                    eManager.WaveNum = 1;
 
                     //resets data from Arena
                     eManager.Enemies.Clear();
@@ -856,52 +976,48 @@ namespace Strike_12
                 // text for control screen
                 case GameState.Controls:
                     _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right" +
-                        "\nPress Left Shift and a direction to airdash (WHEN UNLOCKED)" +
-                        "\nPress Space to stop time for a short period (WHEN UNLOCKED)\n" +
-                        "\nPress Space to go back to the Menu",
-                        new Vector2(100, 50), Color.Black);
-
-                    //changes color based on what difficulty was selected
-                    if (easy)
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
-                            new Vector2(100, 500), Color.Green);
-                    }
-                    else
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
-                            new Vector2(100, 500), Color.Black);
-                    }
-                    if (medium)
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 2 for Medium Difficulty",
-                            new Vector2(100, 525), Color.Green);
-                    }
-                    else
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 2 for Medium Difficulty",
-                            new Vector2(100, 525), Color.Black);
-                    }
-                    if (hard)
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 3 for Hard Difficulty",
-                            new Vector2(100, 550), Color.Green);
-                    }
-                    else
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 3 for Hard Difficulty",
-                            new Vector2(100, 550), Color.Black);
-                    }
-                    if (impossible)
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 0 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
-                            new Vector2(100, 575), Color.Green);
-                    }
-                    else
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 0 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
-                            new Vector2(100, 575), Color.Black);
-                    }
+                        "\nPress Up Arrow to dash in your direction\n\nPress Space to go back to the Menu",
+                        new Vector2(150, 200), Color.Black);
+                    //if (easy)
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
+                    //        new Vector2(100, 500), Color.Green);
+                    //}
+                    //else
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
+                    //        new Vector2(100, 500), Color.Black);
+                    //}
+                    //if (medium)
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 2 for Medium Difficulty",
+                    //        new Vector2(100, 525), Color.Green);
+                    //}
+                    //else
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 2 for Medium Difficulty",
+                    //        new Vector2(100, 525), Color.Black);
+                    //}
+                    //if (hard)
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 4 for Hard Difficulty",
+                    //        new Vector2(100, 550), Color.Green);
+                    //}
+                    //else
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 3 for Hard Difficulty",
+                    //        new Vector2(100, 550), Color.Black);
+                    //}
+                    //if (impossible)
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 0 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
+                    //        new Vector2(100, 575), Color.Green);
+                    //}
+                    //else
+                    //{
+                    //    _spriteBatch.DrawString(displayFont, "Press 0 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
+                    //        new Vector2(100, 575), Color.Black);
+                    //}
                     break;
 
                 //text for arena screen
@@ -918,8 +1034,8 @@ namespace Strike_12
                     _spriteBatch.DrawString(displayFont, $"\nEnergy: {player.CurrentEnergy}",
                        new Vector2(100, 100), Color.LightGray);
 
-                    _spriteBatch.DrawString(displayFont, $"\nWave: {wave}",
-                        new Vector2(100, 200), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, $"\nWave: {eManager.WaveNum}",
+                        new Vector2(100, 200), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\n# of enemies in wave: {eManager.Enemies.Count}",
                         new Vector2(100, 250), Color.LightGray);
 
@@ -948,6 +1064,15 @@ namespace Strike_12
                     {
                         enemy.Draw(_spriteBatch, enemySprites);
                     }
+
+                    _spriteBatch.DrawString(displayFont, $"{String.Format(player.LeftCollided.ToString())}",
+                        new Vector2(100, 300), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, $"{String.Format(player.RightCollided.ToString())}",
+                        new Vector2(100, 350), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, $"{String.Format(isCollidingUp.ToString())}",
+                        new Vector2(100, 400), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, $"{String.Format(isCollidingDown.ToString())}",
+                        new Vector2(100, 450), Color.LightGray);
 
                     break;
 
