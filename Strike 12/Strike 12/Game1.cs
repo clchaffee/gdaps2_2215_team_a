@@ -457,10 +457,10 @@ namespace Strike_12
                             if (levels[lvlNum][i, j] != null)
                             {
                                 // Check for top collisions
-                                if (player.IsCollidingTop(player, editor[i, j]) &&
+                                if (player.IsCollidingTop(player, levels[lvlNum][i, j]) &&
                                     (!isCollidingUp))
                                 {
-                                    while (player.Size.Bottom != editor[i, j].Size.Top)
+                                    while (player.Size.Bottom != levels[lvlNum][i, j].Size.Top)
                                     {
                                         player.SizeY -= 1;
                                     }
@@ -473,17 +473,17 @@ namespace Strike_12
                                 }
                                 else
                                 {
-                                    //if (player.Size.Bottom > editor[i, j].Size.Top)
+                                    //if (player.Size.Bottom > levels[lvlNum][i, j].Size.Top)
                                     //{
                                     //    isCollidingUp = false;
                                     //}
                                 }
 
                                 // Check for bottom collisions
-                                if (player.IsCollidingBottom(player, editor[i, j]) &&
+                                if (player.IsCollidingBottom(player, levels[lvlNum][i, j]) &&
                                     (!isCollidingDown))
                                 {
-                                    while (player.Size.Top != editor[i, j].Size.Bottom)
+                                    while (player.Size.Top != levels[lvlNum][i, j].Size.Bottom)
                                     {
                                         player.SizeY++;
                                     }
@@ -517,7 +517,7 @@ namespace Strike_12
                                 }
                                 else
                                 {
-                                    if (player.Size.Left > editor[i, j].Size.Right)
+                                    if (player.Size.Left > levels[lvlNum][i, j].Size.Right)
                                     {
                                         player.LeftCollided = false;
                                     }
@@ -540,7 +540,7 @@ namespace Strike_12
                                 }
                                 else
                                 {
-                                    if (player.Size.Right < editor[i, j].Size.Left)
+                                    if (player.Size.Right < levels[lvlNum][i, j].Size.Left)
                                     {
                                         player.RightCollided = false;
                                     }
@@ -577,9 +577,7 @@ namespace Strike_12
                                 //player.Jump();
                             }
                     }
-                    
- 
-                    
+
                     if (!player.TimeStopActive)
                     {
                         foreach (Enemy enemy in eManager.Enemies)
@@ -595,7 +593,7 @@ namespace Strike_12
                                             player.Health -= 1;
                                         }
 
-                            }
+                            
                             else if (enemy.IsCollidingTop(enemy, player))
                             {
                                 //player.Jump();
