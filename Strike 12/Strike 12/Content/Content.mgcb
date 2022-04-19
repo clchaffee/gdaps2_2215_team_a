@@ -146,6 +146,18 @@
 /processorParam:TextureFormat=Color
 /build:Options.png
 
+#begin playerCrouch.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:playerCrouch.png
+
 #begin playerIdle.png
 /importer:TextureImporter
 /processor:TextureProcessor
