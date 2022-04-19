@@ -13,6 +13,17 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin 210987__urupin__chiming-clock.aiff
+/importer:
+/processor:
+/build:210987__urupin__chiming-clock.aiff;Chime.aiff
+
+#begin 530583__straget__alarm-clock-without-noisereduktiom.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:530583__straget__alarm-clock-without-noisereduktiom.wav;Tick.wav
+
 #begin ArenaBG.png
 /importer:TextureImporter
 /processor:TextureProcessor
