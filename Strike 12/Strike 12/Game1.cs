@@ -127,6 +127,7 @@ namespace Strike_12
         AnimationManager playerAnimation;
         Texture2D playerIdle;
         Texture2D playerWalk;
+        Texture2D playerCrouch;
         PlayerStates playerState;
 
         public Game1()
@@ -281,6 +282,7 @@ namespace Strike_12
             playerAnimation = new AnimationManager();
             playerIdle = Content.Load<Texture2D>("playerIdle");
             playerWalk = Content.Load<Texture2D>("playerWalk");
+            playerCrouch = Content.Load<Texture2D>("playerCrouch");
         }
 
         /// <summary>
@@ -421,6 +423,9 @@ namespace Strike_12
                             break;
                         case PlayerStates.faceLeft:
                             playerAnimation.Update(gameTime, 3, .09);
+                            break;
+                        case PlayerStates.crouch:
+                            playerAnimation.Update(gameTime, 1, .09);
                             break;
                     }
 
@@ -1143,6 +1148,9 @@ namespace Strike_12
                             break;
                         case PlayerStates.faceLeft:
                             playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally);
+                            break;
+                        case PlayerStates.crouch:
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None);
                             break;
                     }
 
