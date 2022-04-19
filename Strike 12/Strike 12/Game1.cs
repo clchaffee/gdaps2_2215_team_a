@@ -33,6 +33,11 @@ namespace Strike_12
         private int windowHeight = 960;
         Random rng = new Random();
         private Texture2D titleScreen;
+        private bool fading;
+        private int fadeOpacity;
+        private Texture2D black;
+
+
         private int Interval { get; set; } = 0;
         private bool easy = true;
         private bool medium = false;
@@ -82,6 +87,8 @@ namespace Strike_12
         private Texture2D shopFG;
         private Texture2D shopKeeper;
         private Texture2D noseButton;
+        private Texture2D sign;
+        private Texture2D shelf;
         private string comment;
 
         //other buttons
@@ -93,6 +100,7 @@ namespace Strike_12
         private Texture2D healthUpgrade;
         private Texture2D speedUpgrade;
         private Texture2D energyUpgrade;
+        private Texture2D dashUpgrade;
 
         // Level Assets
         private LevelEditor editor;
@@ -145,6 +153,9 @@ namespace Strike_12
             eManager = new EnemyManager(windowWidth, windowHeight);
             bManager = new EnemyManager(windowWidth, windowHeight);
 
+            fading = false;
+            fadeOpacity = 0;
+
             //initializes comment to null
             comment = null;
 
@@ -174,8 +185,13 @@ namespace Strike_12
             arenaBackground = Content.Load<Texture2D>("ArenaBG");
             shopWall = Content.Load<Texture2D>("ShopWall");
             shopFG = Content.Load<Texture2D>("ShopFG");
+            sign = Content.Load<Texture2D>("sign");
+            shelf = Content.Load<Texture2D>("shelf");
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
             noseButton = Content.Load<Texture2D>("CatNose");
+
+            //fading asset
+            black = Content.Load<Texture2D>("black");
 
             startButton = Content.Load<Texture2D>("Start");
             optionButton = Content.Load<Texture2D>("Options");
@@ -184,6 +200,7 @@ namespace Strike_12
             healthUpgrade = Content.Load<Texture2D>("HealthBottle");
             speedUpgrade = Content.Load<Texture2D>("SpeedBottle");
             energyUpgrade = Content.Load<Texture2D>("EnergyBottle");
+            dashUpgrade = Content.Load<Texture2D>("DashBoot");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height - 192);
@@ -238,6 +255,7 @@ namespace Strike_12
             buttons.Add(new Button("options", optionButton, new Rectangle(windowWidth / 2 - 256 / 2, 600, 256, 124), 0));
             buttons.Add(new Button("menu", menuButton, new Rectangle(300, 800, 256, 124), 0));
 
+            //shop buttons
             buttons.Add(new Button("health",
                 healthUpgrade,
                 new Rectangle(1100, 150, healthUpgrade.Width, healthUpgrade.Height),
@@ -254,13 +272,13 @@ namespace Strike_12
                 10));
 
             buttons.Add(new Button("dash",
-                buttonTexture,
-                new Rectangle(1100, 400, 100, 50),
+                dashUpgrade,
+                new Rectangle(1100, 330, dashUpgrade.Width, dashUpgrade.Height),
                 50));
 
             buttons.Add(new Button("timestop",
                   buttonTexture,
-                  new Rectangle(1400, 400, 100, 50),
+                  new Rectangle(1400, 330, 100, 50),
                   100));
 
             /*        NOT FOR SPRINT 3
@@ -305,6 +323,12 @@ namespace Strike_12
                 //if enter is pressed in menu, starts the game
                 //if space is pressed opens the control screen
                 case GameState.Menu:
+
+                    //debug control for Annalee while working on shop
+                    if (kbState.IsKeyDown(Keys.Back) && prevKbState.IsKeyUp(Keys.Back))
+                    {
+                        state = GameState.GameOver;
+                    }
 
                     eManager.Count = 0;
                     if (buttons[0].IsPressed)
@@ -367,6 +391,7 @@ namespace Strike_12
 
                     playerAnimation.Update(gameTime, 8, .09);
                     player.SizeX = player.SizeX + 10;
+
                     if (player.SizeX > _graphics.PreferredBackBufferWidth)
                     {
                         state = GameState.Arena;
@@ -381,24 +406,23 @@ namespace Strike_12
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
                     //updates levels every 2 minutes, would use % but game time is too fast to process that
-                    // REMOVE /10 AT THE END
-                    if (timer >= 600/10)
+                    if (timer >= 600)
                     {
                         lvlNum = 5;
                     }
-                    else if (timer >= 480/10)
+                    else if (timer >= 480)
                     {
                         lvlNum = 4;
                     }
-                    else if (timer >= 360/10)
+                    else if (timer >= 360)
                     {
                         lvlNum = 3;
                     }
-                    else if (timer >= 240/10)
+                    else if (timer >= 240)
                     {
                         lvlNum = 2;
                     }
-                    else if (timer >= 120/10)
+                    else if (timer >= 120)
                     {
                         lvlNum = 1;
                     }
@@ -1050,6 +1074,10 @@ namespace Strike_12
 
                         case GameState.Start:
                             playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None);
+
+                            //starts to fade
+                            fading = true;
+                            fadeOpacity = fadeOpacity + 3;
                             break;
                     }
 
@@ -1113,6 +1141,9 @@ namespace Strike_12
 
                 //text for arena screen
                 case GameState.Arena:
+
+                    //resets fading
+                    fading = false;
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0,0), Color.White);
                     // Draw the tiles
@@ -1192,7 +1223,7 @@ namespace Strike_12
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
 
-                    _spriteBatch.DrawString(displayFont, $"\nKromer: {shop.Points} " +
+                    _spriteBatch.DrawString(displayFont, String.Format("\nRobux: {0:C}", shop.Points) +
                         $"\nHealth: {player.Health}" +
                         $"\n{String.Format("Speed: {0:0.00}", player.BaseSpeed)}" +
                         $"\nEnergy: {player.Energy}\n" +
@@ -1201,25 +1232,37 @@ namespace Strike_12
                         $"\nSpendings: {shop.Spendings}",
                        new Vector2(40, 100), Color.White);
 
-                    _spriteBatch.DrawString(displayFont, comment, new Vector2(450, 200), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, comment, new Vector2(375, 300), Color.LightGray);
 
                     _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Q to quit to the menu",
                         new Vector2(40, 400), Color.White);
+                    _spriteBatch.Draw(sign, new Vector2(1150, 642), Color.White);
+
+                    _spriteBatch.Draw(shelf, new Vector2(1085, 265), Color.White);
+                    _spriteBatch.Draw(shelf, new Vector2(1085, 445), Color.White);
+
 
                     //draws each button
                     for (int i = 3; i < buttons.Count;i++)
                     {
                             buttons[i].Draw(_spriteBatch, displayFont);
+                            
                             //if the player doesnt have enough points to by the item
                             if (buttons[i].IsHighlight && shop.Points < buttons[i].Cost)
                             {
-                                _spriteBatch.DrawString(displayFont, "Sorry hun, you don't have enough to buy that.", new Vector2(600, 80), Color.White);
+                                _spriteBatch.DrawString(displayFont, "Sorry hun, you don't have enough to buy that.", new Vector2(600, 90), Color.White);
                             }
                     }
                     break;
 
                 default:
                     break;
+            }
+
+            //fade
+            if (fading)
+            {
+                _spriteBatch.Draw(black, new Vector2(0, 0), null, new Color(0, 0, 0, fadeOpacity), 0f, Vector2.Zero, new Vector2(windowWidth, windowHeight), SpriteEffects.None, 0);
             }
 
             //closes the spriteBatch before calling draw
