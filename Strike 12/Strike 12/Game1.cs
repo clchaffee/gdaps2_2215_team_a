@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -31,6 +33,11 @@ namespace Strike_12
         private int windowHeight = 960;
         Random rng = new Random();
         private Texture2D titleScreen;
+        private bool fading;
+        private int fadeOpacity;
+        private Texture2D black;
+
+
         private int Interval { get; set; } = 0;
         private bool easy = true;
         private bool medium = false;
@@ -106,6 +113,10 @@ namespace Strike_12
         private Texture2D arenaBackground;
         private Texture2D titleBG;
 
+        //Audio Assets
+        private Song clockTick;
+        private SoundEffect clockChime;
+
         //sets the default state as the menu
         GameState state = GameState.Menu;
 
@@ -124,6 +135,7 @@ namespace Strike_12
         AnimationManager playerAnimation;
         Texture2D playerIdle;
         Texture2D playerWalk;
+        Texture2D playerCrouch;
         PlayerStates playerState;
 
         public Game1()
@@ -140,6 +152,9 @@ namespace Strike_12
             _graphics.ApplyChanges();
             eManager = new EnemyManager(windowWidth, windowHeight);
             bManager = new EnemyManager(windowWidth, windowHeight);
+
+            fading = false;
+            fadeOpacity = 0;
 
             //initializes comment to null
             comment = null;
@@ -175,6 +190,9 @@ namespace Strike_12
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
             noseButton = Content.Load<Texture2D>("CatNose");
 
+            //fading asset
+            black = Content.Load<Texture2D>("black");
+
             startButton = Content.Load<Texture2D>("Start");
             optionButton = Content.Load<Texture2D>("Options");
             menuButton = Content.Load<Texture2D>("Menu");
@@ -190,6 +208,10 @@ namespace Strike_12
             eStartX = rng.Next(300, windowWidth - 300);
             eStartY = rng.Next(300, windowHeight - 300);
             eSize = new Rectangle(eStartX, eStartY, 128, 128);
+
+            //Audio 
+            clockTick = Content.Load<Song>("Tick");
+            clockChime = Content.Load<SoundEffect>("Chime");
 
             // Initialize the player with the asset loaded in
             player = new Player
@@ -278,6 +300,7 @@ namespace Strike_12
             playerAnimation = new AnimationManager();
             playerIdle = Content.Load<Texture2D>("playerIdle");
             playerWalk = Content.Load<Texture2D>("playerWalk");
+            playerCrouch = Content.Load<Texture2D>("playerCrouch");
         }
 
         /// <summary>
@@ -383,24 +406,23 @@ namespace Strike_12
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
                     //updates levels every 2 minutes, would use % but game time is too fast to process that
-                    // REMOVE /10 AT THE END
-                    if (timer >= 600/10)
+                    if (timer >= 600)
                     {
                         lvlNum = 5;
                     }
-                    else if (timer >= 480/10)
+                    else if (timer >= 480)
                     {
                         lvlNum = 4;
                     }
-                    else if (timer >= 360/10)
+                    else if (timer >= 360)
                     {
                         lvlNum = 3;
                     }
-                    else if (timer >= 240/10)
+                    else if (timer >= 240)
                     {
                         lvlNum = 2;
                     }
-                    else if (timer >= 120/10)
+                    else if (timer >= 120)
                     {
                         lvlNum = 1;
                     }
@@ -425,6 +447,9 @@ namespace Strike_12
                             break;
                         case PlayerStates.faceLeft:
                             playerAnimation.Update(gameTime, 3, .09);
+                            break;
+                        case PlayerStates.crouch:
+                            playerAnimation.Update(gameTime, 1, .09);
                             break;
                     }
 
@@ -1049,6 +1074,10 @@ namespace Strike_12
 
                         case GameState.Start:
                             playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None);
+
+                            //starts to fade
+                            fading = true;
+                            fadeOpacity = fadeOpacity + 3;
                             break;
                     }
 
@@ -1113,6 +1142,9 @@ namespace Strike_12
                 //text for arena screen
                 case GameState.Arena:
 
+                    //resets fading
+                    fading = false;
+
                     _spriteBatch.Draw(arenaBackground, new Vector2(0,0), Color.White);
                     // Draw the tiles
                     levels[lvlNum].Draw(_spriteBatch, tileSprites);
@@ -1147,6 +1179,9 @@ namespace Strike_12
                             break;
                         case PlayerStates.faceLeft:
                             playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally);
+                            break;
+                        case PlayerStates.crouch:
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None);
                             break;
                     }
 
@@ -1188,7 +1223,7 @@ namespace Strike_12
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
 
-                    _spriteBatch.DrawString(displayFont, $"\nKromer: {shop.Points} " +
+                    _spriteBatch.DrawString(displayFont, String.Format("\nRobux: {0:C}", shop.Points) +
                         $"\nHealth: {player.Health}" +
                         $"\n{String.Format("Speed: {0:0.00}", player.BaseSpeed)}" +
                         $"\nEnergy: {player.Energy}\n" +
@@ -1222,6 +1257,12 @@ namespace Strike_12
 
                 default:
                     break;
+            }
+
+            //fade
+            if (fading)
+            {
+                _spriteBatch.Draw(black, new Vector2(0, 0), null, new Color(0, 0, 0, fadeOpacity), 0f, Vector2.Zero, new Vector2(windowWidth, windowHeight), SpriteEffects.None, 0);
             }
 
             //closes the spriteBatch before calling draw
