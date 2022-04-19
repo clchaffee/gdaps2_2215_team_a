@@ -353,8 +353,7 @@ namespace Strike_12
                         for (int j = 0; j < editor.LayoutColumns; j++)
                         {
                             if (editor[i, j] != null)
-                            {
-
+                            { 
                                 // Check for left collisions
                                 if (player.IsCollidingLeft(player, editor[i, j], player.VelocityX) &&
                                     (!isCollidingLeft))
