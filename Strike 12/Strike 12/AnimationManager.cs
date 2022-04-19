@@ -22,7 +22,16 @@ namespace Strike_12
         // FOR DAM
         double currentTime;
         const double TimesPerFrame = .1;
-        int frames;
+        double frames;
+
+        public double Frames
+        {
+            get { return frames; }
+        }
+        public double CurrentTime
+        {
+            get { return currentTime; }
+        }
 
         // ===== Constructor =====
         public AnimationManager()
@@ -48,7 +57,7 @@ namespace Strike_12
             }
         }
 
-        // Draw():
+        // Draw()
         public void Draw(SpriteBatch _spriteBatch, Texture2D texture, Rectangle rect, MouseState mState)
         {
             _spriteBatch.Draw(texture, CheckMouse(rect, mState), Color.White);
@@ -57,13 +66,15 @@ namespace Strike_12
         // --- DAM Methods
 
         // Update()
-        public void Update(GameTime gameTime, int frameAmount)
+        public void Update(GameTime gameTime, int frameAmount, double frameRate)
         {
+            currentTime = gameTime.TotalGameTime.TotalSeconds;
+
             currentTime += gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (currentTime > TimesPerFrame)
+            if (currentTime >= TimesPerFrame)
             {
-                frames += 1;
+                frames += frameRate;
 
                 if (frames > frameAmount)
                 {
@@ -75,9 +86,22 @@ namespace Strike_12
         }
 
         // Draw()
-        public void Draw(Texture2D texture, Rectangle rect)
+        public void Draw(SpriteBatch _spriteBatch, Texture2D texture, Rectangle rect, SpriteEffects effect)
         {
-            
+            _spriteBatch.Draw(
+                texture,
+                rect,
+                new Rectangle(
+                    0 + (64 * (int)Math.Floor(frames)),
+                    0,
+                    rect.Width,
+                    rect.Height),
+                Color.White,
+                0f,
+                Vector2.Zero,
+                effect,
+                0f); 
+
         }
     }
 }
