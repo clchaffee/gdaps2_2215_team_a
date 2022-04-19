@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -108,6 +110,10 @@ namespace Strike_12
         private Texture2D arenaBackground;
         private Texture2D titleBG;
 
+        //Audio Assets
+        private Song clockTick;
+        private SoundEffect clockChime;
+
         //sets the default state as the menu
         GameState state = GameState.Menu;
 
@@ -126,6 +132,7 @@ namespace Strike_12
         AnimationManager playerAnimation;
         Texture2D playerIdle;
         Texture2D playerWalk;
+        Texture2D playerCrouch;
         PlayerStates playerState;
 
         public Game1()
@@ -195,6 +202,10 @@ namespace Strike_12
             eStartX = rng.Next(300, windowWidth - 300);
             eStartY = rng.Next(300, windowHeight - 300);
             eSize = new Rectangle(eStartX, eStartY, 128, 128);
+
+            //Audio 
+            clockTick = Content.Load<Song>("Tick");
+            clockChime = Content.Load<SoundEffect>("Chime");
 
             // Initialize the player with the asset loaded in
             player = new Player
@@ -282,6 +293,7 @@ namespace Strike_12
             playerAnimation = new AnimationManager();
             playerIdle = Content.Load<Texture2D>("playerIdle");
             playerWalk = Content.Load<Texture2D>("playerWalk");
+            playerCrouch = Content.Load<Texture2D>("playerCrouch");
         }
 
         /// <summary>
@@ -421,6 +433,9 @@ namespace Strike_12
                             break;
                         case PlayerStates.faceLeft:
                             playerAnimation.Update(gameTime, 3, .09);
+                            break;
+                        case PlayerStates.crouch:
+                            playerAnimation.Update(gameTime, 1, .09);
                             break;
                     }
 
@@ -1150,6 +1165,9 @@ namespace Strike_12
                             break;
                         case PlayerStates.faceLeft:
                             playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally);
+                            break;
+                        case PlayerStates.crouch:
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None);
                             break;
                     }
 
