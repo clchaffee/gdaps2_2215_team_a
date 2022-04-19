@@ -31,6 +31,11 @@ namespace Strike_12
         private int windowHeight = 960;
         Random rng = new Random();
         private Texture2D titleScreen;
+        private bool fading;
+        private int fadeOpacity;
+        private Texture2D black;
+
+
         private int Interval { get; set; } = 0;
         private bool easy = true;
         private bool medium = false;
@@ -138,6 +143,9 @@ namespace Strike_12
             eManager = new EnemyManager(windowWidth, windowHeight);
             bManager = new EnemyManager(windowWidth, windowHeight);
 
+            fading = false;
+            fadeOpacity = 0;
+
             //initializes comment to null
             comment = null;
 
@@ -169,6 +177,9 @@ namespace Strike_12
             shopFG = Content.Load<Texture2D>("ShopFG");
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
             noseButton = Content.Load<Texture2D>("CatNose");
+
+            //fading asset
+            black = Content.Load<Texture2D>("black");
 
             startButton = Content.Load<Texture2D>("Start");
             optionButton = Content.Load<Texture2D>("Options");
@@ -369,24 +380,23 @@ namespace Strike_12
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
                     //updates levels every 2 minutes, would use % but game time is too fast to process that
-                    // REMOVE /10 AT THE END
-                    if (timer >= 600/10)
+                    if (timer >= 600)
                     {
                         lvlNum = 5;
                     }
-                    else if (timer >= 480/10)
+                    else if (timer >= 480)
                     {
                         lvlNum = 4;
                     }
-                    else if (timer >= 360/10)
+                    else if (timer >= 360)
                     {
                         lvlNum = 3;
                     }
-                    else if (timer >= 240/10)
+                    else if (timer >= 240)
                     {
                         lvlNum = 2;
                     }
-                    else if (timer >= 120/10)
+                    else if (timer >= 120)
                     {
                         lvlNum = 1;
                     }
@@ -1035,6 +1045,10 @@ namespace Strike_12
 
                         case GameState.Start:
                             playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None);
+
+                            //starts to fade
+                            fading = true;
+                            fadeOpacity = fadeOpacity + 3;
                             break;
                     }
 
@@ -1098,6 +1112,9 @@ namespace Strike_12
 
                 //text for arena screen
                 case GameState.Arena:
+
+                    //resets fading
+                    fading = false;
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0,0), Color.White);
                     // Draw the tiles
@@ -1174,7 +1191,7 @@ namespace Strike_12
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
 
-                    _spriteBatch.DrawString(displayFont, $"\nKromer: {shop.Points} " +
+                    _spriteBatch.DrawString(displayFont, String.Format("\nRobux: {0:C}", shop.Points) +
                         $"\nHealth: {player.Health}" +
                         $"\n{String.Format("Speed: {0:0.00}", player.BaseSpeed)}" +
                         $"\nEnergy: {player.Energy}\n" +
@@ -1202,6 +1219,12 @@ namespace Strike_12
 
                 default:
                     break;
+            }
+
+            //fade
+            if (fading)
+            {
+                _spriteBatch.Draw(black, new Vector2(0, 0), null, new Color(0, 0, 0, fadeOpacity), 0f, Vector2.Zero, new Vector2(windowWidth, windowHeight), SpriteEffects.None, 0);
             }
 
             //closes the spriteBatch before calling draw
