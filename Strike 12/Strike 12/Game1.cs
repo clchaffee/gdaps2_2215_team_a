@@ -417,27 +417,27 @@ namespace Strike_12
                     }
 
                     //updates levels every 2 minutes, would use % but game time is too fast to process that
-                    if (timer >= 720)
+                    if (timer >= 360)
                     {
                         state = GameState.GameWinner;
                     }
-                    if (wave == 11)
+                    if (timer >= 300)
                     {
                         lvlNum = 5;
                     }
-                    else if (wave == 9)
+                    else if (timer >= 240)
                     {
                         lvlNum = 4;
                     }
-                    else if (wave == 7)
+                    else if (timer >= 180)
                     {
                         lvlNum = 3;
                     }
-                    else if (wave == 5)
+                    else if (timer >= 120)
                     {
                         lvlNum = 2;
                     }
-                    else if (wave == 3)
+                    else if (timer >= 60)
                     {
                         lvlNum = 1;
                     }
