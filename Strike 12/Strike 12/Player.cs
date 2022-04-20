@@ -471,7 +471,7 @@ namespace Strike_12
                 if (kbState.IsKeyDown(Keys.Space) &&
                     timeStopPurchased &&
                     !timeStopActive &&
-                    timeStopCooldown > 300)
+                    timeStopCooldown > 250)
                 {
                     timeStopActive = true;
                     timeStopCooldown = 0;
@@ -479,6 +479,10 @@ namespace Strike_12
                 else
                 {
                     timeStopCooldown++;
+                    if (timeStopCooldown > 250)
+                    {
+                        timeStopActive = false;
+                    }
                 }
 
                 // Air Dash

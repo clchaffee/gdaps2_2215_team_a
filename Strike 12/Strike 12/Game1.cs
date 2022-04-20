@@ -404,28 +404,40 @@ namespace Strike_12
 
                     //resets fading
                     fading = false;
+                    fadeOpacity = 0;
 
                     //eManager.FirstWave();
-                    timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
+                    if (player.TimeStopActive)
+                    {
+                        timer = timer;
+                    }
+                    else
+                    {
+                        timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
+                    }
 
                     //updates levels every 2 minutes, would use % but game time is too fast to process that
-                    if (timer >= 600 / 10)
+                    if (timer >= 720)
+                    {
+                        state = GameState.GameWinner;
+                    }
+                    if (timer >= 600)
                     {
                         lvlNum = 5;
                     }
-                    else if (timer >= 480 / 10)
+                    else if (timer >= 480)
                     {
                         lvlNum = 4;
                     }
-                    else if (timer >= 360 / 10)
+                    else if (timer >= 360)
                     {
                         lvlNum = 3;
                     }
-                    else if (timer >= 240 / 10)
+                    else if (timer >= 240)
                     {
                         lvlNum = 2;
                     }
-                    else if (timer >= 120 / 10)
+                    else if (timer >= 120)
                     {
                         lvlNum = 1;
                     }
@@ -1030,13 +1042,13 @@ namespace Strike_12
                     shop.Points += 5 * (int)timer;
                     timer = 0;
 
-                    if (kbState.IsKeyDown(Keys.Enter) && prevKbState.IsKeyUp(Keys.Enter))
+                    //starts to fade
+                    fading = true;
+                    fadeOpacity = fadeOpacity + 3;
+
+                    if (fadeOpacity == 256)
                     {
-                        state = GameState.Arena;
-                    }
-                    if (kbState.IsKeyDown(Keys.Space) && prevKbState.IsKeyUp(Keys.Space))
-                    {
-                        state = GameState.Shop;
+
                     }
                     break;
 
@@ -1332,10 +1344,12 @@ namespace Strike_12
 
                 //Text for game winner screen
                 case GameState.GameWinner:
-                    _spriteBatch.DrawString(titleFont, "Filler for Game Winner page",
-                        new Vector2(150, 200), Color.Black);
+                    _spriteBatch.DrawString(titleFont, "Surprisingly you're here, where no one else has been\n" +
+                        "Thank you for taking the time to play this\n" +
+                        "",
+                        new Vector2(150, 200), Color.White);
                     _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Space to return to the shop",
-                        new Vector2(100, 400), Color.Black);
+                        new Vector2(100, 400), Color.White);
                     break;
 
                 // Text for game over state
