@@ -249,38 +249,38 @@ namespace Strike_12
             buttons.Add(new Button("options", optionButton, new Rectangle(windowWidth / 2 - 256 / 2, 600, 256, 124), 0));
             buttons.Add(new Button("menu", menuButton, new Rectangle(300, 800, 256, 124), 0));
 
-            buttons.Add(new Button("health",
+            buttons.Add(new Button("Health",
                 healthUpgrade,
                 new Rectangle(1100, 150, healthUpgrade.Width, healthUpgrade.Height),
                 30));
 
-            buttons.Add(new Button("speed",
+            buttons.Add(new Button("Speed",
                 speedUpgrade,
                 new Rectangle(1250, 150, speedUpgrade.Width, speedUpgrade.Height),
                 50));
 
-            buttons.Add(new Button("energy",
+            buttons.Add(new Button("Energy",
                 energyUpgrade,
                 new Rectangle(1400, 150, energyUpgrade.Width, energyUpgrade.Height),
                 100));
 
-            buttons.Add(new Button("dash",
+            buttons.Add(new Button("Dash",
                 dashUpgrade,
                 new Rectangle(1100, 330, dashUpgrade.Width, dashUpgrade.Height),
                 150));
 
-            buttons.Add(new Button("timestop",
+            buttons.Add(new Button("Time Stop",
                   timeUpgrade,
                   new Rectangle(1400, 330, timeUpgrade.Width, timeUpgrade.Height),
                   450));
 
             /*        NOT FOR SPRINT 3
-            buttons.Add(new Button("heal", 
+            buttons.Add(new Button("Heal", 
                 buttonTexture, 
                 new Rectangle(1250, 300, 100, 50), 
                 10));
 
-            buttons.Add(new Button("slow", 
+            buttons.Add(new Button("Slow", 
                 buttonTexture, 
                 new Rectangle(1400, 300, 100, 50), 
                 10));*/
@@ -483,7 +483,7 @@ namespace Strike_12
                             {
                                 // Check for top collisions
                                 if (player.IsCollidingTop(player, levels[lvlNum][i, j]) &&
-                                    (!isCollidingUp))
+                                    (!isCollidingUp) && (levels[lvlNum][i,j].Type != "leftWall" && levels[lvlNum][i, j].Type != "rightWall"))
                                 {
                                     while (player.Size.Bottom != levels[lvlNum][i, j].Size.Top)
                                     {
@@ -506,7 +506,7 @@ namespace Strike_12
 
                                 // Check for bottom collisions
                                 if (player.IsCollidingBottom(player, levels[lvlNum][i, j]) &&
-                                    (!isCollidingDown))
+                                    (!isCollidingDown) && (levels[lvlNum][i, j].Type != "leftWall" && levels[lvlNum][i, j].Type != "rightWall"))
                                 {
                                     while (player.Size.Top != levels[lvlNum][i, j].Size.Bottom)
                                     {
@@ -962,17 +962,17 @@ namespace Strike_12
                         //if the button has been prssed and the player has enough points to purchase the item
                         if (button.IsPressed && shop.Points >= button.Cost)
                         {
-                            if(button.Type != "dash" && button.Type !="timestop")
+                            if(button.Type != "Dash" && button.Type !="Time Stop")
                             {
                                 shop.Points -= button.Cost;
                                 shop.Spendings += button.Cost;
                             }
-                            else if(button.Type == "dash" && !shop.AirDash)
+                            else if(button.Type == "Dash" && !shop.AirDash)
                             {
                                 shop.Points -= button.Cost;
                                 shop.Spendings += button.Cost;
                             }
-                            else if(button.Type == "timestop" && !shop.TimeSlow)
+                            else if(button.Type == "Time Stop" && !shop.TimeSlow)
                             {
                                 shop.Points -= button.Cost;
                                 shop.Spendings += button.Cost;
@@ -980,37 +980,37 @@ namespace Strike_12
                             //switch statement for each button to increase cost
                             switch (button.Type)
                             {
-                                case "health":
+                                case "Health":
                                     button.Cost += 10;
                                     shop.MaxHealth += 1;
                                     player.MaxHealth += 1;
                                     break;
 
-                                case "speed":
+                                case "Speed":
                                     button.Cost += 20;
                                     player.BaseSpeed += 0.05f;
                                     break;
 
-                                case "energy":
-                                    button.Cost += 50;
+                                case "Energy":
+                                    button.Cost += 20;
                                     player.Energy += 2f;
                                     break;
 
-                                case "dash":
+                                case "Dash":
                                     player.dashPurchased = true;
                                     shop.AirDash = true;
                                     break;
 
-                                case "timestop":
+                                case "Time Stop":
                                     player.timeStopPurchased = true;
                                     shop.TimeSlow = true;
                                     break;
 
-                                case "heal":
+                                case "Heal":
                                     button.Cost += 10;
                                     break;
 
-                                case "slow":
+                                case "Slow":
                                     button.Cost += 10;
                                     break;
                             }
