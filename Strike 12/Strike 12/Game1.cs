@@ -31,6 +31,10 @@ namespace Strike_12
         private int windowHeight = 960;
         Random rng = new Random();
         private Texture2D titleScreen;
+        private bool fading;
+        private int fadeOpacity;
+        private Texture2D black;
+
         private int Interval { get; set; } = 0;
         private bool easy = true;
         private bool medium = false;
@@ -81,10 +85,13 @@ namespace Strike_12
         private Texture2D shopWall;
         private Texture2D shopFG;
         private Texture2D shopKeeper;
-        private Texture2D noseButton;
+        private Texture2D sign;
+        private Texture2D shelf;
+
         private string comment;
 
         //other buttons
+        private Texture2D noseButton;
         private Texture2D startButton;
         private Texture2D optionButton;
         private Texture2D menuButton;
@@ -93,6 +100,8 @@ namespace Strike_12
         private Texture2D healthUpgrade;
         private Texture2D speedUpgrade;
         private Texture2D energyUpgrade;
+        private Texture2D dashUpgrade;
+        private Texture2D timeUpgrade;
 
         // Level Assets
         private LevelEditor editor;
@@ -141,6 +150,10 @@ namespace Strike_12
             eManager = new EnemyManager(windowWidth, windowHeight);
             bManager = new EnemyManager(windowWidth, windowHeight);
 
+            //initializing screen fading
+            fading = false;
+            fadeOpacity = 0;
+
             //initializes comment to null
             comment = null;
 
@@ -171,15 +184,23 @@ namespace Strike_12
             shopWall = Content.Load<Texture2D>("ShopWall");
             shopFG = Content.Load<Texture2D>("ShopFG");
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
-            noseButton = Content.Load<Texture2D>("CatNose");
+            sign = Content.Load<Texture2D>("sign");
+            shelf = Content.Load<Texture2D>("shelf");
+
+            //fading asset
+            black = Content.Load<Texture2D>("black");
 
             startButton = Content.Load<Texture2D>("Start");
             optionButton = Content.Load<Texture2D>("Options");
             menuButton = Content.Load<Texture2D>("Menu");
 
+            noseButton = Content.Load<Texture2D>("CatNose");
+
             healthUpgrade = Content.Load<Texture2D>("HealthBottle");
             speedUpgrade = Content.Load<Texture2D>("SpeedBottle");
             energyUpgrade = Content.Load<Texture2D>("EnergyBottle");
+            dashUpgrade = Content.Load<Texture2D>("DashBoot");
+            timeUpgrade = Content.Load<Texture2D>("WatchStop");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height - 192);
@@ -230,38 +251,38 @@ namespace Strike_12
             buttons.Add(new Button("options", optionButton, new Rectangle(windowWidth / 2 - 256 / 2, 600, 256, 124), 0));
             buttons.Add(new Button("menu", menuButton, new Rectangle(300, 800, 256, 124), 0));
 
-            buttons.Add(new Button("health",
+            buttons.Add(new Button("Health",
                 healthUpgrade,
                 new Rectangle(1100, 150, healthUpgrade.Width, healthUpgrade.Height),
-                10));
+                30));
 
-            buttons.Add(new Button("speed",
+            buttons.Add(new Button("Speed",
                 speedUpgrade,
                 new Rectangle(1250, 150, speedUpgrade.Width, speedUpgrade.Height),
-                10));
-
-            buttons.Add(new Button("energy",
-                energyUpgrade,
-                new Rectangle(1400, 150, energyUpgrade.Width, energyUpgrade.Height),
-                10));
-
-            buttons.Add(new Button("dash",
-                buttonTexture,
-                new Rectangle(1100, 400, 100, 50),
                 50));
 
-            buttons.Add(new Button("timestop",
-                  buttonTexture,
-                  new Rectangle(1400, 400, 100, 50),
-                  100));
+            buttons.Add(new Button("Energy",
+                energyUpgrade,
+                new Rectangle(1400, 150, energyUpgrade.Width, energyUpgrade.Height),
+                100));
+
+            buttons.Add(new Button("Dash",
+                dashUpgrade,
+                new Rectangle(1100, 330, dashUpgrade.Width, dashUpgrade.Height),
+                150));
+
+            buttons.Add(new Button("Time Stop",
+                  timeUpgrade,
+                  new Rectangle(1400, 330, timeUpgrade.Width, timeUpgrade.Height),
+                  450));
 
             /*        NOT FOR SPRINT 3
-            buttons.Add(new Button("heal", 
+            buttons.Add(new Button("Heal", 
                 buttonTexture, 
                 new Rectangle(1250, 300, 100, 50), 
                 10));
 
-            buttons.Add(new Button("slow", 
+            buttons.Add(new Button("Slow", 
                 buttonTexture, 
                 new Rectangle(1400, 300, 100, 50), 
                 10));*/
@@ -363,34 +384,48 @@ namespace Strike_12
                     {
                         state = GameState.Arena;
                     }
-
+                    //starts to fade
+                    fading = true;
+                    fadeOpacity = fadeOpacity + 3;
                     break;
 
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
 
+                    //debug controls for Annalee while working on shop
+                    if (kbState.IsKeyDown(Keys.Back) && prevKbState.IsKeyUp(Keys.Back))
+                    {
+                        state = GameState.GameOver;
+                    }
+                    if (kbState.IsKeyDown(Keys.P) && prevKbState.IsKeyUp(Keys.P))
+                    {
+                        shop.Points += 100;
+                    }
+
+                    //resets fading
+                    fading = false;
+
                     //eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
                     //updates levels every 2 minutes, would use % but game time is too fast to process that
-                    // REMOVE /10 AT THE END
-                    if (timer >= 600/10)
+                    if (timer >= 600)
                     {
                         lvlNum = 5;
                     }
-                    else if (timer >= 480/10)
+                    else if (timer >= 480)
                     {
                         lvlNum = 4;
                     }
-                    else if (timer >= 360/10)
+                    else if (timer >= 360)
                     {
                         lvlNum = 3;
                     }
-                    else if (timer >= 240/10)
+                    else if (timer >= 240)
                     {
                         lvlNum = 2;
                     }
-                    else if (timer >= 120/10)
+                    else if (timer >= 120)
                     {
                         lvlNum = 1;
                     }
@@ -450,7 +485,7 @@ namespace Strike_12
                             {
                                 // Check for top collisions
                                 if (player.IsCollidingTop(player, levels[lvlNum][i, j]) &&
-                                    (!isCollidingUp))
+                                    (!isCollidingUp) && (levels[lvlNum][i,j].Type != "leftWall" && levels[lvlNum][i, j].Type != "rightWall"))
                                 {
 
                                     while (player.Size.Bottom != levels[lvlNum][i, j].Size.Top)
@@ -471,7 +506,7 @@ namespace Strike_12
 
                                 // Check for bottom collisions
                                 if (player.IsCollidingBottom(player, levels[lvlNum][i, j]) &&
-                                    (!isCollidingDown))
+                                    (!isCollidingDown) && (levels[lvlNum][i, j].Type != "leftWall" && levels[lvlNum][i, j].Type != "rightWall"))
                                 {
                                     while (player.Size.Top != levels[lvlNum][i, j].Size.Bottom)
                                     {
@@ -926,17 +961,17 @@ namespace Strike_12
                         //if the button has been prssed and the player has enough points to purchase the item
                         if (button.IsPressed && shop.Points >= button.Cost)
                         {
-                            if(button.Type != "dash" && button.Type !="timestop")
+                            if(button.Type != "Dash" && button.Type !="Time Stop")
                             {
                                 shop.Points -= button.Cost;
                                 shop.Spendings += button.Cost;
                             }
-                            else if(button.Type == "dash" && !shop.AirDash)
+                            else if(button.Type == "Dash" && !shop.AirDash)
                             {
                                 shop.Points -= button.Cost;
                                 shop.Spendings += button.Cost;
                             }
-                            else if(button.Type == "timestop" && !shop.TimeSlow)
+                            else if(button.Type == "Time Stop" && !shop.TimeSlow)
                             {
                                 shop.Points -= button.Cost;
                                 shop.Spendings += button.Cost;
@@ -944,37 +979,37 @@ namespace Strike_12
                             //switch statement for each button to increase cost
                             switch (button.Type)
                             {
-                                case "health":
+                                case "Health":
                                     button.Cost += 10;
                                     shop.MaxHealth += 1;
                                     player.MaxHealth += 1;
                                     break;
 
-                                case "speed":
+                                case "Speed":
                                     button.Cost += 20;
                                     player.BaseSpeed += 0.05f;
                                     break;
 
-                                case "energy":
-                                    button.Cost += 10;
+                                case "Energy":
+                                    button.Cost += 20;
                                     player.Energy += 2f;
                                     break;
 
-                                case "dash":
+                                case "Dash":
                                     player.dashPurchased = true;
                                     shop.AirDash = true;
                                     break;
 
-                                case "timestop":
+                                case "Time Stop":
                                     player.timeStopPurchased = true;
                                     shop.TimeSlow = true;
                                     break;
 
-                                case "heal":
+                                case "Heal":
                                     button.Cost += 10;
                                     break;
 
-                                case "slow":
+                                case "Slow":
                                     button.Cost += 10;
                                     break;
                             }
@@ -1183,7 +1218,7 @@ namespace Strike_12
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
 
-                    _spriteBatch.DrawString(displayFont, $"\nKromer: {shop.Points} " +
+                    _spriteBatch.DrawString(displayFont, String.Format("\nRobux: {0:C}", shop.Points) +
                         $"\nHealth: {player.Health}" +
                         $"\n{String.Format("Speed: {0:0.00}", player.BaseSpeed)}" +
                         $"\nEnergy: {player.Energy}\n" +
@@ -1196,6 +1231,11 @@ namespace Strike_12
 
                     _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Q to quit to the menu",
                         new Vector2(40, 400), Color.White);
+
+                    //sign and shelves
+                    _spriteBatch.Draw(sign, new Vector2(1150, 642), Color.White);
+                    _spriteBatch.Draw(shelf, new Vector2(1085, 265), Color.White);
+                    _spriteBatch.Draw(shelf, new Vector2(1085, 445), Color.White);
 
                     //draws each button
                     for (int i = 3; i < buttons.Count;i++)
@@ -1211,6 +1251,12 @@ namespace Strike_12
 
                 default:
                     break;
+            }
+
+            //fade
+            if (fading)
+            {
+                _spriteBatch.Draw(black, new Vector2(0, 0), null, new Color(0, 0, 0, fadeOpacity), 0f, Vector2.Zero, new Vector2(windowWidth, windowHeight), SpriteEffects.None, 0);
             }
 
             //closes the spriteBatch before calling draw
