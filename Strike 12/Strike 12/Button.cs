@@ -195,7 +195,7 @@ namespace Strike_12
             if (Cost != 0)
             {
                 //prints cost
-                spriteBatch.DrawString(spriteFont, $"{Type} \nCost: {cost}",
+                spriteBatch.DrawString(spriteFont, $"{Type} \nCost: ${cost}",
                           new Vector2(size.X, size.Y + size.Height), Color.LightGray);
             }
 
