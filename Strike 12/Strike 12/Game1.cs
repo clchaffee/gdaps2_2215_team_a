@@ -691,7 +691,7 @@ namespace Strike_12
                             {
                                 //wave 1 always spawns regular enemies
                                 case 1:
-                                    eManager.SpawnFormula(.08);
+                                    eManager.SpawnFormula(.09);
                                     eManager.Enemies.Clear();
                                     for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
                                     {
