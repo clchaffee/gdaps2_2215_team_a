@@ -734,7 +734,7 @@ namespace Strike_12
                                     //eManager.Enemies.Clear();
                                     for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
                                     {
-                                        if (rng.Next(0, 100) > 19)
+                                        if (rng.Next(0, 100) < 70)
                                         {
                                             eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
                                         }
