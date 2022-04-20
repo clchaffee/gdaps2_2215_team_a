@@ -417,27 +417,27 @@ namespace Strike_12
                     }
 
                     //updates levels every 2 minutes, would use % but game time is too fast to process that
-                    if (timer >= 720)
+                    if (timer >= 360)
                     {
                         state = GameState.GameWinner;
                     }
-                    if (timer >= 600)
+                    if (timer >= 300)
                     {
                         lvlNum = 5;
                     }
-                    else if (timer >= 480)
+                    else if (timer >= 240)
                     {
                         lvlNum = 4;
                     }
-                    else if (timer >= 360)
+                    else if (timer >= 180)
                     {
                         lvlNum = 3;
                     }
-                    else if (timer >= 240)
+                    else if (timer >= 120)
                     {
                         lvlNum = 2;
                     }
-                    else if (timer >= 120)
+                    else if (timer >= 60)
                     {
                         lvlNum = 1;
                     }
@@ -682,7 +682,7 @@ namespace Strike_12
 
                     // TODO: properly update the spawning method/algorithm
 
-                    if ((int)timer % 5 == 0)
+                    if ((int)timer % 5 == 0 && !player.TimeStopActive)
                     {
 
                         if (spawnCap)
@@ -691,7 +691,7 @@ namespace Strike_12
                             {
                                 //wave 1 always spawns regular enemies
                                 case 1:
-                                    eManager.SpawnFormula(.1);
+                                    eManager.SpawnFormula(.09);
                                     eManager.Enemies.Clear();
                                     for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
                                     {
@@ -734,7 +734,7 @@ namespace Strike_12
                                     //eManager.Enemies.Clear();
                                     for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
                                     {
-                                        if (rng.Next(0, 100) > 19)
+                                        if (rng.Next(0, 100) < 70)
                                         {
                                             eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
                                         }
@@ -969,8 +969,7 @@ namespace Strike_12
 
                             count++;
                             spawnCap = false;
-                            waitTime = 59
-                                ;
+                            waitTime = 59;
                             if (Interval == 7)
                             {
                                 eManager.Start += 5;
