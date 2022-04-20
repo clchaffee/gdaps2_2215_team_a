@@ -24,6 +24,11 @@ namespace Strike_12
     }
     public class Game1 : Game
     {
+
+        //this is a change
+
+
+
         //fields
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
