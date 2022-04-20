@@ -354,20 +354,25 @@ namespace Strike_12
             }
 
 
-            //if W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
-            if (kbState.IsKeyDown(Keys.W) && !previousKBState.IsKeyDown(Keys.W) && velocity.Y == 0)
+            // If W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
+            if (previousKBState.IsKeyUp(Keys.W) && kbState.IsKeyDown(Keys.W))
             {
-                isGrounded = false;
-                position.Y -= 60f;
-                velocity.Y = -20f;
+                lastJump = gameTime.TotalGameTime.TotalMinutes;
 
-                if (previousPlayerState == PlayerStates.faceRight || previousPlayerState == PlayerStates.jumpRight)
+                if (/*!isGrounded*/ VelocityY == 0 && (lastJump + buffer > gameTime.TotalGameTime.TotalMinutes))
                 {
-                    playerState = PlayerStates.jumpRight;
-                }
-                else if (previousPlayerState == PlayerStates.faceLeft || previousPlayerState == PlayerStates.jumpLeft)
-                {
-                    playerState = PlayerStates.jumpLeft;
+                    isGrounded = false;
+                    position.Y -= 60f;
+                    velocity.Y = -20f;
+
+                    if (previousPlayerState == PlayerStates.faceRight || previousPlayerState == PlayerStates.jumpRight)
+                    {
+                        playerState = PlayerStates.jumpRight;
+                    }
+                    else if (previousPlayerState == PlayerStates.faceLeft || previousPlayerState == PlayerStates.jumpLeft)
+                    {
+                        playerState = PlayerStates.jumpLeft;
+                    }
                 }
             }
 
