@@ -1064,10 +1064,10 @@ namespace Strike_12
                     _spriteBatch.Draw(titleBG, new Rectangle(0, 0, titleBG.Width, titleBG.Height), Color.White);
                     //_spriteBatch.Draw(titleScreen, new Rectangle((windowWidth/2 - titleScreen.Width/2 - 250), (windowHeight/2 - titleScreen.Height/2 - 200), 1500, 750), Color.White);
 
-                    _spriteBatch.DrawString(displayFont, $"Frame: {playerAnimation.Frames}",
-                        new Vector2(10, 10), Color.White);
-                    _spriteBatch.DrawString(displayFont, $"Current Time: {playerAnimation.CurrentTime}",
-                        new Vector2(10, 50), Color.White);
+                    //_spriteBatch.DrawString(displayFont, $"Frame: {playerAnimation.Frames}",
+                    //    new Vector2(10, 10), Color.White);
+                    //_spriteBatch.DrawString(displayFont, $"Current Time: {playerAnimation.CurrentTime}",
+                    //    new Vector2(10, 50), Color.White);
 
                     //player.Draw(_spriteBatch, playerSprites);
                     switch (state)
@@ -1159,8 +1159,9 @@ namespace Strike_12
                         new Vector2(100, 200), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\n# of enemies in wave: {eManager.Enemies.Count}",
                         new Vector2(100, 250), Color.LightGray);
-                    _spriteBatch.DrawString(displayFont, player.IsGrounded.ToString(),
-                        new Vector2(100, 350), Color.LightGray);
+
+                    //_spriteBatch.DrawString(displayFont, player.IsGrounded.ToString(),
+                    //    new Vector2(100, 350), Color.LightGray);
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     //player.Draw(_spriteBatch, playerSprites);
@@ -1186,6 +1187,9 @@ namespace Strike_12
                             break;
                         case PlayerStates.crouchRight:
                             playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None);
+                            break;
+                        case PlayerStates.airdash:
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None);
                             break;
                     }
 
