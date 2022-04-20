@@ -409,23 +409,23 @@ namespace Strike_12
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
                     //updates levels every 2 minutes, would use % but game time is too fast to process that
-                    if (timer >= 600)
+                    if (timer >= 600/10)
                     {
                         lvlNum = 5;
                     }
-                    else if (timer >= 480)
+                    else if (timer >= 480/10)
                     {
                         lvlNum = 4;
                     }
-                    else if (timer >= 360)
+                    else if (timer >= 360/10)
                     {
                         lvlNum = 3;
                     }
-                    else if (timer >= 240)
+                    else if (timer >= 240/10)
                     {
                         lvlNum = 2;
                     }
-                    else if (timer >= 120)
+                    else if (timer >= 120/10)
                     {
                         lvlNum = 1;
                     }
