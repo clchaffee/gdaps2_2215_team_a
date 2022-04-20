@@ -48,10 +48,12 @@ namespace Strike_12
         private int pStartX;
         private int pStartY;
 
-        bool isCollidingUp;
-        bool isCollidingDown;
-        bool isCollidingRight;
-        bool isCollidingLeft;
+        private bool isCollidingUp;
+        private bool isCollidingDown;
+        private bool isCollidingRight;
+        private bool isCollidingLeft;
+
+        private bool previousCollidingUp;
 
         // enemy assets
         private Texture2D enemySprites;
@@ -419,7 +421,6 @@ namespace Strike_12
                             break;
                     }
 
-
                     // Increment the player's energy if it is currently under the maximum
                     if (player.CurrentEnergy < player.Energy)
                     {
@@ -434,6 +435,7 @@ namespace Strike_12
                         }
                     }
 
+                    // Reset collision checking variables before running the collision check
                     isCollidingUp = false;
                     isCollidingDown = false;
                     isCollidingRight = false;
@@ -450,6 +452,7 @@ namespace Strike_12
                                 if (player.IsCollidingTop(player, levels[lvlNum][i, j]) &&
                                     (!isCollidingUp))
                                 {
+
                                     while (player.Size.Bottom != levels[lvlNum][i, j].Size.Top)
                                     {
                                         player.SizeY -= 1;
@@ -463,10 +466,7 @@ namespace Strike_12
                                 }
                                 else
                                 {
-                                    //if (player.Size.Bottom > levels[lvlNum][i, j].Size.Top)
-                                    //{
-                                    //    isCollidingUp = false;
-                                    //}
+                                    
                                 }
 
                                 // Check for bottom collisions
@@ -484,10 +484,6 @@ namespace Strike_12
                                     player.CanJump = false;
                                     player.IsGrounded = false;
                                     isCollidingDown = true;
-                                }
-                                else
-                                {
-                                    
                                 }
 
                                 // Check for left collisions
@@ -538,6 +534,9 @@ namespace Strike_12
                             }
                         }
                     }
+
+                    // Please work
+                    previousCollidingUp = isCollidingUp;
 
                     //checks if player fell in a pit
                     if (player.Size.Y > windowHeight)
@@ -1119,6 +1118,8 @@ namespace Strike_12
                         new Vector2(100, 200), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\n# of enemies in wave: {eManager.Enemies.Count}",
                         new Vector2(100, 250), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, player.IsGrounded.ToString(),
+                        new Vector2(100, 350), Color.LightGray);
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     //player.Draw(_spriteBatch, playerSprites);

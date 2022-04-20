@@ -39,7 +39,7 @@ namespace Strike_12
         private PlayerStates previousPlayerState;
         private PlayerStates dashDirection;
 
-        //player information
+        // player information
         private Texture2D playerSprite;
         private float baseSpeed = 1f;
         private float moveSpeed = 8f;
@@ -57,6 +57,8 @@ namespace Strike_12
         private Rectangle platformPos;
         private bool timeStopActive = false;
         private int timeStopCooldown = 0;
+        private int buffer = 10;
+        private double lastJump = 0;
 
         //fields for gravity
         private float gravityMultiplier = 1f;
@@ -75,7 +77,7 @@ namespace Strike_12
         public KeyboardState kbState;
         private KeyboardState previousKBState;
 
-        //shop related functions
+        // shop related functions
         public bool dashPurchased = false;
         public bool timeStopPurchased = false;
 
@@ -296,7 +298,7 @@ namespace Strike_12
                 }
             }
 
-            //if A is pressed, moves player left, changes player state depending on if jumping or not.
+            // If A is pressed, moves player left, changes player state depending on if jumping or not.
             if (kbState.IsKeyDown(Keys.A) && !leftCollided && playerState != PlayerStates.airdash)
             {
                 velocity.X = -(baseSpeed * moveSpeed);
@@ -310,7 +312,7 @@ namespace Strike_12
                     playerState = PlayerStates.moveLeft;
                 }
             }
-            //if D is pressed, moves player right, changes player state depending on if jumping or not.
+            // If D is pressed, moves player right, changes player state depending on if jumping or not.
             else if (kbState.IsKeyDown(Keys.D) && !rightCollided && playerState != PlayerStates.airdash)
             {
                 velocity.X = (baseSpeed * moveSpeed);
@@ -321,7 +323,6 @@ namespace Strike_12
                 }
                 else
                 {
-
                     playerState = PlayerStates.moveRight;
                 }
             }
@@ -342,25 +343,30 @@ namespace Strike_12
                 }
             }
 
-            //if W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
-            if (kbState.IsKeyDown(Keys.W) && !previousKBState.IsKeyDown(Keys.W) && velocity.Y == 0)
+            // If W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
+            if (previousKBState.IsKeyUp(Keys.W) && kbState.IsKeyDown(Keys.W))
             {
-                isGrounded = false;
-                position.Y -= 60f;
-                velocity.Y = -20f;
+                lastJump = gameTime.TotalGameTime.TotalMinutes;
 
-                if (previousPlayerState == PlayerStates.faceRight || previousPlayerState == PlayerStates.jumpRight)
+                if (/*!isGrounded*/ VelocityY == 0 && (lastJump + buffer > gameTime.TotalGameTime.TotalMinutes))
                 {
-                    playerState = PlayerStates.jumpRight;
-                }
-                else if (previousPlayerState == PlayerStates.faceLeft || previousPlayerState == PlayerStates.jumpLeft)
-                {
-                    playerState = PlayerStates.jumpLeft;
+                    isGrounded = false;
+                    position.Y -= 60f;
+                    velocity.Y = -20f;
+
+                    if (previousPlayerState == PlayerStates.faceRight || previousPlayerState == PlayerStates.jumpRight)
+                    {
+                        playerState = PlayerStates.jumpRight;
+                    }
+                    else if (previousPlayerState == PlayerStates.faceLeft || previousPlayerState == PlayerStates.jumpLeft)
+                    {
+                        playerState = PlayerStates.jumpLeft;
+                    }
                 }
             }
 
             // Crouching
-            if (kbState.IsKeyDown(Keys.S) && !previousKBState.IsKeyDown(Keys.S) /*&& isGrounded*/)
+            if (kbState.IsKeyDown(Keys.S) && !previousKBState.IsKeyDown(Keys.S) && isGrounded)
             {
                 size = new Rectangle(size.X, size.Y, size.Width, 64);
                 position.Y += 64;
@@ -454,10 +460,6 @@ namespace Strike_12
                 }
             }
 
-            // Okay so come back to this and check this out
-            // checks for if the player is above a platform or ground, and resets grounded to false
-            IsGrounded = false;
-
             // Update the player's "size" position and float position using the player's velocity after
             // calculations (X - Direction)
             position.X += velocity.X;
@@ -473,6 +475,8 @@ namespace Strike_12
             {
                 size.Y += 0;
             }
+
+            isGrounded = false;
 
             // Update the player's previous state, and previous keyboard state
             previousPlayerState = playerState;
