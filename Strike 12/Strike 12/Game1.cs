@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -24,11 +22,6 @@ namespace Strike_12
     }
     public class Game1 : Game
     {
-
-        //this is a change
-
-
-
         //fields
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -41,7 +34,6 @@ namespace Strike_12
         private bool fading;
         private int fadeOpacity;
         private Texture2D black;
-
 
         private int Interval { get; set; } = 0;
         private bool easy = true;
@@ -91,12 +83,13 @@ namespace Strike_12
         private Texture2D shopWall;
         private Texture2D shopFG;
         private Texture2D shopKeeper;
-        private Texture2D noseButton;
         private Texture2D sign;
         private Texture2D shelf;
+
         private string comment;
 
         //other buttons
+        private Texture2D noseButton;
         private Texture2D startButton;
         private Texture2D optionButton;
         private Texture2D menuButton;
@@ -106,6 +99,7 @@ namespace Strike_12
         private Texture2D speedUpgrade;
         private Texture2D energyUpgrade;
         private Texture2D dashUpgrade;
+        private Texture2D timeUpgrade;
 
         // Level Assets
         private LevelEditor editor;
@@ -117,10 +111,6 @@ namespace Strike_12
         // Other Assets
         private Texture2D arenaBackground;
         private Texture2D titleBG;
-
-        //Audio Assets
-        private Song clockTick;
-        private SoundEffect clockChime;
 
         //sets the default state as the menu
         GameState state = GameState.Menu;
@@ -158,6 +148,7 @@ namespace Strike_12
             eManager = new EnemyManager(windowWidth, windowHeight);
             bManager = new EnemyManager(windowWidth, windowHeight);
 
+            //initializing screen fading
             fading = false;
             fadeOpacity = 0;
 
@@ -190,10 +181,9 @@ namespace Strike_12
             arenaBackground = Content.Load<Texture2D>("ArenaBG");
             shopWall = Content.Load<Texture2D>("ShopWall");
             shopFG = Content.Load<Texture2D>("ShopFG");
+            shopKeeper = Content.Load<Texture2D>("ShopKeeper");
             sign = Content.Load<Texture2D>("sign");
             shelf = Content.Load<Texture2D>("shelf");
-            shopKeeper = Content.Load<Texture2D>("ShopKeeper");
-            noseButton = Content.Load<Texture2D>("CatNose");
 
             //fading asset
             black = Content.Load<Texture2D>("black");
@@ -202,10 +192,13 @@ namespace Strike_12
             optionButton = Content.Load<Texture2D>("Options");
             menuButton = Content.Load<Texture2D>("Menu");
 
+            noseButton = Content.Load<Texture2D>("CatNose");
+
             healthUpgrade = Content.Load<Texture2D>("HealthBottle");
             speedUpgrade = Content.Load<Texture2D>("SpeedBottle");
             energyUpgrade = Content.Load<Texture2D>("EnergyBottle");
             dashUpgrade = Content.Load<Texture2D>("DashBoot");
+            timeUpgrade = Content.Load<Texture2D>("WatchStop");
 
             pStartX = (GraphicsDevice.Viewport.Width / 2);
             pStartY = (GraphicsDevice.Viewport.Height - 192);
@@ -213,10 +206,6 @@ namespace Strike_12
             eStartX = rng.Next(300, windowWidth - 300);
             eStartY = rng.Next(300, windowHeight - 300);
             eSize = new Rectangle(eStartX, eStartY, 128, 128);
-
-            //Audio 
-            clockTick = Content.Load<Song>("Tick");
-            clockChime = Content.Load<SoundEffect>("Chime");
 
             // Initialize the player with the asset loaded in
             player = new Player
@@ -260,31 +249,30 @@ namespace Strike_12
             buttons.Add(new Button("options", optionButton, new Rectangle(windowWidth / 2 - 256 / 2, 600, 256, 124), 0));
             buttons.Add(new Button("menu", menuButton, new Rectangle(300, 800, 256, 124), 0));
 
-            //shop buttons
             buttons.Add(new Button("health",
                 healthUpgrade,
                 new Rectangle(1100, 150, healthUpgrade.Width, healthUpgrade.Height),
-                10));
+                30));
 
             buttons.Add(new Button("speed",
                 speedUpgrade,
                 new Rectangle(1250, 150, speedUpgrade.Width, speedUpgrade.Height),
-                10));
+                50));
 
             buttons.Add(new Button("energy",
                 energyUpgrade,
                 new Rectangle(1400, 150, energyUpgrade.Width, energyUpgrade.Height),
-                10));
+                100));
 
             buttons.Add(new Button("dash",
                 dashUpgrade,
                 new Rectangle(1100, 330, dashUpgrade.Width, dashUpgrade.Height),
-                50));
+                150));
 
             buttons.Add(new Button("timestop",
-                  buttonTexture,
-                  new Rectangle(1400, 330, 100, 50),
-                  100));
+                  timeUpgrade,
+                  new Rectangle(1400, 330, timeUpgrade.Width, timeUpgrade.Height),
+                  450));
 
             /*        NOT FOR SPRINT 3
             buttons.Add(new Button("heal", 
@@ -328,12 +316,6 @@ namespace Strike_12
                 //if enter is pressed in menu, starts the game
                 //if space is pressed opens the control screen
                 case GameState.Menu:
-
-                    //debug control for Annalee while working on shop
-                    if (kbState.IsKeyDown(Keys.Back) && prevKbState.IsKeyUp(Keys.Back))
-                    {
-                        state = GameState.GameOver;
-                    }
 
                     eManager.Count = 0;
                     if (buttons[0].IsPressed)
@@ -396,16 +378,30 @@ namespace Strike_12
 
                     playerAnimation.Update(gameTime, 8, .09);
                     player.SizeX = player.SizeX + 10;
-
                     if (player.SizeX > _graphics.PreferredBackBufferWidth)
                     {
                         state = GameState.Arena;
                     }
-
+                    //starts to fade
+                    fading = true;
+                    fadeOpacity = fadeOpacity + 3;
                     break;
 
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
+
+                    //debug controls for Annalee while working on shop
+                    if (kbState.IsKeyDown(Keys.Back) && prevKbState.IsKeyUp(Keys.Back))
+                    {
+                        state = GameState.GameOver;
+                    }
+                    if (kbState.IsKeyDown(Keys.P) && prevKbState.IsKeyUp(Keys.P))
+                    {
+                        shop.Points += 100;
+                    }
+
+                    //resets fading
+                    fading = false;
 
                     //eManager.FirstWave();
                     timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
@@ -996,7 +992,7 @@ namespace Strike_12
                                     break;
 
                                 case "energy":
-                                    button.Cost += 10;
+                                    button.Cost += 50;
                                     player.Energy += 2f;
                                     break;
 
@@ -1079,10 +1075,6 @@ namespace Strike_12
 
                         case GameState.Start:
                             playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None);
-
-                            //starts to fade
-                            fading = true;
-                            fadeOpacity = fadeOpacity + 3;
                             break;
                     }
 
@@ -1146,9 +1138,6 @@ namespace Strike_12
 
                 //text for arena screen
                 case GameState.Arena:
-
-                    //resets fading
-                    fading = false;
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0,0), Color.White);
                     // Draw the tiles
@@ -1237,25 +1226,24 @@ namespace Strike_12
                         $"\nSpendings: {shop.Spendings}",
                        new Vector2(40, 100), Color.White);
 
-                    _spriteBatch.DrawString(displayFont, comment, new Vector2(375, 300), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, comment, new Vector2(450, 200), Color.LightGray);
 
                     _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Q to quit to the menu",
                         new Vector2(40, 400), Color.White);
-                    _spriteBatch.Draw(sign, new Vector2(1150, 642), Color.White);
 
+                    //sign and shelves
+                    _spriteBatch.Draw(sign, new Vector2(1150, 642), Color.White);
                     _spriteBatch.Draw(shelf, new Vector2(1085, 265), Color.White);
                     _spriteBatch.Draw(shelf, new Vector2(1085, 445), Color.White);
-
 
                     //draws each button
                     for (int i = 3; i < buttons.Count;i++)
                     {
                             buttons[i].Draw(_spriteBatch, displayFont);
-                            
                             //if the player doesnt have enough points to by the item
                             if (buttons[i].IsHighlight && shop.Points < buttons[i].Cost)
                             {
-                                _spriteBatch.DrawString(displayFont, "Sorry hun, you don't have enough to buy that.", new Vector2(600, 90), Color.White);
+                                _spriteBatch.DrawString(displayFont, "Sorry hun, you don't have enough to buy that.", new Vector2(600, 80), Color.White);
                             }
                     }
                     break;

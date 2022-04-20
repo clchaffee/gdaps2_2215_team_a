@@ -13,17 +13,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin 210987__urupin__chiming-clock.aiff
-/importer:
-/processor:
-/build:210987__urupin__chiming-clock.aiff;Chime.aiff
-
-#begin 530583__straget__alarm-clock-without-noisereduktiom.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:530583__straget__alarm-clock-without-noisereduktiom.wav;Tick.wav
-
 #begin ArenaBG.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -132,13 +121,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:HealthBottle.png
-
-#begin KGTenThousandReasons.ttf
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:KGTenThousandReasons.ttf
 
 #begin Logo (1).png
 /importer:TextureImporter
@@ -362,4 +344,16 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Title.spritefont
+
+#begin WatchStop.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:WatchStop.png
 

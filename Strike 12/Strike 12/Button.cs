@@ -23,7 +23,11 @@ namespace Strike_12
         //fields for position and image
         protected Texture2D texture;
         protected Rectangle size;
+
+        //placement of text
         private Vector2 text = new Vector2(1175, 675);
+        public bool boughtDash = false;
+        public bool boughtStop = false;
 
         //mouse and game states
         private MouseState mouseState;
@@ -146,22 +150,20 @@ namespace Strike_12
                     break;
 
                 case (State.Highlighted):
-
-                    //if highlighed, turns red temp
                     spriteBatch.Draw(texture, size, Color.Red);
 
                     //provides simple explanations for each item in the shop
                     if (type == "health")
                     {
-                        spriteBatch.DrawString(spriteFont, "Increases your total HEALTH.", text, Color.White);
+                        spriteBatch.DrawString(spriteFont, "\nIncreases your total HEALTH.", text, Color.White);
                     }
                     if (type == "speed")
                     {
-                        spriteBatch.DrawString(spriteFont, "Increases your total SPEED.", text, Color.White);
+                        spriteBatch.DrawString(spriteFont, "\nIncreases your total SPEED.", text, Color.White);
                     }
                     if (type == "energy")
                     {
-                        spriteBatch.DrawString(spriteFont, "Increases your total ENERGY", text, Color.White);
+                        spriteBatch.DrawString(spriteFont, "\nIncreases your total ENERGY", text, Color.White);
                     }
                     if (type == "dash")
                     {
@@ -175,13 +177,12 @@ namespace Strike_12
                             "freezes all enemies for \na few seconds.\n\n" +
                             "***Uses Energy***", text, Color.White);
                     }
-                    else if (type == "cat")
+                    if (type == "cat")
                     {
                         spriteBatch.Draw(texture, size, Color.White);
                     }
                     break;
 
-                    //default state
                 case (State.NonHighlighted):
                     spriteBatch.Draw(texture, size, Color.White);
                     break;
@@ -190,7 +191,7 @@ namespace Strike_12
                     break;
             }
 
-            //buttons with the cost of zero are the main control buttons and the cat atm
+            //only button with a cost of zero is the cat
             if (Cost != 0)
             {
                 //prints cost

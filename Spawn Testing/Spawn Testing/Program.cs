@@ -18,47 +18,52 @@ namespace Spawn_Testing
         {
             int start = 0;
             int end = 30;
-            int wave = 1;
-            int max = 12;
             List<decimal> rValue = new List<decimal>();
 
             Console.WriteLine("Intervals with ADDING the number of enemies:\n");
-            while (wave < max + 1)
-            {
-                Console.WriteLine($"Wave {wave}:");
-                SpawnRateAdd(start, end);
-                foreach (decimal d in rValue)
-                {
-                    Console.WriteLine($"Interval {rValue.IndexOf(d) + 1}: {d}");
-                }
-                start = start + 5;
-                end = end + 5;
-                wave++;
-                rValue.Clear();
-            }
 
+            Console.WriteLine("Wave 1:");
+            SpawnRateAdd(start, end);
+            foreach(decimal d in rValue)
+            {
+                Console.WriteLine($"Interval {rValue.IndexOf(d)+1}: {d}");
+            }
+            start = start + 5;
+            end = end + 5;
+            rValue.Clear();
+
+
+            Console.WriteLine("Wave 2:");
+            SpawnRateAdd(start, end);
+            foreach (decimal d in rValue)
+            {
+                Console.WriteLine($"Interval {rValue.IndexOf(d)+1}: {d}");
+            }
             start = 0;
             end = 30;
-            wave = 1;
-            max = 12;
             rValue.Clear();
 
             Console.WriteLine("\nIntervals with REPLACING the number of enemies:");
 
-            while (wave < max + 1)
+            Console.WriteLine("\nWave 1:");
+            SpawnRateReplace(start, end);
+            foreach (decimal d in rValue)
             {
-                Console.WriteLine($"\nWave {wave}:");
-                SpawnRateReplace(start, end);
-                foreach (decimal d in rValue)
-                {
-                    Console.WriteLine($"Interval {rValue.IndexOf(d) + 1}: {d}");
-                }
-                start = start + 5;
-                end = end + 5;
-                rValue.Clear();
-                wave++;
+                Console.WriteLine($"Interval {rValue.IndexOf(d)+1}: {d}");
             }
+            start = start + 5;
+            end = end + 5;
+            rValue.Clear();
 
+            Console.WriteLine("Wave 2:");
+            SpawnRateReplace(start, end);
+            foreach (decimal d in rValue)
+            {
+                Console.WriteLine($"Interval {rValue.IndexOf(d)+1}: {d}");
+            }
+            start = start + 5;
+            end = end + 5;
+            rValue.Clear();
 
 
             List<decimal> SpawnRateAdd(int s, int e)
@@ -69,7 +74,7 @@ namespace Spawn_Testing
                     if (i % 5 == 0)
                     {
                         
-                        value += Math.Ceiling((decimal)Math.Exp(i * .1 ));
+                        value += Math.Ceiling((decimal)Math.Exp(i * .1));
                         
                         rValue.Add(value);
                     }
@@ -85,7 +90,7 @@ namespace Spawn_Testing
                     if (i % 5 == 0)
                     {
 
-                        decimal value = Math.Ceiling((decimal)Math.Exp(i * .06));
+                        decimal value = Math.Ceiling((decimal)Math.Exp(i * .1));
 
                         rValue.Add(value);
                     }
