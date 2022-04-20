@@ -421,23 +421,23 @@ namespace Strike_12
                     {
                         state = GameState.GameWinner;
                     }
-                    if (timer >= 600)
+                    if (wave == 11)
                     {
                         lvlNum = 5;
                     }
-                    else if (timer >= 480)
+                    else if (wave == 9)
                     {
                         lvlNum = 4;
                     }
-                    else if (timer >= 360)
+                    else if (wave == 7)
                     {
                         lvlNum = 3;
                     }
-                    else if (timer >= 240)
+                    else if (wave == 5)
                     {
                         lvlNum = 2;
                     }
-                    else if (timer >= 120)
+                    else if (wave == 3)
                     {
                         lvlNum = 1;
                     }
@@ -682,7 +682,7 @@ namespace Strike_12
 
                     // TODO: properly update the spawning method/algorithm
 
-                    if ((int)timer % 10 == 0 && !player.TimeStopActive)
+                    if ((int)timer % 5 == 0 && !player.TimeStopActive)
                     {
 
                         if (spawnCap)
@@ -691,7 +691,7 @@ namespace Strike_12
                             {
                                 //wave 1 always spawns regular enemies
                                 case 1:
-                                    eManager.SpawnFormula(.9);
+                                    eManager.SpawnFormula(.08);
                                     eManager.Enemies.Clear();
                                     for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
                                     {
