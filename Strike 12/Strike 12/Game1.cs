@@ -1159,6 +1159,8 @@ namespace Strike_12
                         new Vector2(100, 200), Color.Black);
                     _spriteBatch.DrawString(displayFont, $"\n# of enemies in wave: {eManager.Enemies.Count}",
                         new Vector2(100, 250), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, player.IsGrounded.ToString(),
+                        new Vector2(100, 350), Color.LightGray);
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     //player.Draw(_spriteBatch, playerSprites);

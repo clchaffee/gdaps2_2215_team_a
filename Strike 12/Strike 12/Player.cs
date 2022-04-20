@@ -59,6 +59,8 @@ namespace Strike_12
         private Rectangle platformPos;
         private bool timeStopActive = false;
         private int timeStopCooldown = 0;
+        private int buffer = 10;
+        private double lastJump = 0;
 
         //fields for gravity
         private float gravityMultiplier = 1f;
