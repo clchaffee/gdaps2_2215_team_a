@@ -682,7 +682,7 @@ namespace Strike_12
 
                     // TODO: properly update the spawning method/algorithm
 
-                    if ((int)timer % 10 == 0)
+                    if ((int)timer % 5 == 0)
                     {
 
                         if (spawnCap)
@@ -691,7 +691,7 @@ namespace Strike_12
                             {
                                 //wave 1 always spawns regular enemies
                                 case 1:
-                                    eManager.SpawnFormula(.15);
+                                    eManager.SpawnFormula(.1);
                                     eManager.Enemies.Clear();
                                     for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
                                     {

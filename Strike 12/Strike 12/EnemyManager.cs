@@ -59,10 +59,10 @@ namespace Strike_12
 
 
             //when a bullet enemy spawns, removes 2 from the list
-            if (enemy is BulletEnemy && Enemies.Count > 4)
-            {
-                Enemies.RemoveRange(0, 1);
-            }
+            //if (enemy is BulletEnemy && Enemies.Count > 4)
+            //{
+            //    Enemies.RemoveRange(0, 1);
+            //}
             //when a bounce enemy spawns, removes 4 from the list
             if (enemy is BounceEnemy && Enemies.Count > 8)
             {
