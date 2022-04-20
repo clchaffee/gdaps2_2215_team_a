@@ -59,24 +59,24 @@ namespace Strike_12
 
 
             //when a bullet enemy spawns, removes 2 from the list
-            if (enemy is BulletEnemy && Enemies.Count > 2)
+            if (enemy is BulletEnemy && Enemies.Count > 4)
             {
                 Enemies.RemoveRange(0, 1);
             }
             //when a bounce enemy spawns, removes 4 from the list
-            if (enemy is BounceEnemy && Enemies.Count > 4)
+            if (enemy is BounceEnemy && Enemies.Count > 8)
             {
                 Enemies.RemoveRange(0, 2);
             }
             //when a follow enemy spawns, removes 8 from the list
-            if (enemy is FollowEnemy && Enemies.Count > 8)
+            if (enemy is FollowEnemy && Enemies.Count > 12)
             {
-                Enemies.RemoveRange(0, 8);
+                Enemies.RemoveRange(0, 5);
             }
             //when a laser enemy spawns, removes 16 from the list
             if (enemy is LaserEnemy && Enemies.Count > 16)
             {
-                Enemies.RemoveRange(0, 16);
+                Enemies.RemoveRange(0, 10);
             }
 
 

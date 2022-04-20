@@ -586,74 +586,78 @@ namespace Strike_12
 
                     //TODO: Reimplement enemy collision 
                     //collision for each enemy in the Enemy class
+
+                    //foreach (Enemy enemy in eManager.Enemies)
+                    //{
+                    //        if (enemy.IsCollidingBottom(enemy, player) ||
+                    //            enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
+                    //            enemy.IsCollidingRight(enemy, player, player.VelocityX))
+                    //        {
+
+                    //            if (player.TakeDamage(gameTime))
+                    //            {
+                    //                player.Health -= 1;
+                    //            }
+
+                    //        }
+                    //        else if (enemy.IsCollidingTop(enemy, player))
+                    //        {
+                    //            //player.Jump();
+                    //        }
+                    //}
+
                     if (collidable == true)
-                    foreach (Enemy enemy in eManager.Enemies)
                     {
-                            if (enemy.IsCollidingBottom(enemy, player) ||
-                                enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
-                                enemy.IsCollidingRight(enemy, player, player.VelocityX))
-                            {
-
-                                if (player.TakeDamage(gameTime))
-                                {
-                                    player.Health -= 1;
-                                }
-
-                            }
-                            else if (enemy.IsCollidingTop(enemy, player))
-                            {
-                                //player.Jump();
-                            }
-                    }
-
-                    if (!player.TimeStopActive)
-                    {
-                        foreach (Enemy enemy in eManager.Enemies)
+                        if (!player.TimeStopActive)
                         {
-
-                                    if (enemy.IsCollidingBottom(enemy, player) ||
-                                        enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
-                                        enemy.IsCollidingRight(enemy, player, player.VelocityX))
-                                    {
-
-                                        if (player.TakeDamage(gameTime))
-                                        {
-                                            player.Health -= 1;
-                                        }
-
-                            
-                            else if (enemy.IsCollidingTop(enemy, player))
+                            foreach (Enemy enemy in eManager.Enemies)
                             {
-                                //player.Jump();
+
+                                if (enemy.IsCollidingBottom(enemy, player) ||
+                                    enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
+                                    enemy.IsCollidingRight(enemy, player, player.VelocityX))
+                                {
+
+                                    if (player.TakeDamage(gameTime))
+                                    {
+                                        player.Health -= 1;
+                                    }
+
+
+                                    else if (enemy.IsCollidingTop(enemy, player))
+                                    {
+                                        //player.Jump();
+                                    }
+                                }
                             }
                         }
                     }
 
-                            // Temp player and enemy update call
-                            //bEnemy.Update(gameTime);
-                            //lEnemy.Update(gameTime, player.Size.Y);
-                            //pEnemy.Update(gameTime);
-                            //fEnemy.Update(gameTime, player);
+                        // Temp player and enemy update call
+                        //bEnemy.Update(gameTime);
+                        //lEnemy.Update(gameTime, player.Size.Y);
+                        //pEnemy.Update(gameTime);
+                        //fEnemy.Update(gameTime, player);
 
-                            if (!player.TimeStopActive)
+                        if (!player.TimeStopActive)
+                        {
+                            foreach (Enemy enemy in eManager.Enemies)
                             {
-                                foreach (Enemy enemy in eManager.Enemies)
+                                if (enemy is FollowEnemy)
                                 {
-                                    if (enemy is FollowEnemy)
-                                    {
-                                        ((FollowEnemy)enemy).Update(gameTime, player);
-                                    }
-                                    else if (enemy is LaserEnemy)
-                                    {
-                                        ((LaserEnemy)enemy).Update(gameTime, player.Size.Y);
-                                    }
-                                    else
-                                    {
-                                        enemy.Update(gameTime);
-                                    }
+                                    ((FollowEnemy)enemy).Update(gameTime, player);
+                                }
+                                else if (enemy is LaserEnemy)
+                                {
+                                    ((LaserEnemy)enemy).Update(gameTime, player.Size.Y);
+                                }
+                                else
+                                {
+                                    enemy.Update(gameTime);
                                 }
                             }
-
+                        }
+                    
                             //if the count of the list is zero(empty), will automatically add one to it
                             //if (eManager.Enemies.Count == 0)
                             //{
@@ -666,7 +670,7 @@ namespace Strike_12
 
                             // TODO: properly update the spawning method/algorithm
 
-                            if ((int)timer % 5 == 0)
+                            if ((int)timer % 10 == 0)
                             {
 
                                 if (spawnCap)
@@ -675,8 +679,8 @@ namespace Strike_12
                                     {
                                         //wave 1 always spawns regular enemies
                                         case 1:
-                                            eManager.SpawnFormula(.1);
-                                            //eManager.Enemies.Clear();
+                                            eManager.SpawnFormula(.15);
+                                            eManager.Enemies.Clear();
                                             for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
                                             {
                                                 eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
@@ -816,9 +820,75 @@ namespace Strike_12
                                                 }
                                             }
 
-                                            break;
+                                        break;  
+                                    //wave 7: 20% norm 30% bounce 20% bullet 30% follow
+                                        case 7:
+                                            eManager.SpawnFormula(.1);
+                                            //eManager.Enemies.Clear();
+                                            for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                            {
+                                                if (rng.Next(0, 100) < 20)
+                                                {
+                                                    eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                                }
+                                                else if (rng.Next(0, 100) < 20)
+                                                {
+                                                    eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                                }
+                                                else if (rng.Next(0, 100) < 30)
+                                                {
+                                                    eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                                }
+                                                else
+                                                {
+                                                    eManager.WaveProgress(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight), Interval);
+                                                }
+                                            }
+                                        break;
 
-                                        default:
+                                    //10 norm  40 follow 40 bounce 10 bullet
+                                        case 8:
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {
+                                        if (rng.Next(0, 100) < 10)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                        else if (rng.Next(0, 100) < 10)
+                                        {
+                                            eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                        else if (rng.Next(0, 100) < 40)
+                                        {
+                                            eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                        else
+                                        {
+                                            eManager.WaveProgress(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                    }
+                                    break;
+
+                                //50 follow 50 bounce
+                                case 9:
+                                    eManager.SpawnFormula(.1);
+                                    //eManager.Enemies.Clear();
+                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    {                                      
+                                        if (rng.Next(0, 100) < 40)
+                                        {
+                                            eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                        }
+                                        else
+                                        {
+                                            eManager.WaveProgress(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                    }
+                                    break;
+
+                                default:
                                             break;
                                     }
 
@@ -875,7 +945,7 @@ namespace Strike_12
                                     stoppedTimer = 0;
                                 }
                             }
-                        }
+                        
                     break;
 
                 // Game Winner: appears when timer is greater than 30
