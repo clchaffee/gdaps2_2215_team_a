@@ -153,25 +153,25 @@ namespace Strike_12
                     spriteBatch.Draw(texture, size, Color.Red);
 
                     //provides simple explanations for each item in the shop
-                    if (type == "Health")
+                    if (type == "health")
                     {
                         spriteBatch.DrawString(spriteFont, "\nIncreases your total HEALTH.", text, Color.White);
                     }
-                    if (type == "Speed")
+                    if (type == "speed")
                     {
                         spriteBatch.DrawString(spriteFont, "\nIncreases your total SPEED.", text, Color.White);
                     }
-                    if (type == "Energy")
+                    if (type == "energy")
                     {
                         spriteBatch.DrawString(spriteFont, "\nIncreases your total ENERGY", text, Color.White);
                     }
-                    if (type == "Dash")
+                    if (type == "dash")
                     {
                         spriteBatch.DrawString(spriteFont, "RIGHT SHIFT to DASH \n" +
                             "any direction you'd like.\n\n" +
                             "***Uses Energy***", text, Color.White);
                     }
-                    if (type == "Time Stop")
+                    if (type == "timestop")
                     {
                         spriteBatch.DrawString(spriteFont, "SPACE to STOP TIME \n" +
                             "freezes all enemies for \na few seconds.\n\n" +
@@ -190,12 +190,12 @@ namespace Strike_12
                 default:
                     break;
             }
-            
+
             //only button with a cost of zero is the cat
             if (Cost != 0)
             {
                 //prints cost
-                spriteBatch.DrawString(spriteFont, String.Format("{0} \nCost: {1:C}",Type, Cost),
+                spriteBatch.DrawString(spriteFont, $"{Type} \nCost: {cost}",
                           new Vector2(size.X, size.Y + size.Height), Color.LightGray);
             }
 
