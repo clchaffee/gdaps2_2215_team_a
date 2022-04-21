@@ -59,7 +59,7 @@ namespace Strike_12
         private Rectangle platformPos;
         private bool timeStopActive = false;
         private int timeStopCooldown = 0;
-        private int buffer = 10;
+        private int buffer = 20;
         private double lastJump = 0;
 
         //fields for gravity
@@ -355,7 +355,7 @@ namespace Strike_12
 
 
             // If W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
-            if (previousKBState.IsKeyUp(Keys.W) && kbState.IsKeyDown(Keys.W))
+            if (previousKBState.IsKeyUp(Keys.W) && kbState.IsKeyDown(Keys.W) && !isCrouching)
             {
                 lastJump = gameTime.TotalGameTime.TotalMinutes;
 
@@ -471,7 +471,7 @@ namespace Strike_12
                 if (kbState.IsKeyDown(Keys.Space) &&
                     timeStopPurchased &&
                     !timeStopActive &&
-                    timeStopCooldown > 300)
+                    timeStopCooldown > 250)
                 {
                     timeStopActive = true;
                     timeStopCooldown = 0;
@@ -479,6 +479,10 @@ namespace Strike_12
                 else
                 {
                     timeStopCooldown++;
+                    if (timeStopCooldown > 250)
+                    {
+                        timeStopActive = false;
+                    }
                 }
 
                 // Air Dash
