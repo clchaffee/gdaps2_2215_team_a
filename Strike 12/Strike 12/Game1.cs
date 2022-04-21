@@ -107,6 +107,7 @@ namespace Strike_12
         private Tile tile;
         private List<LevelEditor> levels;
         private int lvlNum;
+        private Texture2D bar;
 
         // Other Assets
         private Texture2D arenaBackground;
@@ -132,6 +133,7 @@ namespace Strike_12
         Texture2D playerIdle;
         Texture2D playerWalk;
         Texture2D playerCrouch;
+        Texture2D playerDash;
         PlayerStates playerState;
 
         public Game1()
@@ -175,12 +177,15 @@ namespace Strike_12
             enemySprites = Content.Load<Texture2D>("enemySpriteSheet");
             buttonTexture = Content.Load<Texture2D>("tempTile");
 
-            //other assests and buttons
+            //other assests
             tileSprites = Content.Load<Texture2D>("brick");
             titleScreen = Content.Load<Texture2D>("Logo (1)");
             titleBG = Content.Load<Texture2D>("NewTitle");
             arenaBG = Content.Load<Texture2D>("Arena");
             arenaBackground = Content.Load<Texture2D>("ArenaBG");
+            bar = Content.Load<Texture2D>("bar");
+
+            //Shop
             shopWall = Content.Load<Texture2D>("ShopWall");
             shopFG = Content.Load<Texture2D>("ShopFG");
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
@@ -296,6 +301,7 @@ namespace Strike_12
             playerIdle = Content.Load<Texture2D>("playerIdle");
             playerWalk = Content.Load<Texture2D>("playerWalk");
             playerCrouch = Content.Load<Texture2D>("playerCrouch");
+            playerDash = Content.Load<Texture2D>("Dash");
         }
 
         /// <summary>
@@ -465,6 +471,9 @@ namespace Strike_12
                             break;
                         case PlayerStates.crouchLeft:
                         case PlayerStates.crouchRight:
+                            playerAnimation.Update(gameTime, 1, .09);
+                            break;
+                        case PlayerStates.airdash:
                             playerAnimation.Update(gameTime, 1, .09);
                             break;
                     }
@@ -1338,7 +1347,7 @@ namespace Strike_12
                             playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None);
                             break;
                         case PlayerStates.airdash:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None);
+                            playerAnimation.Draw(_spriteBatch, playerDash, player.Size, SpriteEffects.None);
                             break;
                     }
 

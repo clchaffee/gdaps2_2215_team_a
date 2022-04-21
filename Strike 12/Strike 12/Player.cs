@@ -27,7 +27,9 @@ namespace Strike_12
         crouch,
         crouchLeft,
         crouchRight,
-        airdash
+        airdash,
+        airdashLeft,
+        airdashRight
     }
 
     class Player : GameObject
