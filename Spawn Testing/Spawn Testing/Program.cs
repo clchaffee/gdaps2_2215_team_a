@@ -18,30 +18,46 @@ namespace Spawn_Testing
         {
             int start = 0;
             int end = 30;
+            int wave = 1;
+            double limiter = .04;
             List<decimal> rValue = new List<decimal>();
 
             Console.WriteLine("Intervals with ADDING the number of enemies:\n");
 
-            Console.WriteLine("Wave 1:");
-            SpawnRateAdd(start, end);
-            foreach(decimal d in rValue)
-            {
-                Console.WriteLine($"Interval {rValue.IndexOf(d)+1}: {d}");
-            }
-            start = start + 5;
-            end = end + 5;
-            rValue.Clear();
+            //Console.WriteLine("Wave 1:");
+            //SpawnRateAdd(start, end);
+            //foreach(decimal d in rValue)
+            //{
+            //    Console.WriteLine($"Interval {rValue.IndexOf(d)+1}: {d}");
+            //}
+            //start = start + 5;
+            //end = end + 5;
+            //rValue.Clear();
 
-
-            Console.WriteLine("Wave 2:");
-            SpawnRateAdd(start, end);
-            foreach (decimal d in rValue)
+            while (wave < 13)
             {
-                Console.WriteLine($"Interval {rValue.IndexOf(d)+1}: {d}");
+                Console.WriteLine($"Wave : {wave}");
+                SpawnRateAdd(start, end);
+                foreach (decimal d in rValue)
+                {
+                    Console.WriteLine($"Interval {rValue.IndexOf(d) + 1}: {d}");
+                }
+                start = start + 5;
+                end = end + 5;
+                wave++;
+                limiter -= .001;
+                rValue.Clear();
             }
-            start = 0;
-            end = 30;
-            rValue.Clear();
+            #region //replacing
+            //Console.WriteLine("Wave 2:");
+            //SpawnRateAdd(start, end);
+            //foreach (decimal d in rValue)
+            //{
+            //    Console.WriteLine($"Interval {rValue.IndexOf(d)+1}: {d}");
+            //}
+            //start = 0;
+            //end = 30;
+            //rValue.Clear();
 
             //Console.WriteLine("\nIntervals with REPLACING the number of enemies:");
 
@@ -58,7 +74,7 @@ namespace Spawn_Testing
             //    rValue.Clear();
             //    wave++;
             //}
-
+            #endregion
 
 
             List<decimal> SpawnRateAdd(int s, int e)
@@ -72,22 +88,22 @@ namespace Spawn_Testing
                         {
                             value += Math.Ceiling((decimal)Math.Exp(((start + end) / 15) * .05));
                         }
-                        if (wave < 6)
-                        {
-                            value += Math.Ceiling((decimal)Math.Exp(i * .075));
-                            if (i > 1)
-                            {
-                                value -= Math.Ceiling((decimal)Math.Exp((i - 5) * .05));
-                            }
-                        }
-                        else
-                        {
-                            value += Math.Ceiling((decimal)Math.Exp(i * .06));
-                            if (i > 1)
-                            {
-                                value -= Math.Ceiling((decimal)Math.Exp((i - 5) * .04));
-                            }
-                        }
+                        //if (wave < 6)
+                        //{
+                            value += Math.Ceiling((decimal)Math.Exp(i * limiter));
+                            //if (i > 1)
+                            //{
+                            //    value -= Math.Ceiling((decimal)Math.Exp((i - 5) * .05));
+                            //}
+                        //}
+                        //else
+                        //{
+                            //value += Math.Ceiling((decimal)Math.Exp(i * .06));
+                            //if (i > 1)
+                            //{
+                            //    value -= Math.Ceiling((decimal)Math.Exp((i - 5) * .01));
+                            //}
+                        //}
 
 
                         rValue.Add(value);
