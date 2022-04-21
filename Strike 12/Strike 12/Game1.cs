@@ -84,6 +84,7 @@ namespace Strike_12
         private Texture2D shopFG;
         private Texture2D shopKeeper;
         private Texture2D sign;
+        private Texture2D smallSign;
         private Texture2D shelf;
 
         private string comment;
@@ -93,6 +94,7 @@ namespace Strike_12
         private Texture2D startButton;
         private Texture2D optionButton;
         private Texture2D menuButton;
+        private Texture2D buttonSelect;
 
         //items
         private Texture2D healthUpgrade;
@@ -191,6 +193,7 @@ namespace Strike_12
             shopFG = Content.Load<Texture2D>("ShopFG");
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
             sign = Content.Load<Texture2D>("sign");
+            smallSign = Content.Load<Texture2D>("sign-export");
             shelf = Content.Load<Texture2D>("shelf");
 
             //fading asset
@@ -199,6 +202,7 @@ namespace Strike_12
             startButton = Content.Load<Texture2D>("Start");
             optionButton = Content.Load<Texture2D>("Options");
             menuButton = Content.Load<Texture2D>("Menu");
+            buttonSelect = Content.Load<Texture2D>("buttonSelect");
 
             noseButton = Content.Load<Texture2D>("CatNose");
 
@@ -274,12 +278,12 @@ namespace Strike_12
 
             buttons.Add(new Button("Dash",
                 dashUpgrade,
-                new Rectangle(1100, 330, dashUpgrade.Width, dashUpgrade.Height),
+                new Rectangle(1100, 390, dashUpgrade.Width, dashUpgrade.Height),
                 150));
 
             buttons.Add(new Button("Time Stop",
                   timeUpgrade,
-                  new Rectangle(1400, 330, timeUpgrade.Width, timeUpgrade.Height),
+                  new Rectangle(1400, 390, timeUpgrade.Width, timeUpgrade.Height),
                   450));
 
             /*        NOT FOR SPRINT 3
@@ -1244,8 +1248,8 @@ namespace Strike_12
                     _spriteBatch.Draw(arenaBG, new Rectangle(0, 75, titleBG.Width, titleBG.Height), Color.White);
 
                     //draw buttons
-                    buttons[0].Draw(_spriteBatch, displayFont);
-                    buttons[1].Draw(_spriteBatch, displayFont);
+                    buttons[0].Draw(_spriteBatch, displayFont, buttonSelect);
+                    buttons[1].Draw(_spriteBatch, displayFont, buttonSelect);
                     break;
 
                 // text for control screen
@@ -1297,7 +1301,7 @@ namespace Strike_12
                             new Vector2(100, 575), Color.Black);
                     }
 
-                    buttons[2].Draw(_spriteBatch, displayFont);
+                    buttons[2].Draw(_spriteBatch, displayFont, buttonSelect);
 
                     break;
 
@@ -1438,12 +1442,12 @@ namespace Strike_12
                     //sign and shelves
                     _spriteBatch.Draw(sign, new Vector2(1150, 642), Color.White);
                     _spriteBatch.Draw(shelf, new Vector2(1085, 265), Color.White);
-                    _spriteBatch.Draw(shelf, new Vector2(1085, 445), Color.White);
+                    _spriteBatch.Draw(shelf, new Vector2(1085, 505), Color.White);
 
                     //draws each button
                     for (int i = 3; i < buttons.Count; i++)
                     {
-                        buttons[i].Draw(_spriteBatch, displayFont);
+                        buttons[i].Draw(_spriteBatch, displayFont, buttonSelect);
                         //if the player doesnt have enough points to by the item
                         if (buttons[i].IsHighlight && shop.Points < buttons[i].Cost)
                         {
