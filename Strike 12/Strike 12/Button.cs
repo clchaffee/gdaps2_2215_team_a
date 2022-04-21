@@ -128,7 +128,7 @@ namespace Strike_12
         /// <param name="spriteBatch"></param>
         /// <param name="spriteFont"></param>
         /// <param name="texture"></param>
-        public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont)
+        public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont, Texture2D select)
         {
             //switch for states of the buttons
             //as of now, only changes colors
@@ -150,7 +150,9 @@ namespace Strike_12
                     break;
 
                 case (State.Highlighted):
-                    spriteBatch.Draw(texture, size, Color.Red);
+                    
+                    spriteBatch.Draw(texture, size, Color.White);
+                    spriteBatch.Draw(select, size, Color.DarkGoldenrod);
 
                     //provides simple explanations for each item in the shop
                     switch (type)
