@@ -11,8 +11,8 @@ namespace Strike_12
     /// states of buttons
     /// mainly for color indicators rn
     /// </summary>
-    enum State 
-    { 
+    enum State
+    {
         Pressed,
         Highlighted,
         NonHighlighted
@@ -23,6 +23,11 @@ namespace Strike_12
         //fields for position and image
         protected Texture2D texture;
         protected Rectangle size;
+
+        //placement of text
+        private Vector2 text = new Vector2(1175, 675);
+        public bool boughtDash = false;
+        public bool boughtStop = false;
 
         //mouse and game states
         private MouseState mouseState;
@@ -85,7 +90,7 @@ namespace Strike_12
             mouseState = Mouse.GetState();
 
             //if the mouse is in the bounds of the window
-            if (mouseState.X > size.X && mouseState.Y > size.Y 
+            if (mouseState.X > size.X && mouseState.Y > size.Y
                 && mouseState.X < (size.X + size.Width) && mouseState.Y < size.Y + size.Height)
             {
                 isHighlighted = true;
@@ -145,11 +150,34 @@ namespace Strike_12
                     break;
 
                 case (State.Highlighted):
-                    if (type != "cat")
+                    spriteBatch.Draw(texture, size, Color.Red);
+
+                    //provides simple explanations for each item in the shop
+                    if (type == "Health")
                     {
-                        spriteBatch.Draw(texture, size, Color.Red);
+                        spriteBatch.DrawString(spriteFont, "\nIncreases your total HEALTH.", text, Color.White);
                     }
-                    else
+                    if (type == "Speed")
+                    {
+                        spriteBatch.DrawString(spriteFont, "\nIncreases your total SPEED.", text, Color.White);
+                    }
+                    if (type == "Energy")
+                    {
+                        spriteBatch.DrawString(spriteFont, "\nIncreases your total ENERGY", text, Color.White);
+                    }
+                    if (type == "Dash")
+                    {
+                        spriteBatch.DrawString(spriteFont, "RIGHT SHIFT to DASH \n" +
+                            "any direction you'd like.\n\n" +
+                            "***Uses Energy***", text, Color.White);
+                    }
+                    if (type == "Time Stop")
+                    {
+                        spriteBatch.DrawString(spriteFont, "SPACE to STOP TIME \n" +
+                            "freezes all enemies for \na few seconds.\n\n" +
+                            "***Uses Energy***", text, Color.White);
+                    }
+                    if (type == "cat")
                     {
                         spriteBatch.Draw(texture, size, Color.White);
                     }
@@ -167,7 +195,7 @@ namespace Strike_12
             if (Cost != 0)
             {
                 //prints cost
-                spriteBatch.DrawString(spriteFont, $"{Type} \nCost: {cost}",
+                spriteBatch.DrawString(spriteFont, String.Format("{0} \nCost: ${1}", Type, Cost),
                           new Vector2(size.X, size.Y + size.Height), Color.LightGray);
             }
 

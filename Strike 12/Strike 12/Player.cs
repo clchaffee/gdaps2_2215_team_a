@@ -25,6 +25,8 @@ namespace Strike_12
         jumpLeft,
         jumpRight,
         crouch,
+        crouchLeft,
+        crouchRight,
         airdash
     }
 
@@ -57,12 +59,17 @@ namespace Strike_12
         private Rectangle platformPos;
         private bool timeStopActive = false;
         private int timeStopCooldown = 0;
+        private int buffer = 20;
+        private double lastJump = 0;
 
         //fields for gravity
         private float gravityMultiplier = 1f;
         protected Vector2 position;
         protected Vector2 velocity;
         protected bool isGrounded;
+
+        // Other
+        protected bool isCrouching;
 
         // Collision Fields
         protected bool collided;
@@ -209,6 +216,7 @@ namespace Strike_12
             this.windowHeight = windowHeight;
             this.windowWidth = windowWidth;
             isGrounded = false;
+            isCrouching = false;
             playerState = PlayerStates.faceRight;
         }
 
@@ -296,66 +304,75 @@ namespace Strike_12
                 }
             }
 
-            //if A is pressed, moves player left, changes player state depending on if jumping or not.
-            if (kbState.IsKeyDown(Keys.A) && !leftCollided && playerState != PlayerStates.airdash)
+            if (!isCrouching)
             {
-                velocity.X = -(baseSpeed * moveSpeed);
-
-                if (!isGrounded && previousPlayerState != PlayerStates.moveLeft)
+                //if A is pressed, moves player left, changes player state depending on if jumping or not.
+                if (kbState.IsKeyDown(Keys.A) && !leftCollided && playerState != PlayerStates.airdash)
                 {
-                    playerState = PlayerStates.jumpLeft;
+                    velocity.X = -(baseSpeed * moveSpeed);
+
+                    if (!isGrounded && previousPlayerState != PlayerStates.moveLeft)
+                    {
+                        playerState = PlayerStates.jumpLeft;
+                    }
+                    else
+                    {
+                        playerState = PlayerStates.moveLeft;
+                    }
                 }
+                //if D is pressed, moves player right, changes player state depending on if jumping or not.
+                else if (kbState.IsKeyDown(Keys.D) && !rightCollided && playerState != PlayerStates.airdash)
+                {
+                    velocity.X = (baseSpeed * moveSpeed);
+
+                    if (!isGrounded && previousPlayerState != PlayerStates.moveRight)
+                    {
+                        playerState = PlayerStates.jumpRight;
+                    }
+                    else
+                    {
+
+                        playerState = PlayerStates.moveRight;
+                    }
+                }
+                //otherwise x velocity is zero (doesn't move left or right) and updates player state accordingly.
                 else
                 {
-                    playerState = PlayerStates.moveLeft;
-                }
-            }
-            //if D is pressed, moves player right, changes player state depending on if jumping or not.
-            else if (kbState.IsKeyDown(Keys.D) && !rightCollided && playerState != PlayerStates.airdash)
-            {
-                velocity.X = (baseSpeed * moveSpeed);
+                    velocity.X = 0f;
 
-                if (!isGrounded && previousPlayerState != PlayerStates.moveRight)
-                {
-                    playerState = PlayerStates.jumpRight;
-                }
-                else
-                {
-
-                    playerState = PlayerStates.moveRight;
-                }
-            }
-            //otherwise x velocity is zero (doesn't move left or right) and updates player state accordingly.
-            else
-            {
-                velocity.X = 0f;
-
-                if (isGrounded && (previousPlayerState == PlayerStates.moveRight ||
-                    previousPlayerState == PlayerStates.jumpRight))
-                {
-                    playerState = PlayerStates.faceRight;
-                }
-                else if (isGrounded && (previousPlayerState == PlayerStates.moveLeft ||
-                    previousPlayerState == PlayerStates.jumpLeft))
-                {
-                    playerState = PlayerStates.faceLeft;
+                    if (isGrounded && (previousPlayerState == PlayerStates.moveRight ||
+                        previousPlayerState == PlayerStates.jumpRight))
+                    {
+                        playerState = PlayerStates.faceRight;
+                    }
+                    else if (isGrounded && (previousPlayerState == PlayerStates.moveLeft ||
+                        previousPlayerState == PlayerStates.jumpLeft))
+                    {
+                        playerState = PlayerStates.faceLeft;
+                    }
                 }
             }
 
-            //if W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
-            if (kbState.IsKeyDown(Keys.W) && !previousKBState.IsKeyDown(Keys.W) && velocity.Y == 0)
-            {
-                isGrounded = false;
-                position.Y -= 60f;
-                velocity.Y = -20f;
 
-                if (previousPlayerState == PlayerStates.faceRight || previousPlayerState == PlayerStates.jumpRight)
+            // If W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
+            if (previousKBState.IsKeyUp(Keys.W) && kbState.IsKeyDown(Keys.W) && !isCrouching)
+            {
+                lastJump = gameTime.TotalGameTime.TotalMinutes;
+
+                if (/*!isGrounded*/ VelocityY == 0 && (lastJump + buffer > gameTime.TotalGameTime.TotalMinutes))
                 {
-                    playerState = PlayerStates.jumpRight;
-                }
-                else if (previousPlayerState == PlayerStates.faceLeft || previousPlayerState == PlayerStates.jumpLeft)
-                {
-                    playerState = PlayerStates.jumpLeft;
+                    isGrounded = false;
+                    position.Y -= 60f;
+                    velocity.Y = -20f;
+
+                    if (previousPlayerState == PlayerStates.faceRight || previousPlayerState == PlayerStates.jumpRight)
+                    {
+                        playerState = PlayerStates.jumpRight;
+                    }
+                    else if (previousPlayerState == PlayerStates.faceLeft || previousPlayerState == PlayerStates.jumpLeft)
+                    {
+                        playerState = PlayerStates.jumpLeft;
+                    }
                 }
             }
 
@@ -364,13 +381,61 @@ namespace Strike_12
             {
                 size = new Rectangle(size.X, size.Y, size.Width, 64);
                 position.Y += 64;
+
+                switch (playerState)
+                {
+                    case PlayerStates.moveRight:
+                    case PlayerStates.jumpRight:
+                    case PlayerStates.faceRight:
+                        playerState = PlayerStates.crouchRight;
+                        break;
+
+                    case PlayerStates.moveLeft:
+                    case PlayerStates.jumpLeft:
+                    case PlayerStates.faceLeft:
+                        playerState = PlayerStates.crouchLeft;
+                        break;
+                }
+
+                isCrouching = true;
             }
             else if (!kbState.IsKeyDown(Keys.S) && previousKBState.IsKeyDown(Keys.S))
             {
                 size = new Rectangle(size.X, size.Y, size.Width, 128);
+
+                if (playerState == PlayerStates.crouchRight)
+                {
+                    playerState = PlayerStates.faceRight;
+                }
+                else
+                {
+                    playerState = PlayerStates.faceLeft;
+                }
+
+                isCrouching = false;
             }
 
-            // Grounded Player Logic
+            if (isCrouching && isGrounded && VelocityX != 0)
+            {
+                if (VelocityX > 0)
+                {
+                    VelocityX--;
+                    if (VelocityX < 1)
+                    {
+                        VelocityX = 0;
+                    }
+                }
+                else
+                {
+                    VelocityX++;
+                    if (VelocityX > -1)
+                    {
+                        VelocityX = 0;
+                    }
+                }
+            }
+
+            // Grounded Player Logics
             if (isGrounded)
             {
                 //position.Y = this.SizeY - playerSprite.Height;
@@ -406,7 +471,7 @@ namespace Strike_12
                 if (kbState.IsKeyDown(Keys.Space) &&
                     timeStopPurchased &&
                     !timeStopActive &&
-                    timeStopCooldown > 300)
+                    timeStopCooldown > 250)
                 {
                     timeStopActive = true;
                     timeStopCooldown = 0;
@@ -414,6 +479,10 @@ namespace Strike_12
                 else
                 {
                     timeStopCooldown++;
+                    if (timeStopCooldown > 250)
+                    {
+                        timeStopActive = false;
+                    }
                 }
 
                 // Air Dash
