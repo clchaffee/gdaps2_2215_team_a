@@ -43,21 +43,21 @@ namespace Spawn_Testing
             max = 12;
             rValue.Clear();
 
-            Console.WriteLine("\nIntervals with REPLACING the number of enemies:");
+            //Console.WriteLine("\nIntervals with REPLACING the number of enemies:");
 
-            while (wave < max + 1)
-            {
-                Console.WriteLine($"\nWave {wave}:");
-                SpawnRateReplace(start, end);
-                foreach (decimal d in rValue)
-                {
-                    Console.WriteLine($"Interval {rValue.IndexOf(d) + 1}: {d}");
-                }
-                start = start + 5;
-                end = end + 5;
-                rValue.Clear();
-                wave++;
-            }
+            //while (wave < max + 1)
+            //{
+            //    Console.WriteLine($"\nWave {wave}:");
+            //    SpawnRateReplace(start, end);
+            //    foreach (decimal d in rValue)
+            //    {
+            //        Console.WriteLine($"Interval {rValue.IndexOf(d) + 1}: {d}");
+            //    }
+            //    start = start + 5;
+            //    end = end + 5;
+            //    rValue.Clear();
+            //    wave++;
+            //}
 
 
 
@@ -68,9 +68,28 @@ namespace Spawn_Testing
                 {
                     if (i % 5 == 0)
                     {
-                        
-                        value += Math.Ceiling((decimal)Math.Exp(i * .1 ));
-                        
+                        if (wave > 1)
+                        {
+                            value += Math.Ceiling((decimal)Math.Exp(((start + end) / 15) * .05));
+                        }
+                        if (wave < 6)
+                        {
+                            value += Math.Ceiling((decimal)Math.Exp(i * .075));
+                            if (i > 1)
+                            {
+                                value -= Math.Ceiling((decimal)Math.Exp((i - 5) * .05));
+                            }
+                        }
+                        else
+                        {
+                            value += Math.Ceiling((decimal)Math.Exp(i * .06));
+                            if (i > 1)
+                            {
+                                value -= Math.Ceiling((decimal)Math.Exp((i - 5) * .04));
+                            }
+                        }
+
+
                         rValue.Add(value);
                     }
                 }
