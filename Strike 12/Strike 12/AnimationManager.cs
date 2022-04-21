@@ -86,7 +86,7 @@ namespace Strike_12
         }
 
         // Draw()
-        public void Draw(SpriteBatch _spriteBatch, Texture2D texture, Rectangle rect, SpriteEffects effect)
+        public void Draw(SpriteBatch _spriteBatch, Texture2D texture, Rectangle rect, SpriteEffects effect, float rotation)
         {
             _spriteBatch.Draw(
                 texture,
@@ -97,7 +97,7 @@ namespace Strike_12
                     rect.Width,
                     rect.Height),
                 Color.White,
-                0f,
+                rotation,
                 Vector2.Zero,
                 effect,
                 0f); 

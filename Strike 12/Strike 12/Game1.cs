@@ -134,6 +134,7 @@ namespace Strike_12
         Texture2D playerWalk;
         Texture2D playerCrouch;
         Texture2D playerDash;
+        Texture2D playerDashAlt;
         PlayerStates playerState;
 
         public Game1()
@@ -302,6 +303,7 @@ namespace Strike_12
             playerWalk = Content.Load<Texture2D>("playerWalk");
             playerCrouch = Content.Load<Texture2D>("playerCrouch");
             playerDash = Content.Load<Texture2D>("Dash");
+            playerDashAlt = Content.Load<Texture2D>("DashAlt");
         }
 
         /// <summary>
@@ -1231,11 +1233,11 @@ namespace Strike_12
                     switch (state)
                     {
                         case GameState.Menu:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f);
                             break;
 
                         case GameState.Start:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f);
                             break;
                     }
 
@@ -1328,26 +1330,54 @@ namespace Strike_12
                     {
                         case PlayerStates.moveRight:
                         case PlayerStates.jumpRight:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f);
                             break;
                         case PlayerStates.moveLeft:
                         case PlayerStates.jumpLeft:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.FlipHorizontally);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.FlipHorizontally, 0f);
                             break;
                         case PlayerStates.faceRight:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f);
                             break;
                         case PlayerStates.faceLeft:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally, 0f);
                             break;
                         case PlayerStates.crouchLeft:
-                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.FlipHorizontally);
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.FlipHorizontally, 0f);
                             break;
                         case PlayerStates.crouchRight:
-                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None);
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None, 0f);
                             break;
                         case PlayerStates.airdash:
-                            playerAnimation.Draw(_spriteBatch, playerDash, player.Size, SpriteEffects.None);
+
+                            SpriteEffects flipSprite = new SpriteEffects();
+                            int rotation = 0;
+
+                            switch (player.MoveDirection)
+                            {
+                                case Keys.W:
+                                    flipSprite = SpriteEffects.None;
+                                    rotation = -90;
+                                    break;
+
+                                case Keys.S:
+                                    flipSprite = SpriteEffects.FlipVertically;
+                                    rotation = 90;
+                                    break;
+
+                                case Keys.A:
+                                    flipSprite = SpriteEffects.FlipHorizontally;
+                                    rotation = 0;
+                                    break;
+
+                                case Keys.D:
+                                    flipSprite = SpriteEffects.None;
+                                    rotation = 0;
+                                    break;
+                            }
+
+                            playerAnimation.Draw(_spriteBatch, playerDash, player.Size, flipSprite, rotation);
+
                             break;
                     }
 
