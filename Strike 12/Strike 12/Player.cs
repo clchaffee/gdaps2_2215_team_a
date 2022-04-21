@@ -608,7 +608,7 @@ namespace Strike_12
                     spriteBatch.Draw(
                          playerTexture,
                          size,
-                         new Rectangle(2 * 128, 0, 128, 128),
+                         new Rectangle(1 * 128, 0, 128, 128),
                          Color.White);
                     break;
             }

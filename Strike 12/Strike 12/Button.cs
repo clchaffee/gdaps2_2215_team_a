@@ -137,15 +137,15 @@ namespace Strike_12
                 //specific check for checking whether the button is
                 //one of the upgrades or the cat
                 case (State.Pressed):
-                    if (type != "cat")
-                    {
-                        spriteBatch.Draw(texture, size, Color.Green);
-                    }
-                    else
+                    if (type == "cat")
                     {
                         spriteBatch.Draw(texture, size, Color.White);
                         spriteBatch.DrawString(spriteFont, $"MEOW ^-3-^",
                                  new Vector2(size.X + 50, size.Y - 100), Color.LightGray);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(texture, size, Color.Green);
                     }
                     break;
 
@@ -153,33 +153,32 @@ namespace Strike_12
                     spriteBatch.Draw(texture, size, Color.Red);
 
                     //provides simple explanations for each item in the shop
-                    if (type == "Health")
+                    switch (type)
                     {
-                        spriteBatch.DrawString(spriteFont, "\nIncreases your total HEALTH.", text, Color.White);
-                    }
-                    if (type == "Speed")
-                    {
-                        spriteBatch.DrawString(spriteFont, "\nIncreases your total SPEED.", text, Color.White);
-                    }
-                    if (type == "Energy")
-                    {
-                        spriteBatch.DrawString(spriteFont, "\nIncreases your total ENERGY", text, Color.White);
-                    }
-                    if (type == "Dash")
-                    {
-                        spriteBatch.DrawString(spriteFont, "RIGHT SHIFT to DASH \n" +
+                        case "Health":
+                            spriteBatch.DrawString(spriteFont, "\nIncreases your total HEALTH.", text, Color.White);
+                            break;
+                        case "Speed":
+                            spriteBatch.DrawString(spriteFont, "\nIncreases your total SPEED.", text, Color.White);
+                            break;
+                        case "Energy":
+                            spriteBatch.DrawString(spriteFont, "\nIncreases your total ENERGY", text, Color.White);
+                            break;
+                        case "Dash":
+                            spriteBatch.DrawString(spriteFont, "RIGHT SHIFT to DASH \n" +
                             "any direction you'd like.\n\n" +
                             "***Uses Energy***", text, Color.White);
-                    }
-                    if (type == "Time Stop")
-                    {
-                        spriteBatch.DrawString(spriteFont, "SPACE to STOP TIME \n" +
+                            break;
+                        case "Time Stop":
+                            spriteBatch.DrawString(spriteFont, "SPACE to STOP TIME \n" +
                             "freezes all enemies for \na few seconds.\n\n" +
                             "***Uses Energy***", text, Color.White);
-                    }
-                    if (type == "cat")
-                    {
-                        spriteBatch.Draw(texture, size, Color.White);
+                            break;
+                        case "cat":
+                            spriteBatch.Draw(texture, size, Color.White);
+                            break;
+                        default:
+                            break;
                     }
                     break;
 
