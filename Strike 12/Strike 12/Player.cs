@@ -266,7 +266,7 @@ namespace Strike_12
                 {
                     switch (moveDirection)
                     {
-                        case Keys.W:
+                        case Keys.Space:
                             size.Y -= 20;
                             position.Y -= 20f;
                             break;
@@ -355,12 +355,18 @@ namespace Strike_12
 
 
             // If W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
-            if (previousKBState.IsKeyUp(Keys.W) && kbState.IsKeyDown(Keys.W) && !isCrouching)
+            if (previousKBState.IsKeyUp(Keys.Space) && kbState.IsKeyDown(Keys.Space) && !isCrouching)
             {
                 lastJump = gameTime.TotalGameTime.TotalMinutes;
 
-                if (/*!isGrounded*/ VelocityY == 0 && (lastJump + buffer > gameTime.TotalGameTime.TotalMinutes))
+                //if (velocity.Y == 0)
+                //{
+                //    canJump = false;
+                //}
+
+                if (/*VelocityY == 0*/ isGrounded && (lastJump + buffer > gameTime.TotalGameTime.TotalMinutes) && canJump)
                 {
+                    canJump = false;
                     isGrounded = false;
                     position.Y -= 60f;
                     velocity.Y = -20f;
@@ -373,6 +379,10 @@ namespace Strike_12
                     {
                         playerState = PlayerStates.jumpLeft;
                     }
+                }
+                else
+                {
+                    canJump = true;
                 }
             }
 
@@ -468,7 +478,7 @@ namespace Strike_12
                 velocity.Y += 0.15f * gravityMultiplier;
 
                 // Timestop Check
-                if (kbState.IsKeyDown(Keys.Space) &&
+                if (kbState.IsKeyDown(Keys.Q) &&
                     timeStopPurchased &&
                     !timeStopActive &&
                     timeStopCooldown > 250)
@@ -486,7 +496,7 @@ namespace Strike_12
                 }
 
                 // Air Dash
-                if (kbState.IsKeyDown(Keys.RightShift) &&
+                if (kbState.IsKeyDown(Keys.LeftShift) &&
                     dashCounter > 0 &&
                     energy - 5 >= 0 &&
                     playerState != PlayerStates.airdash &&
@@ -525,7 +535,7 @@ namespace Strike_12
 
             // Okay so come back to this and check this out
             // checks for if the player is above a platform or ground, and resets grounded to false
-            IsGrounded = false;
+            //IsGrounded = false;
 
             // Update the player's "size" position and float position using the player's velocity after
             // calculations (X - Direction)

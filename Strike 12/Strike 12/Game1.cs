@@ -505,19 +505,28 @@ namespace Strike_12
                                         player.SizeY -= 1;
                                     }
 
+
+
                                     player.VelocityY = 0;
                                     player.PositionY = player.SizeY;
 
                                     player.IsGrounded = true;
                                     isCollidingUp = true;
                                 }
-                                else
-                                {
-                                    //if (player.Size.Bottom > levels[lvlNum][i, j].Size.Top)
-                                    //{
-                                    //    isCollidingUp = false;
-                                    //}
-                                }
+                                //else if (isCollidingUp)
+                                //{
+                                //    //if (player.Size.Bottom > levels[lvlNum][i, j].Size.Top)
+                                //    //{
+                                //    //    isCollidingUp = false;
+                                //    //    player.IsGrounded = false;
+                                //    //}
+
+                                //    if (!player.IsCollidingTop(player, levels[lvlNum][i, j]))
+                                //    {
+                                //        //isCollidingUp = false;
+                                //        //player.IsGrounded = false;
+                                //    }
+                                //}
 
                                 // Check for bottom collisions
                                 if (player.IsCollidingBottom(player, levels[lvlNum][i, j]) &&
@@ -684,7 +693,6 @@ namespace Strike_12
 
                     if ((int)timer % 5 == 0 && !player.TimeStopActive)
                     {
-
                         if (spawnCap)
                         {
                             switch (eManager.WaveNum)
@@ -1231,9 +1239,9 @@ namespace Strike_12
 
                 // text for control screen
                 case GameState.Controls:
-                    _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right\nPress S to Crouch" +
-                        "\nPress Right Shift and a direction to airdash (WHEN UNLOCKED)" +
-                        "\nPress Space to stop time for a short period (WHEN UNLOCKED)\n",
+                    _spriteBatch.DrawString(titleFont, "Press Space to Jump\nPress A to Move Left\nPress D to Move Right\nPress S to Crouch" +
+                        "\nPress Left Shift and a direction to airdash (WHEN UNLOCKED)" +
+                        "\nPress Q to stop time for a short period (WHEN UNLOCKED)\n",
                         new Vector2(100, 50), Color.Black);
 
                     //changes color based on what difficulty was selected
@@ -1301,8 +1309,8 @@ namespace Strike_12
                     _spriteBatch.DrawString(displayFont, $"\n# of enemies in wave: {eManager.Enemies.Count}",
                         new Vector2(100, 250), Color.LightGray);
 
-                    //_spriteBatch.DrawString(displayFont, player.IsGrounded.ToString(),
-                    //    new Vector2(100, 350), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, player.IsGrounded.ToString(),
+                        new Vector2(100, 350), Color.LightGray);
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     //player.Draw(_spriteBatch, playerSprites);
