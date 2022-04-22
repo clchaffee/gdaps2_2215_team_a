@@ -185,6 +185,12 @@ namespace Strike_12
             get { return moveDirection; }
         }
 
+        public int ICounter
+        {
+            get { return iCounter; }
+            set { iCounter = value; }
+        }
+
         // ------------------------------------------
 
         public float VelocityX
@@ -236,10 +242,9 @@ namespace Strike_12
         /// <returns></returns>
         public bool TakeDamage(GameTime gameTime)
         {
-            iCounter++;
-            if (iCounter == 10)
+            if (iCounter == 0)
             {
-                iCounter = 0;
+                iCounter = 60;
                 return true;
             }
             else
@@ -360,14 +365,9 @@ namespace Strike_12
 
 
             // If W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
-            if (previousKBState.IsKeyUp(Keys.Space) && kbState.IsKeyDown(Keys.Space) && !isCrouching)
+            if (previousKBState.IsKeyUp(Keys.W) && kbState.IsKeyDown(Keys.W) && !isCrouching)
             {
                 lastJump = gameTime.TotalGameTime.TotalMinutes;
-
-                //if (velocity.Y == 0)
-                //{
-                //    canJump = false;
-                //}
 
                 if (VelocityY == 0 && (lastJump + buffer > gameTime.TotalGameTime.TotalMinutes) && canJump)
                 {
