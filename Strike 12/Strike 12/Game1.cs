@@ -1440,7 +1440,7 @@ namespace Strike_12
                     {
                         if (!incrementing)
                         {
-                            if (percent > 0)
+                            if (percent > 0.3)
                             {
                                 percent -= 0.4f;
                             }
@@ -1522,7 +1522,7 @@ namespace Strike_12
                                     break;
                             }
 
-                            playerAnimation.Draw(_spriteBatch, playerDash, player.Size, flipSprite, rotation, 64, percent);
+                            playerAnimation.Draw(_spriteBatch, sprite, player.Size, flipSprite, rotation, 64, percent);
 
                             break;
                     }
