@@ -67,6 +67,7 @@ namespace Strike_12
         private Texture2D enemyFollow;
         private Texture2D enemyBase;
         private Texture2D enemyBullet;
+        private Texture2D enemyBounce;
 
         // Enemy types for testing purposes
         private Enemy enemy;
@@ -332,7 +333,6 @@ namespace Strike_12
             clockAnimation = new AnimationManager();
             clockHour = Content.Load<Texture2D>("HourHand");
             clockMinute = Content.Load<Texture2D>("MinuteHand");
-            Shade = Content.Load<Texture2D>("Ugh");
             shopKeeperAnimation = new AnimationManager();
             Shade = Content.Load<Texture2D>("atmosphere");
         }
@@ -1419,7 +1419,7 @@ namespace Strike_12
                 case GameState.Arena:
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0, 0), Color.White);
-                    clockAnimation.Draw(_spriteBatch, clockMinute, new Rectangle(0, 0, 70, 70), SpriteEffects.None, 0f, windowWidth);
+                    clockAnimation.Draw(_spriteBatch, clockMinute, new Rectangle(0, 0, clockMinute.Width / 30, clockMinute.Height), SpriteEffects.None, 0f, clockMinute.Width / 30, 1f);
                     // Draw the tiles
                     levels[lvlNum].Draw(_spriteBatch, tileSprites);
 
@@ -1534,11 +1534,11 @@ namespace Strike_12
                     {
                         if (enemy is BulletEnemy)
                         {
-                            enemy.Animation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64);
+                            enemy.Animation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                         }
                         else if (enemy is FollowEnemy)
                         {
-                            enemy.Animation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64);
+                            enemy.Animation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                         }
                         else if (enemy is Enemy)
                         {
@@ -1546,20 +1546,20 @@ namespace Strike_12
                             switch (enemyState)
                             {
                                 case (EnemyStates.moveRight):
-                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.FlipHorizontally, 0, 64);
+                                    enemy.Animation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.FlipHorizontally, 0, 64, 1f);
                                     break;
                                 case (EnemyStates.moveLeft):
-                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.None, 0, 64);
+                                    enemy.Animation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                                     break;
                             }
                         }
                         else if (enemy is BulletEnemy)
                         {
-                            enemyAnimation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64);
+                            enemy.Animation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                         }
                         else if (enemy is FollowEnemy)
                         {
-                            enemyAnimation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64);
+                            enemy.Animation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                         }
                         else
                         {
@@ -1601,7 +1601,7 @@ namespace Strike_12
 
                     _spriteBatch.Draw(shopWall, new Vector2(0, 0), Color.White);
                     //_spriteBatch.Draw(shopKeeper, new Vector2(450, 100), Color.White);
-                    shopKeeperAnimation.Draw(_spriteBatch, shopKeeper, new Rectangle(450, 100, shopKeeper.Width / 14, shopKeeper.Height), SpriteEffects.None, 0f, shopKeeper.Width/14);
+                    shopKeeperAnimation.Draw(_spriteBatch, shopKeeper, new Rectangle(450, 100, shopKeeper.Width / 14, shopKeeper.Height), SpriteEffects.None, 0f, shopKeeper.Width/14, 1f);
                     _spriteBatch.Draw(shopFG, new Vector2(0, 0), Color.White);
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
