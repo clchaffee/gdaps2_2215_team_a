@@ -27,7 +27,7 @@ namespace Strike_12
         crouch,
         crouchLeft,
         crouchRight,
-        airdash
+        airdash,
     }
 
     class Player : GameObject
@@ -178,6 +178,11 @@ namespace Strike_12
         public PlayerStates State
         {
             get { return playerState; }
+        }
+
+        public Keys MoveDirection
+        {
+            get { return moveDirection; }
         }
 
         // ------------------------------------------
@@ -355,12 +360,18 @@ namespace Strike_12
 
 
             // If W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
-            if (previousKBState.IsKeyUp(Keys.W) && kbState.IsKeyDown(Keys.W) && !isCrouching)
+            if (previousKBState.IsKeyUp(Keys.Space) && kbState.IsKeyDown(Keys.Space) && !isCrouching)
             {
                 lastJump = gameTime.TotalGameTime.TotalMinutes;
 
-                if (/*!isGrounded*/ VelocityY == 0 && (lastJump + buffer > gameTime.TotalGameTime.TotalMinutes))
+                //if (velocity.Y == 0)
+                //{
+                //    canJump = false;
+                //}
+
+                if (VelocityY == 0 && (lastJump + buffer > gameTime.TotalGameTime.TotalMinutes) && canJump)
                 {
+                    canJump = false;
                     isGrounded = false;
                     position.Y -= 60f;
                     velocity.Y = -20f;
@@ -374,10 +385,14 @@ namespace Strike_12
                         playerState = PlayerStates.jumpLeft;
                     }
                 }
+                else
+                {
+                    canJump = true;
+                }
             }
 
             // Crouching
-            if (kbState.IsKeyDown(Keys.S) && !previousKBState.IsKeyDown(Keys.S) /*&& isGrounded*/)
+            if (kbState.IsKeyDown(Keys.S) && !previousKBState.IsKeyDown(Keys.S) && playerState != PlayerStates.airdash)
             {
                 size = new Rectangle(size.X, size.Y, size.Width, 64);
                 position.Y += 64;
@@ -468,7 +483,7 @@ namespace Strike_12
                 velocity.Y += 0.15f * gravityMultiplier;
 
                 // Timestop Check
-                if (kbState.IsKeyDown(Keys.Space) &&
+                if (kbState.IsKeyDown(Keys.Q) &&
                     timeStopPurchased &&
                     !timeStopActive &&
                     timeStopCooldown > 250)
@@ -486,7 +501,7 @@ namespace Strike_12
                 }
 
                 // Air Dash
-                if (kbState.IsKeyDown(Keys.RightShift) &&
+                if (kbState.IsKeyDown(Keys.LeftShift) &&
                     dashCounter > 0 &&
                     energy - 5 >= 0 &&
                     playerState != PlayerStates.airdash &&
@@ -503,6 +518,7 @@ namespace Strike_12
                     if (kbState.IsKeyDown(Keys.W))
                     {
                         moveDirection = Keys.W;
+                        size = new Rectangle(size.X, size.Y, 64, 128);
                     }
                     else if (kbState.IsKeyDown(Keys.A))
                     {
@@ -512,6 +528,7 @@ namespace Strike_12
                     else if (kbState.IsKeyDown(Keys.S))
                     {
                         moveDirection = Keys.S;
+                        size = new Rectangle(size.X, size.Y, 64, 128);
                     }
                     else if (kbState.IsKeyDown(Keys.D))
                     {
@@ -548,7 +565,7 @@ namespace Strike_12
             previousKBState = kbState;
         }
 
-        //draw
+        ////draw
         public override void Draw(SpriteBatch spriteBatch, Texture2D playerTexture)
         {
             // Player state switch
@@ -607,14 +624,6 @@ namespace Strike_12
                          new Rectangle(2 * 128, 0, 128, 128),
                          Color.White);
                     break;
-
-                case PlayerStates.airdash:
-                    spriteBatch.Draw(
-                         playerTexture,
-                         size,
-                         new Rectangle(1 * 128, 0, 128, 128),
-                         Color.White);
-                    break;
             }
         }
 
@@ -634,22 +643,6 @@ namespace Strike_12
                     collider.Size.Left < collided.Size.Right);
         }
 
-        public void Jump()
-        {
-            isGrounded = false;
-            position.Y -= 60f;
-            velocity.Y = -20f;
-
-            if (previousPlayerState == PlayerStates.faceRight || previousPlayerState == PlayerStates.jumpRight)
-            {
-                playerState = PlayerStates.jumpRight;
-            }
-            else if (previousPlayerState == PlayerStates.faceLeft || previousPlayerState == PlayerStates.jumpLeft)
-            {
-                playerState = PlayerStates.jumpLeft;
-            }
-        }
-
         /// <summary>
         /// This method resets the player to its starting state for resetting the game
         /// </summary>
@@ -664,6 +657,7 @@ namespace Strike_12
             timeStopActive = false;
             energy = maxEnergy;
             Health = maxHealth;
+            size = new Rectangle(((int)position.X), ((int)position.Y), 64, 128);
         }
     }
 }

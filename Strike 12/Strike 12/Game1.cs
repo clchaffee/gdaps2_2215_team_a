@@ -86,6 +86,7 @@ namespace Strike_12
         private Texture2D shopFG;
         private Texture2D shopKeeper;
         private Texture2D sign;
+        private Texture2D smallSign;
         private Texture2D shelf;
 
         private string comment;
@@ -95,6 +96,7 @@ namespace Strike_12
         private Texture2D startButton;
         private Texture2D optionButton;
         private Texture2D menuButton;
+        private Texture2D buttonSelect;
 
         //items
         private Texture2D healthUpgrade;
@@ -109,6 +111,7 @@ namespace Strike_12
         private Tile tile;
         private List<LevelEditor> levels;
         private int lvlNum;
+        private Texture2D bar;
 
         // Other Assets
         private Texture2D arenaBackground;
@@ -134,6 +137,8 @@ namespace Strike_12
         Texture2D playerIdle;
         Texture2D playerWalk;
         Texture2D playerCrouch;
+        Texture2D playerDash;
+        Texture2D playerDashAlt;
         PlayerStates playerState;
 
         public Game1()
@@ -177,16 +182,20 @@ namespace Strike_12
             enemySprites = Content.Load<Texture2D>("enemySpriteSheet");
             buttonTexture = Content.Load<Texture2D>("tempTile");
 
-            //other assests and buttons
+            //other assests
             tileSprites = Content.Load<Texture2D>("brick");
             titleScreen = Content.Load<Texture2D>("Logo (1)");
             titleBG = Content.Load<Texture2D>("NewTitle");
             arenaBG = Content.Load<Texture2D>("Arena");
             arenaBackground = Content.Load<Texture2D>("ArenaBG");
+            bar = Content.Load<Texture2D>("bar");
+
+            //Shop
             shopWall = Content.Load<Texture2D>("ShopWall");
             shopFG = Content.Load<Texture2D>("ShopFG");
             shopKeeper = Content.Load<Texture2D>("ShopKeeper");
             sign = Content.Load<Texture2D>("sign");
+            smallSign = Content.Load<Texture2D>("sign-export");
             shelf = Content.Load<Texture2D>("shelf");
 
             //fading asset
@@ -195,6 +204,7 @@ namespace Strike_12
             startButton = Content.Load<Texture2D>("Start");
             optionButton = Content.Load<Texture2D>("Options");
             menuButton = Content.Load<Texture2D>("Menu");
+            buttonSelect = Content.Load<Texture2D>("buttonSelect");
 
             noseButton = Content.Load<Texture2D>("CatNose");
 
@@ -270,12 +280,12 @@ namespace Strike_12
 
             buttons.Add(new Button("Dash",
                 dashUpgrade,
-                new Rectangle(1100, 330, dashUpgrade.Width, dashUpgrade.Height),
+                new Rectangle(1100, 390, dashUpgrade.Width, dashUpgrade.Height),
                 150));
 
             buttons.Add(new Button("Time Stop",
                   timeUpgrade,
-                  new Rectangle(1400, 330, timeUpgrade.Width, timeUpgrade.Height),
+                  new Rectangle(1400, 390, timeUpgrade.Width, timeUpgrade.Height),
                   450));
 
             /*        NOT FOR SPRINT 3
@@ -298,6 +308,8 @@ namespace Strike_12
             playerIdle = Content.Load<Texture2D>("playerIdle");
             playerWalk = Content.Load<Texture2D>("playerWalk");
             playerCrouch = Content.Load<Texture2D>("playerCrouch");
+            playerDash = Content.Load<Texture2D>("Dash");
+            playerDashAlt = Content.Load<Texture2D>("DashAlt");
         }
 
         /// <summary>
@@ -475,6 +487,9 @@ namespace Strike_12
                         case PlayerStates.crouchRight:
                             playerAnimation.Update(gameTime, 1, .09);
                             break;
+                        case PlayerStates.airdash:
+                            playerAnimation.Update(gameTime, 1, .09);
+                            break;
                     }
 
 
@@ -504,7 +519,7 @@ namespace Strike_12
                         {
                             if (levels[lvlNum][i, j] != null)
                             {
-                                // Check for top collisions
+                                //// Check for top collisions
                                 if (player.IsCollidingTop(player, levels[lvlNum][i, j]) &&
                                     (!isCollidingUp) && (levels[lvlNum][i, j].Type != "leftWall" && levels[lvlNum][i, j].Type != "rightWall"))
                                 {
@@ -518,13 +533,6 @@ namespace Strike_12
 
                                     player.IsGrounded = true;
                                     isCollidingUp = true;
-                                }
-                                else
-                                {
-                                    //if (player.Size.Bottom > levels[lvlNum][i, j].Size.Top)
-                                    //{
-                                    //    isCollidingUp = false;
-                                    //}
                                 }
 
                                 // Check for bottom collisions
@@ -691,7 +699,6 @@ namespace Strike_12
 
                     if ((int)timer % 5 == 0 && !player.TimeStopActive)
                     {
-
                         if (spawnCap)
                         {
                             #region //waves
@@ -1296,26 +1303,26 @@ namespace Strike_12
                     switch (state)
                     {
                         case GameState.Menu:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f);
                             break;
 
                         case GameState.Start:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f);
                             break;
                     }
 
                     _spriteBatch.Draw(arenaBG, new Rectangle(0, 75, titleBG.Width, titleBG.Height), Color.White);
 
                     //draw buttons
-                    buttons[0].Draw(_spriteBatch, displayFont);
-                    buttons[1].Draw(_spriteBatch, displayFont);
+                    buttons[0].Draw(_spriteBatch, displayFont, buttonSelect, smallSign);
+                    buttons[1].Draw(_spriteBatch, displayFont, buttonSelect, smallSign);
                     break;
 
                 // text for control screen
                 case GameState.Controls:
-                    _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right\nPress S to Crouch" +
-                        "\nPress Right Shift and a direction to airdash (WHEN UNLOCKED)" +
-                        "\nPress Space to stop time for a short period (WHEN UNLOCKED)\n",
+                    _spriteBatch.DrawString(titleFont, "Press Space to Jump\nPress A to Move Left\nPress D to Move Right\nPress S to Crouch" +
+                        "\nPress Left Shift and a direction to airdash (WHEN UNLOCKED)" +
+                        "\nPress Q to stop time for a short period (WHEN UNLOCKED)\n",
                         new Vector2(100, 50), Color.Black);
 
                     //changes color based on what difficulty was selected
@@ -1360,7 +1367,7 @@ namespace Strike_12
                             new Vector2(100, 575), Color.Black);
                     }
 
-                    buttons[2].Draw(_spriteBatch, displayFont);
+                    buttons[2].Draw(_spriteBatch, displayFont, buttonSelect, smallSign);
 
                     break;
 
@@ -1383,8 +1390,8 @@ namespace Strike_12
                     _spriteBatch.DrawString(displayFont, $"\n# of enemies in wave: {eManager.Enemies.Count}",
                         new Vector2(100, 250), Color.LightGray);
 
-                    //_spriteBatch.DrawString(displayFont, player.IsGrounded.ToString(),
-                    //    new Vector2(100, 350), Color.LightGray);
+                    _spriteBatch.DrawString(displayFont, player.IsGrounded.ToString(),
+                        new Vector2(100, 350), Color.LightGray);
 
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     //player.Draw(_spriteBatch, playerSprites);
@@ -1393,26 +1400,59 @@ namespace Strike_12
                     {
                         case PlayerStates.moveRight:
                         case PlayerStates.jumpRight:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f);
                             break;
                         case PlayerStates.moveLeft:
                         case PlayerStates.jumpLeft:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.FlipHorizontally);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.FlipHorizontally, 0f);
                             break;
                         case PlayerStates.faceRight:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f);
                             break;
                         case PlayerStates.faceLeft:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally, 0f);
                             break;
                         case PlayerStates.crouchLeft:
-                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.FlipHorizontally);
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.FlipHorizontally, 0f);
                             break;
                         case PlayerStates.crouchRight:
-                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None);
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None, 0f);
                             break;
                         case PlayerStates.airdash:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None);
+
+                            SpriteEffects flipSprite = new SpriteEffects();
+                            int rotation = 0;
+                            Texture2D sprite = playerDash;
+
+                            switch (player.MoveDirection)
+                            {
+                                case Keys.W:
+                                    flipSprite = SpriteEffects.None;
+                                    rotation = 0;
+                                    sprite = playerDashAlt;
+                                    break;
+
+                                case Keys.S:
+                                    flipSprite = SpriteEffects.FlipVertically;
+                                    rotation = 0;
+                                    sprite = playerDashAlt;
+                                    break;
+
+                                case Keys.A:
+                                    flipSprite = SpriteEffects.FlipHorizontally;
+                                    rotation = 0;
+                                    sprite = playerDash;
+                                    break;
+
+                                case Keys.D:
+                                    flipSprite = SpriteEffects.None;
+                                    rotation = 0;
+                                    sprite = playerDash;
+                                    break;
+                            }
+
+                            playerAnimation.Draw(_spriteBatch, sprite, player.Size, flipSprite, rotation);
+
                             break;
                     }
 
@@ -1473,12 +1513,12 @@ namespace Strike_12
                     //sign and shelves
                     _spriteBatch.Draw(sign, new Vector2(1150, 642), Color.White);
                     _spriteBatch.Draw(shelf, new Vector2(1085, 265), Color.White);
-                    _spriteBatch.Draw(shelf, new Vector2(1085, 445), Color.White);
+                    _spriteBatch.Draw(shelf, new Vector2(1085, 505), Color.White);
 
                     //draws each button
                     for (int i = 3; i < buttons.Count; i++)
                     {
-                        buttons[i].Draw(_spriteBatch, displayFont);
+                        buttons[i].Draw(_spriteBatch, displayFont, buttonSelect, smallSign);
                         //if the player doesnt have enough points to by the item
                         if (buttons[i].IsHighlight && shop.Points < buttons[i].Cost)
                         {
