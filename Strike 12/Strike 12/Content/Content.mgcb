@@ -338,7 +338,7 @@
 /processorParam:TextureFormat=Color
 /build:Menu.png
 
-#begin MinuteHand.png
+#begin MinuteHand1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -348,9 +348,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:MinuteHand.png
+/build:MinuteHand1.png
 
-#begin MinuteHand.png
+#begin MinuteHand2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -360,7 +360,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:MinuteHand.png
+/build:MinuteHand2.png
 
 #begin NewTitle.png
 /importer:TextureImporter

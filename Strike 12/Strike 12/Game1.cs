@@ -132,7 +132,8 @@ namespace Strike_12
         private Texture2D titleBG;
         private Texture2D arenaBG;
 
-        private Texture2D clockMinute;
+        private Texture2D clockMinute1;
+        private Texture2D clockMinute2;
         private Texture2D clockHour;
         private Texture2D Shade;
         private Texture2D cat;
@@ -148,12 +149,15 @@ namespace Strike_12
 
         //variables
         double timer = 0;
+        double clockTimer = 0;
         int energyTimer = 0;
         int stoppedTimer = 0;
 
         // Animation Fields
         AnimationManager playerAnimation;
-        AnimationManager clockAnimation;
+        AnimationManager clockHourAnimation;
+        AnimationManager clockMin1Animation;
+        AnimationManager clockMin2Animation;
         AnimationManager shopKeeperAnimation;
         AnimationManager catAnimation;
         Texture2D playerIdle;
@@ -345,9 +349,12 @@ namespace Strike_12
 
             bounceRotate = 0;
 
-            clockAnimation = new AnimationManager();
+            clockHourAnimation = new AnimationManager();
+            clockMin1Animation = new AnimationManager();
+            clockMin2Animation = new AnimationManager();
             clockHour = Content.Load<Texture2D>("HourHand");
-            clockMinute = Content.Load<Texture2D>("MinuteHand");
+            clockMinute1 = Content.Load<Texture2D>("MinuteHand1");
+            clockMinute2 = Content.Load<Texture2D>("MinuteHand2");
             shopKeeperAnimation = new AnimationManager();
             Shade = Content.Load<Texture2D>("atmosphere");
             cat = Content.Load<Texture2D>("cat");
@@ -380,64 +387,18 @@ namespace Strike_12
                     {
                         state = GameState.Start;
                     }
-                    if (buttons[1].IsPressed)
-                    {
-                        state = GameState.Controls;
-                    }
 
-                    //TODO: god mode here
+                    // god mode here
                     if (kbState.IsKeyDown(Keys.OemTilde) && prevKbState.IsKeyUp(Keys.OemTilde))
                     {
                         collidable = false;
                     }
 
                     buttons[0].Update(gameTime);
-                    buttons[1].Update(gameTime);
-
 
                     playerAnimation.Update(gameTime, 3, .09);
                     break;
 
-                //while in the control screen, press enter to return to the menu
-                case GameState.Controls:
-                    if (buttons[2].IsPressed)
-                    {
-                        state = GameState.Menu;
-                    }
-                    if (kbState.IsKeyDown(Keys.D1) && prevKbState.IsKeyUp(Keys.D1))
-                    {
-                        easy = true;
-                        medium = false;
-                        hard = false;
-                        impossible = false;
-                    }
-                    if (kbState.IsKeyDown(Keys.D2) && prevKbState.IsKeyUp(Keys.D2))
-                    {
-                        easy = false;
-                        medium = true;
-                        hard = false;
-                        impossible = false;
-                    }
-                    if (kbState.IsKeyDown(Keys.D3) && prevKbState.IsKeyUp(Keys.D3))
-                    {
-                        easy = false;
-                        medium = false;
-                        hard = true;
-                        impossible = false;
-                    }
-                    if (kbState.IsKeyDown(Keys.D0) && prevKbState.IsKeyUp(Keys.D0))
-                    {
-                        easy = false;
-                        medium = false;
-                        hard = false;
-                        impossible = true;
-                    }
-
-                    buttons[2].Update(gameTime);
-
-                    break;
-
-                //start animation
                 case GameState.Start:
 
                     playerAnimation.Update(gameTime, 8, .09);
@@ -455,7 +416,19 @@ namespace Strike_12
                 case GameState.Arena:
 
                     // ClockAnimation
-                    clockAnimation.Update(gameTime, 12, 0.00055555556);
+                    clockHourAnimation.Update(gameTime, 12, 0.00055555556);
+                    if (clockTimer <=15)
+                    {
+                        clockMin1Animation.Update(gameTime, 15, 0.0166666667);
+                    }
+                    else if (clockTimer <=30)
+                    {
+                        clockMin2Animation.Update(gameTime, 15, 0.0166666667);
+                    }
+                    else
+                    {
+                        clockTimer = 0;
+                    }
 
                     //debug controls for Annalee while working on shop
                     if (kbState.IsKeyDown(Keys.Back) && prevKbState.IsKeyUp(Keys.Back))
@@ -471,10 +444,12 @@ namespace Strike_12
                     if (player.TimeStopActive)
                     {
                         timer = timer;
+                        clockTimer = clockTimer;
                     }
                     else
                     {
                         timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
+                        clockTimer = clockTimer + gameTime.ElapsedGameTime.TotalSeconds;
                     }
 
                     //updates levels every 2 minutes, would use % but game time is too fast to process that
@@ -1510,6 +1485,7 @@ namespace Strike_12
                     //you get 5 points per second spent alive in the arena
                     shop.Points += 5 * (int)timer;
                     timer = 0;
+                    clockTimer = 0;
 
                     //starts to fade
                     fading = true;
@@ -1544,7 +1520,7 @@ namespace Strike_12
 
                     //level reset
                     lvlNum = 0;
-                    clockAnimation.Reset();
+                    clockHourAnimation.Reset();
 
                     //resets data from Arena
                     eManager.Enemies.Clear();
@@ -1560,6 +1536,7 @@ namespace Strike_12
                     //you get 5 points per second spent alive in the arena
                     shop.Points += 5 * (int)timer;
                     timer = 0;
+                    clockTimer = 0;
 
                     //sets a new comment
                     comment = shop.Comment(null);
@@ -1713,67 +1690,21 @@ namespace Strike_12
 
                     //draw buttons
                     buttons[0].Draw(_spriteBatch, displayFont, buttonSelect, smallSign);
-                    buttons[1].Draw(_spriteBatch, displayFont, buttonSelect, smallSign);
-                    break;
-
-                // text for control screen
-                case GameState.Controls:
-                    _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right\nPress S to Crouch" +
-                        "\nPress Left Shift and a direction to airdash (WHEN UNLOCKED)" +
-                        "\nPress Q to stop time for a short period (WHEN UNLOCKED)\n",
-                        new Vector2(100, 50), Color.Black);
-
-                    //changes color based on what difficulty was selected
-                    if (easy)
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
-                            new Vector2(100, 500), Color.Green);
-                    }
-                    else
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 1 for Easy Difficulty",
-                            new Vector2(100, 500), Color.Black);
-                    }
-                    if (medium)
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 2 for Medium Difficulty",
-                            new Vector2(100, 525), Color.Green);
-                    }
-                    else
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 2 for Medium Difficulty",
-                            new Vector2(100, 525), Color.Black);
-                    }
-                    if (hard)
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 3 for Hard Difficulty",
-                            new Vector2(100, 550), Color.Green);
-                    }
-                    else
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 3 for Hard Difficulty",
-                            new Vector2(100, 550), Color.Black);
-                    }
-                    if (impossible)
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 0 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
-                            new Vector2(100, 575), Color.Green);
-                    }
-                    else
-                    {
-                        _spriteBatch.DrawString(displayFont, "Press 0 for IMPOSSIBLE Difficulty  (You WILL NOT survive.)",
-                            new Vector2(100, 575), Color.Black);
-                    }
-
-                    buttons[2].Draw(_spriteBatch, displayFont, buttonSelect, smallSign);
-
                     break;
 
                 //text for arena screen
                 case GameState.Arena:
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0, 0), Color.White);
-                    clockAnimation.Draw(_spriteBatch, clockHour, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
+                    clockHourAnimation.Draw(_spriteBatch, clockHour, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
+                    if (clockTimer <= 15)
+                    {
+                        clockMin1Animation.Draw(_spriteBatch, clockMinute1, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
+                    }
+                    else if (clockTimer <= 30)
+                    {
+                        clockMin2Animation.Draw(_spriteBatch, clockMinute2, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
+                    }
                     // Draw the tiles
                     levels[lvlNum].Draw(_spriteBatch, tileSprites);
 
@@ -1972,8 +1903,13 @@ namespace Strike_12
                        new Vector2(100, 150), Color.LightGray);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
                        new Vector2(100, 100), Color.LightGray);
-                    _spriteBatch.Draw(bar, new Rectangle(65, 10, bar.Width / 2, bar.Height / 2), Color.White);
-                    _spriteBatch.Draw(bar, new Rectangle(windowWidth - (bar.Width / 2) - 65, 10, bar.Width / 2, bar.Height / 2), Color.White);
+
+                    //bars
+                    _spriteBatch.Draw(bar, new Rectangle(75, 10, bar.Width / 2, bar.Height / 2), Color.White);
+                    _spriteBatch.Draw(healthSprite, new Vector2(0, 0), Color.White);
+
+                    _spriteBatch.Draw(bar, new Rectangle(windowWidth - (bar.Width / 2) - 70, 10, bar.Width / 2, bar.Height / 2), Color.White);
+                    _spriteBatch.Draw(energySprite, new Vector2(windowWidth - energySprite.Width, 0), Color.White);
                     break;
 
                 //text for shop screen
