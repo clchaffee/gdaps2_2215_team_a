@@ -22,7 +22,7 @@ namespace Strike_12
         public double limitation { get; set; } = .1;
 
 
-        public int WaveNum { get; set; } = 12;
+        public int WaveNum { get; set; } = 1;
 
         public void Initialize()
         {
