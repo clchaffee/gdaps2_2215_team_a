@@ -85,6 +85,7 @@ namespace Strike_12
         int wave = 1;
         private double dampener = .04;
         int interval = 0;
+        float bounceRotate;
 
         //variables for the shop
         private Shop shop;
@@ -130,6 +131,7 @@ namespace Strike_12
         private Texture2D clockMinute;
         private Texture2D clockHour;
         private Texture2D Shade;
+        private Texture2D cat;
 
         //sets the default state as the menu
         GameState state = GameState.Menu;
@@ -149,6 +151,7 @@ namespace Strike_12
         AnimationManager playerAnimation;
         AnimationManager clockAnimation;
         AnimationManager shopKeeperAnimation;
+        AnimationManager catAnimation;
         Texture2D playerIdle;
         Texture2D playerWalk;
         Texture2D playerCrouch;
@@ -329,12 +332,17 @@ namespace Strike_12
             enemyBase = Content.Load<Texture2D>("Enemy");
             enemyBullet = Content.Load<Texture2D>("BulletEnemy");
             enemyFollow = Content.Load<Texture2D>("FollowEnemy");
+            enemyBounce = Content.Load<Texture2D>("BounceEnemy");
+
+            bounceRotate = 0;
 
             clockAnimation = new AnimationManager();
             clockHour = Content.Load<Texture2D>("HourHand");
             clockMinute = Content.Load<Texture2D>("MinuteHand");
             shopKeeperAnimation = new AnimationManager();
             Shade = Content.Load<Texture2D>("atmosphere");
+            cat = Content.Load<Texture2D>("cat");
+            catAnimation = new AnimationManager();
         }
 
         /// <summary>
@@ -712,6 +720,10 @@ namespace Strike_12
                             else if (enemy is LaserEnemy)
                             {
                                 ((LaserEnemy)enemy).Update(gameTime, player.Size.Y);
+                            }
+                            else if (enemy is BounceEnemy)
+                            {
+                                enemy.AnimationUpdate(gameTime, 3, 0.9);
                             }
                             else
                             {
@@ -1227,6 +1239,7 @@ namespace Strike_12
                     player.Health = shop.MaxHealth;
 
                     shopKeeperAnimation.Update(gameTime, 14, .15);
+                    catAnimation.Update(gameTime, 8, .12);
 
                     // for each button calls update method, checks if pressed and gives upgrade if you have enough points
                     foreach (Button button in buttons)
@@ -1561,6 +1574,17 @@ namespace Strike_12
                         {
                             enemy.Animation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                         }
+                        else if (enemy is BounceEnemy)
+                        {
+                            bounceRotate++;
+
+                            if (bounceRotate > 360)
+                            {
+                                bounceRotate = 0;
+                            }
+
+                            enemy.Animation.Draw(_spriteBatch, enemyBounce, enemy.Size, SpriteEffects.None, bounceRotate, 64, 1f);
+                        }
                         else
                         {
                             enemy.Draw(_spriteBatch, enemySprites);
@@ -1603,6 +1627,7 @@ namespace Strike_12
                     //_spriteBatch.Draw(shopKeeper, new Vector2(450, 100), Color.White);
                     shopKeeperAnimation.Draw(_spriteBatch, shopKeeper, new Rectangle(450, 100, shopKeeper.Width / 14, shopKeeper.Height), SpriteEffects.None, 0f, shopKeeper.Width/14, 1f);
                     _spriteBatch.Draw(shopFG, new Vector2(0, 0), Color.White);
+                    catAnimation.Draw(_spriteBatch, cat, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
 
