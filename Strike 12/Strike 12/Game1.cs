@@ -1363,6 +1363,10 @@ namespace Strike_12
                                             {
                                                 eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
                                             }
+                                            if(Interval == 3)
+                                            {
+                                                eManager.WaveProgress(new LaserEnemy(enemySprites, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.SizeY), Interval);
+                                            }
                                         }
                                         interval += 5;
                                         Interval++;
@@ -1427,7 +1431,7 @@ namespace Strike_12
                                             {                                                
                                                 eManager.WaveProgress(new LaserEnemy(enemySprites, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.SizeY), Interval);
                                                 tooMany++;
-                                                if(tooMany > 4)
+                                                if(tooMany >= 4)
                                                 {
                                                     eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
                                                 }
@@ -1450,7 +1454,7 @@ namespace Strike_12
                                             {
                                                 eManager.WaveProgress(new LaserEnemy(enemySprites, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.SizeY), Interval);
                                                 tooMany++;
-                                                if (tooMany > 3)
+                                                if (tooMany >= 4)
                                                 {
                                                     eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
                                                 }
