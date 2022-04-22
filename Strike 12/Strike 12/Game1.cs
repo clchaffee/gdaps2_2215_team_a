@@ -157,6 +157,7 @@ namespace Strike_12
         AnimationManager clockAnimation;
         AnimationManager shopKeeperAnimation;
         AnimationManager catAnimation;
+        AnimationManager shadeManager;
         Texture2D playerIdle;
         Texture2D playerWalk;
         Texture2D playerCrouch;
@@ -348,6 +349,7 @@ namespace Strike_12
             bounceRotate = 0;
 
             clockAnimation = new AnimationManager();
+            shadeManager = new AnimationManager();
             clockHour = Content.Load<Texture2D>("HourHand");
             clockMinute = Content.Load<Texture2D>("MinuteHand");
             shopKeeperAnimation = new AnimationManager();
@@ -455,6 +457,8 @@ namespace Strike_12
 
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
+
+                    shadeManager.Update(gameTime, 8, 0.02);
 
                     // ClockAnimation
                     clockAnimation.Update(gameTime, 12, 0.00055555556);
@@ -1943,7 +1947,7 @@ namespace Strike_12
                         }
                     }
 
-                    _spriteBatch.Draw(Shade, new Rectangle(0, 0, Shade.Width, Shade.Height), Color.White);
+                    shadeManager.Draw(_spriteBatch, Shade, new Rectangle(0, 0, Shade.Width, Shade.Height), SpriteEffects.None, 0, windowWidth, 1f);
 
                     break;
 
