@@ -61,6 +61,7 @@ namespace Strike_12
         private int timeStopCooldown = 0;
         private int buffer = 20;
         private double lastJump = 0;
+        private int dCounter = 20;
 
         //fields for gravity
         private float gravityMultiplier = 1f;
@@ -185,6 +186,12 @@ namespace Strike_12
             get { return moveDirection; }
         }
 
+        public int ICounter
+        {
+            get { return iCounter; }
+            set { iCounter = value; }
+        }
+
         // ------------------------------------------
 
         public float VelocityX
@@ -236,10 +243,9 @@ namespace Strike_12
         /// <returns></returns>
         public bool TakeDamage(GameTime gameTime)
         {
-            iCounter++;
-            if (iCounter == 10)
+            if (iCounter == 0)
             {
-                iCounter = 0;
+                iCounter = 60;
                 return true;
             }
             else
@@ -481,17 +487,40 @@ namespace Strike_12
                 if (kbState.IsKeyDown(Keys.Q) &&
                     timeStopPurchased &&
                     !timeStopActive &&
-                    timeStopCooldown > 250)
+                    timeStopCooldown == 0 &&
+                    energy > 0)
                 {
                     timeStopActive = true;
-                    timeStopCooldown = 0;
+                    timeStopCooldown = 250;
                 }
-                else
+                else if (timeStopActive)
                 {
-                    timeStopCooldown++;
-                    if (timeStopCooldown > 250)
+                    if (energy > 0)
                     {
+                        if (dCounter > 0)
+                        {
+                            dCounter--;
+                        }
+                        else
+                        {
+                            energy--;
+                            dCounter = 10;
+                        }
+                    }
+                    else
+                    {
+                        energy = 0;
                         timeStopActive = false;
+                    }
+
+                    // Cooldown
+                    if (timeStopCooldown > 0 && !timeStopActive)
+                    {
+                        timeStopCooldown--;
+                    }
+                    else
+                    {
+                        timeStopCooldown = 0;
                     }
                 }
 
@@ -652,6 +681,7 @@ namespace Strike_12
             timeStopActive = false;
             energy = maxEnergy;
             Health = maxHealth;
+            
             size = new Rectangle(((int)position.X), ((int)position.Y), 64, 128);
         }
     }
