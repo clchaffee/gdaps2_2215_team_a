@@ -42,9 +42,9 @@ namespace Strike_12
         private bool impossible = false;
         private bool collidable = true;
 
-        int count;
-        bool spawnCap = true;
-        int waitTime;
+        private int count;
+        private bool spawnCap = true;
+        private int waitTime;
 
         // player assets
         private Texture2D playerSprites;
@@ -52,10 +52,15 @@ namespace Strike_12
         private int pStartX;
         private int pStartY;
 
-        bool isCollidingUp;
-        bool isCollidingDown;
-        bool isCollidingRight;
-        bool isCollidingLeft;
+        private bool isCollidingUp;
+        private bool isCollidingDown;
+        private bool isCollidingRight;
+        private bool isCollidingLeft;
+
+        private bool playerInvincible = false;
+
+        private float percent = 0f;
+        private bool incrementing = false;
 
         // enemy assets
         private Texture2D enemySprites;
@@ -645,20 +650,24 @@ namespace Strike_12
                                     enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
                                     enemy.IsCollidingRight(enemy, player, player.VelocityX))
                                 {
-
                                     if (player.TakeDamage(gameTime))
                                     {
                                         player.Health -= 1;
-                                    }
-
-
-                                    else if (enemy.IsCollidingTop(enemy, player))
-                                    {
-                                        //player.Jump();
+                                        playerInvincible = true;
                                     }
                                 }
                             }
                         }
+                    }
+
+                    // Update I-Frames Counter
+                    if (player.ICounter > 0)
+                    {
+                        player.ICounter--;
+                    }
+                    else
+                    {
+                        playerInvincible = false;
                     }
 
                     // Temp player and enemy update call
@@ -1303,11 +1312,11 @@ namespace Strike_12
                     switch (state)
                     {
                         case GameState.Menu:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 1f);
                             break;
 
                         case GameState.Start:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 1f);
                             break;
                     }
 
@@ -1396,27 +1405,59 @@ namespace Strike_12
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     //player.Draw(_spriteBatch, playerSprites);
 
+                    // Update i-frame flash percent
+                    if (playerInvincible)
+                    {
+                        if (!incrementing)
+                        {
+                            if (percent > 0)
+                            {
+                                percent -= 0.4f;
+                            }
+                            else
+                            {
+                                incrementing = true;
+                            }
+                        }
+                        else
+                        {
+                            if (percent < 1)
+                            {
+                                percent += 0.4f;
+                            }
+                            else
+                            {
+                                incrementing = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        percent = 1f;
+                    }
+
+
                     switch (playerState)
                     {
                         case PlayerStates.moveRight:
                         case PlayerStates.jumpRight:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, percent);
                             break;
                         case PlayerStates.moveLeft:
                         case PlayerStates.jumpLeft:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.FlipHorizontally, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.FlipHorizontally, percent);
                             break;
                         case PlayerStates.faceRight:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, percent);
                             break;
                         case PlayerStates.faceLeft:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally, percent);
                             break;
                         case PlayerStates.crouchLeft:
-                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.FlipHorizontally, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.FlipHorizontally, percent);
                             break;
                         case PlayerStates.crouchRight:
-                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None, percent);
                             break;
                         case PlayerStates.airdash:
 
