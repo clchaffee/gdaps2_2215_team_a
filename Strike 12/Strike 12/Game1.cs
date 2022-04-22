@@ -102,6 +102,7 @@ namespace Strike_12
         private Texture2D sign;
         private Texture2D smallSign;
         private Texture2D shelf;
+        private Texture2D controls;
 
         private string comment;
 
@@ -219,6 +220,7 @@ namespace Strike_12
             bar = Content.Load<Texture2D>("bar");
             healthSprite = Content.Load<Texture2D>("health-sprite");
             energySprite = Content.Load<Texture2D>("energy-sprite");
+            controls = Content.Load<Texture2D>("controls");
 
             //Shop
             shopWall = Content.Load<Texture2D>("ShopWall");
@@ -1817,6 +1819,12 @@ namespace Strike_12
                     _spriteBatch.Draw(bar, new Rectangle(windowWidth - (bar.Width / 2) - 70, 10, bar.Width / 2, bar.Height / 2), Color.White);
                     _spriteBatch.Draw(energySprite, new Vector2(windowWidth - energySprite.Width, 0), Color.White);
 
+
+                    if (timer <= 5)
+                    {
+                        _spriteBatch.Draw(controls, new Rectangle(64, windowHeight / 2 + 125, controls.Width * 3, controls.Height * 3), Color.White);
+                    }
+                    
 
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
                         new Vector2(100, 150), Color.LightGray);
