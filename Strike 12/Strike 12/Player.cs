@@ -28,8 +28,6 @@ namespace Strike_12
         crouchLeft,
         crouchRight,
         airdash,
-        airdashLeft,
-        airdashRight
     }
 
     class Player : GameObject
@@ -182,6 +180,11 @@ namespace Strike_12
             get { return playerState; }
         }
 
+        public Keys MoveDirection
+        {
+            get { return moveDirection; }
+        }
+
         // ------------------------------------------
 
         public float VelocityX
@@ -268,7 +271,7 @@ namespace Strike_12
                 {
                     switch (moveDirection)
                     {
-                        case Keys.Space:
+                        case Keys.W:
                             size.Y -= 20;
                             position.Y -= 20f;
                             break;
@@ -560,7 +563,7 @@ namespace Strike_12
             previousKBState = kbState;
         }
 
-        //draw
+        ////draw
         public override void Draw(SpriteBatch spriteBatch, Texture2D playerTexture)
         {
             // Player state switch
@@ -617,14 +620,6 @@ namespace Strike_12
                          playerTexture,
                          size,
                          new Rectangle(2 * 128, 0, 128, 128),
-                         Color.White);
-                    break;
-
-                case PlayerStates.airdash:
-                    spriteBatch.Draw(
-                         playerTexture,
-                         size,
-                         new Rectangle(1 * 128, 0, 128, 128),
                          Color.White);
                     break;
             }
