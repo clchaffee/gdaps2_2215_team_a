@@ -35,7 +35,7 @@ namespace Strike_12
         private int fadeOpacity;
         private Texture2D black;
 
-        private int Interval { get; set; } = 0;
+        public int Interval { get; set; } = 0;
         private bool easy = true;
         private bool medium = false;
         private bool hard = false;
@@ -708,24 +708,25 @@ namespace Strike_12
                                 case 1:
                                     //eManager.SpawnFormula(.09);
                                     //eManager.Enemies.Clear();
-                                    if(interval == 0)
+                                    if(Interval == 0)
                                     {
-                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
                                         }
                                         interval += 5;
+                                        Interval++;
                                     }
                                     else
                                     {
-                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
                                         }
                                         interval += 5;
-
+                                        Interval++;
                                     }
                                     
 
@@ -766,12 +767,9 @@ namespace Strike_12
                                 case 2:
                                     //eManager.SpawnFormula(.09);
                                     //eManager.Enemies.Clear();
-                                    if (interval == 0)
+                                    if (Interval == 0)
                                     {
-                                        eManager.Start += 5;
-                                        eManager.End += 5;
-                                        dampener -= .001;
-                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             if (rng.Next(0, 100) < 80)
@@ -784,10 +782,11 @@ namespace Strike_12
                                             }
                                         }
                                         interval += 5;
+                                        Interval++;
                                     }
                                     else
                                     {
-                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             if (rng.Next(0, 100) > 39)
@@ -800,18 +799,15 @@ namespace Strike_12
                                             }
                                         }
                                         interval += 5;
-
+                                        Interval++;
                                     }
                                     break;
 
                                 //wave 3: 60% for normal, 40% for bullet
                                 case 3:
                                     if (interval == 0)
-                                    {
-                                        eManager.Start += 5;
-                                        eManager.End += 5;
-                                        dampener -= .001;
-                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                    { 
+                                        int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             if (rng.Next(0, 100) < 60)
@@ -824,10 +820,11 @@ namespace Strike_12
                                             }
                                         }
                                         interval += 5;
+                                        Interval++;
                                     }
                                     else
                                     {
-                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             if (rng.Next(0, 100) > 39)
@@ -840,11 +837,8 @@ namespace Strike_12
                                             }
                                         }
                                         interval += 5;
-
+                                        Interval++;
                                     }
-                                    eManager.Start += 5;
-                                    eManager.End += 5;
-                                    dampener -= .001;
                                     break;
 /*
                                 //wave 4: 40% normal, 40% projectile, 20% bounce
@@ -1059,7 +1053,7 @@ namespace Strike_12
                             count++;
                             spawnCap = false;
                             waitTime = 59;
-                            if (interval != 0 && interval %6 == 0)
+                             if (Interval == 7)
                             {
                                 eManager.Start += 5;
                                 eManager.End += 5;
@@ -1068,6 +1062,8 @@ namespace Strike_12
                                 eManager.NumEnemies = 0;
                                 eManager.WaveNum++;
                                 spawnCap = true;
+                                dampener -= .001;
+                                interval = (eManager.WaveNum - 1) * 5;
                             }
                             //else if (Interval == 7)
                             //{
@@ -1148,10 +1144,13 @@ namespace Strike_12
                     {
                         enemy.Reset();
                     }
-                    eManager.Start += 0;
-                    eManager.End += 30;
+                    eManager.Start = 0;
+                    eManager.End = 30;
+                    interval = 0;
                     Interval = 0;
                     eManager.NumEnemies = 0;
+                    eManager.Enemies.Clear();
+                    dampener = .04;
                     eManager.WaveNum = 1;
 
                     //level reset
