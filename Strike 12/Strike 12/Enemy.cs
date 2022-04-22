@@ -30,9 +30,7 @@ namespace Strike_12
         private EnemyStates enemyState;
         private Texture2D enemySprite;
 
-        private int moveSpeed = 5; //temp speed variable, can be changed
-
-
+        public int MoveSpeed { get; set; } = 5; //temp speed variable, can be changed
 
         //fields for gravity
         protected Vector2 position;
@@ -75,16 +73,16 @@ namespace Strike_12
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            size.X += moveSpeed;
+            size.X += MoveSpeed;
 
             //changes direction when the border of the window is hit
             if (size.X > windowWidth - 128 || size.X < 64)
             {
-                moveSpeed = -1 * moveSpeed;
+                MoveSpeed = -1 *MoveSpeed;
             }
 
             //flips sprite based on neg or pos speed
-            if (moveSpeed < 0)
+            if (MoveSpeed < 0)
             {
                 enemyState = EnemyStates.moveLeft;
             }
@@ -132,7 +130,6 @@ namespace Strike_12
         {
             size.X = rng.Next(64, windowWidth - 64);
             size.Y = rng.Next(500, windowHeight - 64);
-            moveSpeed = 5;
         }
     }
 }
