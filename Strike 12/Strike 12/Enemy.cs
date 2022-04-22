@@ -29,6 +29,7 @@ namespace Strike_12
         // ----- | Fields | -----
         private EnemyStates enemyState;
         private Texture2D enemySprite;
+        AnimationManager enemyAnimation;
 
         private int moveSpeed = 5; //temp speed variable, can be changed
 
@@ -51,6 +52,7 @@ namespace Strike_12
             this.windowWidth = windowWidth;
             this.windowHeight = windowHeight;
 
+            enemyAnimation = new AnimationManager();
             enemyState = EnemyStates.moveRight;
         }
 
@@ -64,6 +66,12 @@ namespace Strike_12
         public EnemyStates State
         {
             get { return enemyState; }
+        }
+
+
+        public AnimationManager Animation
+        {
+            get { return enemyAnimation; }
         }
 
         // ----- | Methods | -----
@@ -133,6 +141,11 @@ namespace Strike_12
             size.X = rng.Next(64, windowWidth - 64);
             size.Y = rng.Next(500, windowHeight - 64);
             moveSpeed = 5;
+        }
+        
+        public void AnimationUpdate(GameTime gameTime, int frameAmount, double frameRate)
+        {
+            enemyAnimation.Update(gameTime, frameAmount, frameRate);
         }
     }
 }

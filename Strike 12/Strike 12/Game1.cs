@@ -146,8 +146,8 @@ namespace Strike_12
 
         // Animation Fields
         AnimationManager playerAnimation;
-        AnimationManager enemyAnimation;
         AnimationManager clockAnimation;
+        AnimationManager shopKeeperAnimation;
         Texture2D playerIdle;
         Texture2D playerWalk;
         Texture2D playerCrouch;
@@ -207,7 +207,7 @@ namespace Strike_12
             //Shop
             shopWall = Content.Load<Texture2D>("ShopWall");
             shopFG = Content.Load<Texture2D>("ShopFG");
-            shopKeeper = Content.Load<Texture2D>("ShopKeeper");
+            shopKeeper = Content.Load<Texture2D>("shopKeeperSheet");
             sign = Content.Load<Texture2D>("sign");
             smallSign = Content.Load<Texture2D>("sign-export");
             shelf = Content.Load<Texture2D>("shelf");
@@ -325,7 +325,6 @@ namespace Strike_12
             playerDash = Content.Load<Texture2D>("Dash");
             playerDashAlt = Content.Load<Texture2D>("DashAlt");
 
-            enemyAnimation = new AnimationManager();
             enemyBase = Content.Load<Texture2D>("Enemy");
             enemyBullet = Content.Load<Texture2D>("BulletEnemy");
             enemyFollow = Content.Load<Texture2D>("FollowEnemy");
@@ -333,6 +332,8 @@ namespace Strike_12
             clockAnimation = new AnimationManager();
             clockHour = Content.Load<Texture2D>("HourHand");
             clockMinute = Content.Load<Texture2D>("MinuteHand");
+            Shade = Content.Load<Texture2D>("Ugh");
+            shopKeeperAnimation = new AnimationManager();
             Shade = Content.Load<Texture2D>("atmosphere");
         }
 
@@ -706,7 +707,7 @@ namespace Strike_12
                             {
                                 ((FollowEnemy)enemy).Update(gameTime, player);
 
-                                enemyAnimation.Update(gameTime, 3, 0.9);
+                                enemy.AnimationUpdate(gameTime, 3, 0.9);
                             }
                             else if (enemy is LaserEnemy)
                             {
@@ -718,11 +719,11 @@ namespace Strike_12
 
                                 if (enemy is BulletEnemy)
                                 {
-                                    enemyAnimation.Update(gameTime, 5, 0.9);
+                                    enemy.AnimationUpdate(gameTime, 5, 0.6);
                                 }
                                 else if (enemy is Enemy)
                                 {
-                                    enemyAnimation.Update(gameTime, 4, .04);
+                                    enemy.AnimationUpdate(gameTime, 4, .04);
                                 }
                             }
                         }
@@ -1225,6 +1226,8 @@ namespace Strike_12
                 case GameState.Shop:
                     player.Health = shop.MaxHealth;
 
+                    shopKeeperAnimation.Update(gameTime, 14, .15);
+
                     // for each button calls update method, checks if pressed and gives upgrade if you have enough points
                     foreach (Button button in buttons)
                     {
@@ -1416,7 +1419,7 @@ namespace Strike_12
                 case GameState.Arena:
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0, 0), Color.White);
-                    clockAnimation.Draw(_spriteBatch, clockMinute, new Rectangle(0, 0, windowWidth/30, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
+                    clockAnimation.Draw(_spriteBatch, clockMinute, new Rectangle(0, 0, 70, 70), SpriteEffects.None, 0f, windowWidth);
                     // Draw the tiles
                     levels[lvlNum].Draw(_spriteBatch, tileSprites);
 
@@ -1529,26 +1532,34 @@ namespace Strike_12
 
                     foreach (Enemy enemy in eManager.Enemies)
                     {
-                        if (enemy is Enemy)
+                        if (enemy is BulletEnemy)
+                        {
+                            enemy.Animation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64);
+                        }
+                        else if (enemy is FollowEnemy)
+                        {
+                            enemy.Animation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64);
+                        }
+                        else if (enemy is Enemy)
                         {
                             EnemyStates enemyState = enemy.State;
                             switch (enemyState)
                             {
                                 case (EnemyStates.moveRight):
-                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.FlipHorizontally, 0, 64, 1f);
+                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.FlipHorizontally, 0, 64);
                                     break;
                                 case (EnemyStates.moveLeft):
-                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.None, 0, 64);
                                     break;
                             }
                         }
                         else if (enemy is BulletEnemy)
                         {
-                            enemyAnimation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                            enemyAnimation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64);
                         }
                         else if (enemy is FollowEnemy)
                         {
-                            enemyAnimation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                            enemyAnimation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64);
                         }
                         else
                         {
@@ -1589,7 +1600,8 @@ namespace Strike_12
                 case GameState.Shop:
 
                     _spriteBatch.Draw(shopWall, new Vector2(0, 0), Color.White);
-                    _spriteBatch.Draw(shopKeeper, new Vector2(450, 100), Color.White);
+                    //_spriteBatch.Draw(shopKeeper, new Vector2(450, 100), Color.White);
+                    shopKeeperAnimation.Draw(_spriteBatch, shopKeeper, new Rectangle(450, 100, shopKeeper.Width / 14, shopKeeper.Height), SpriteEffects.None, 0f, shopKeeper.Width/14);
                     _spriteBatch.Draw(shopFG, new Vector2(0, 0), Color.White);
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
