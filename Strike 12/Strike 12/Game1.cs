@@ -328,7 +328,7 @@ namespace Strike_12
             clockAnimation = new AnimationManager();
             clockHour = Content.Load<Texture2D>("HourHand");
             clockMinute = Content.Load<Texture2D>("MinuteHand");
-            Shade = Content.Load<Texture2D>("Ugh");
+            Shade = Content.Load<Texture2D>("atmosphere");
         }
 
         /// <summary>
