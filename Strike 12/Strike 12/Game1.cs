@@ -124,9 +124,8 @@ namespace Strike_12
 
         private Texture2D backBar;
         private Texture2D bar;
-
-        private int healthMath;
-        private int energyMath;
+        private Texture2D healthSprite;
+        private Texture2D energySprite;
 
         // Other Assets
         private Texture2D arenaBackground;
@@ -214,6 +213,8 @@ namespace Strike_12
 
             backBar = Content.Load<Texture2D>("backbar");
             bar = Content.Load<Texture2D>("bar");
+            healthSprite = Content.Load<Texture2D>("health-sprite");
+            energySprite = Content.Load<Texture2D>("energy-sprite");
 
             //Shop
             shopWall = Content.Load<Texture2D>("ShopWall");
@@ -270,8 +271,7 @@ namespace Strike_12
             //lEnemy = new LaserEnemy(buttonTexture, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.Size.Y);
             //eManager.SpawnEnemy(lEnemy);
 
-            healthMath = player.Health * (backBar.Width / 2) / player.MaxHealth;
-            energyMath = ((int)(player.CurrentEnergy * (backBar.Width / 2) / player.Energy));
+            
 
             // -- LEVEL LOADING --
             levels = new List<LevelEditor>();
@@ -1438,14 +1438,17 @@ namespace Strike_12
                     levels[lvlNum].Draw(_spriteBatch, tileSprites);
 
                     //health bar
-                    _spriteBatch.Draw(backBar, new Rectangle(65, 10, 
+                    _spriteBatch.Draw(backBar, new Rectangle(75, 10, 
                         player.Health * (backBar.Width / 2) / player.MaxHealth, backBar.Height / 2), Color.Red);
-                    _spriteBatch.Draw(bar, new Rectangle(65, 10, bar.Width / 2, bar.Height / 2), Color.White);
+                    _spriteBatch.Draw(bar, new Rectangle(75, 10, bar.Width / 2, bar.Height / 2), Color.White);
+                    _spriteBatch.Draw(healthSprite, new Vector2(0, 0), Color.White);
 
                     //energy bar
-                    _spriteBatch.Draw(backBar, new Rectangle(windowWidth - (bar.Width / 2) - 65, 10, 
+                    _spriteBatch.Draw(backBar, new Rectangle(windowWidth - (bar.Width / 2) - 70, 10, 
                         (int)(player.CurrentEnergy * (backBar.Width / 2) / player.Energy), backBar.Height / 2), Color.Green);
-                    _spriteBatch.Draw(bar, new Rectangle(windowWidth - (bar.Width / 2) - 65, 10, bar.Width / 2, bar.Height / 2), Color.White);
+                    _spriteBatch.Draw(bar, new Rectangle(windowWidth - (bar.Width / 2) - 70, 10, bar.Width / 2, bar.Height / 2), Color.White);
+                    _spriteBatch.Draw(energySprite, new Vector2(windowWidth - energySprite.Width, 0), Color.White);
+
 
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
                         new Vector2(100, 150), Color.LightGray);
