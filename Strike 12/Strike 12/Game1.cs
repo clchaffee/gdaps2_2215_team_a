@@ -360,7 +360,6 @@ namespace Strike_12
             clockHourAnimation = new AnimationManager();
             clockMin1Animation = new AnimationManager();
             clockMin2Animation = new AnimationManager();
-            clockAnimation = new AnimationManager();
             shadeManager = new AnimationManager();
             clockHour = Content.Load<Texture2D>("HourHand");
             clockMinute1 = Content.Load<Texture2D>("MinuteHand1");
