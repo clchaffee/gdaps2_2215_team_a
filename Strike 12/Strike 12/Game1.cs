@@ -67,6 +67,7 @@ namespace Strike_12
         private Texture2D enemyFollow;
         private Texture2D enemyBase;
         private Texture2D enemyBullet;
+        private Texture2D enemyBounce;
 
         // Enemy types for testing purposes
         private Enemy enemy;
@@ -84,6 +85,7 @@ namespace Strike_12
         int wave = 1;
         private double dampener = .04;
         int interval = 0;
+        float bounceRotate;
 
         //variables for the shop
         private Shop shop;
@@ -119,7 +121,12 @@ namespace Strike_12
         private Tile tile;
         private List<LevelEditor> levels;
         private int lvlNum;
+
+        private Texture2D backBar;
         private Texture2D bar;
+
+        private int healthMath;
+        private int energyMath;
 
         // Other Assets
         private Texture2D arenaBackground;
@@ -129,6 +136,7 @@ namespace Strike_12
         private Texture2D clockMinute;
         private Texture2D clockHour;
         private Texture2D Shade;
+        private Texture2D cat;
 
         //sets the default state as the menu
         GameState state = GameState.Menu;
@@ -146,8 +154,9 @@ namespace Strike_12
 
         // Animation Fields
         AnimationManager playerAnimation;
-        AnimationManager enemyAnimation;
         AnimationManager clockAnimation;
+        AnimationManager shopKeeperAnimation;
+        AnimationManager catAnimation;
         Texture2D playerIdle;
         Texture2D playerWalk;
         Texture2D playerCrouch;
@@ -202,12 +211,14 @@ namespace Strike_12
             titleBG = Content.Load<Texture2D>("NewTitle");
             arenaBG = Content.Load<Texture2D>("Arena");
             arenaBackground = Content.Load<Texture2D>("ArenaBG");
+
+            backBar = Content.Load<Texture2D>("backbar");
             bar = Content.Load<Texture2D>("bar");
 
             //Shop
             shopWall = Content.Load<Texture2D>("ShopWall");
             shopFG = Content.Load<Texture2D>("ShopFG");
-            shopKeeper = Content.Load<Texture2D>("ShopKeeper");
+            shopKeeper = Content.Load<Texture2D>("shopKeeperSheet");
             sign = Content.Load<Texture2D>("sign");
             smallSign = Content.Load<Texture2D>("sign-export");
             shelf = Content.Load<Texture2D>("shelf");
@@ -259,6 +270,8 @@ namespace Strike_12
             //lEnemy = new LaserEnemy(buttonTexture, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.Size.Y);
             //eManager.SpawnEnemy(lEnemy);
 
+            healthMath = player.Health * (backBar.Width / 2) / player.MaxHealth;
+            energyMath = ((int)(player.CurrentEnergy * (backBar.Width / 2) / player.Energy));
 
             // -- LEVEL LOADING --
             levels = new List<LevelEditor>();
@@ -325,15 +338,20 @@ namespace Strike_12
             playerDash = Content.Load<Texture2D>("Dash");
             playerDashAlt = Content.Load<Texture2D>("DashAlt");
 
-            enemyAnimation = new AnimationManager();
             enemyBase = Content.Load<Texture2D>("Enemy");
             enemyBullet = Content.Load<Texture2D>("BulletEnemy");
             enemyFollow = Content.Load<Texture2D>("FollowEnemy");
+            enemyBounce = Content.Load<Texture2D>("BounceEnemy");
+
+            bounceRotate = 0;
 
             clockAnimation = new AnimationManager();
             clockHour = Content.Load<Texture2D>("HourHand");
             clockMinute = Content.Load<Texture2D>("MinuteHand");
+            shopKeeperAnimation = new AnimationManager();
             Shade = Content.Load<Texture2D>("atmosphere");
+            cat = Content.Load<Texture2D>("cat");
+            catAnimation = new AnimationManager();
         }
 
         /// <summary>
@@ -444,10 +462,6 @@ namespace Strike_12
                     {
                         state = GameState.GameOver;
                     }
-                    if (kbState.IsKeyDown(Keys.P) && prevKbState.IsKeyUp(Keys.P))
-                    {
-                        shop.Points += 100;
-                    }
 
                     //resets fading
                     fading = false;
@@ -521,7 +535,7 @@ namespace Strike_12
 
 
                     // Increment the player's energy if it is currently under the maximum
-                    if (player.CurrentEnergy < player.Energy)
+                    if (player.CurrentEnergy < player.Energy && !player.TimeStopActive)
                     {
                         if (energyTimer > 60)
                         {
@@ -706,11 +720,15 @@ namespace Strike_12
                             {
                                 ((FollowEnemy)enemy).Update(gameTime, player);
 
-                                enemyAnimation.Update(gameTime, 3, 0.9);
+                                enemy.AnimationUpdate(gameTime, 3, 0.9);
                             }
                             else if (enemy is LaserEnemy)
                             {
                                 ((LaserEnemy)enemy).Update(gameTime, player.Size.Y);
+                            }
+                            else if (enemy is BounceEnemy)
+                            {
+                                enemy.AnimationUpdate(gameTime, 3, 0.9);
                             }
                             else
                             {
@@ -718,11 +736,11 @@ namespace Strike_12
 
                                 if (enemy is BulletEnemy)
                                 {
-                                    enemyAnimation.Update(gameTime, 5, 0.9);
+                                    enemy.AnimationUpdate(gameTime, 5, 0.6);
                                 }
                                 else if (enemy is Enemy)
                                 {
-                                    enemyAnimation.Update(gameTime, 4, .04);
+                                    enemy.AnimationUpdate(gameTime, 4, .04);
                                 }
                             }
                         }
@@ -1469,20 +1487,6 @@ namespace Strike_12
                         state = GameState.GameOver;
                     }
 
-                    // If time is stopped, increased the stopped time timer (aka, the stoppedTimer)
-                    if (player.TimeStopActive)
-                    {
-                        if (stoppedTimer < 180)
-                        {
-                            stoppedTimer++;
-                        }
-                        else
-                        {
-                            player.TimeStopActive = false;
-                            stoppedTimer = 0;
-                        }
-                    }
-
                     break;
 
                 // Game Winner: appears when timer is greater than 30
@@ -1521,6 +1525,10 @@ namespace Strike_12
                 case GameState.GameOver:
                     player.Reset();
                     player.Deaths++;
+
+                    // Ensure that the player isn't invincible
+                    playerInvincible = false;
+
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Reset();
@@ -1563,6 +1571,15 @@ namespace Strike_12
                 //if enter is pressed in the shop, returns to arena; if space is pressed brings up the menu
                 case GameState.Shop:
                     player.Health = shop.MaxHealth;
+
+                    //debug key for money
+                    if (kbState.IsKeyDown(Keys.P) && prevKbState.IsKeyUp(Keys.P))
+                    {
+                        shop.Points += 1000;
+                    }
+
+                    shopKeeperAnimation.Update(gameTime, 14, .15);
+                    catAnimation.Update(gameTime, 8, .12);
 
                     // for each button calls update method, checks if pressed and gives upgrade if you have enough points
                     foreach (Button button in buttons)
@@ -1755,9 +1772,19 @@ namespace Strike_12
                 case GameState.Arena:
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0, 0), Color.White);
-                    clockAnimation.Draw(_spriteBatch, clockMinute, new Rectangle(0, 0, windowWidth / 30, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
+                    clockAnimation.Draw(_spriteBatch, clockMinute, new Rectangle(0, 0, clockMinute.Width / 30, clockMinute.Height), SpriteEffects.None, 0f, clockMinute.Width / 30, 1f);
                     // Draw the tiles
                     levels[lvlNum].Draw(_spriteBatch, tileSprites);
+
+                    //health bar
+                    _spriteBatch.Draw(backBar, new Rectangle(65, 10, 
+                        player.Health * (backBar.Width / 2) / player.MaxHealth, backBar.Height / 2), Color.Red);
+                    _spriteBatch.Draw(bar, new Rectangle(65, 10, bar.Width / 2, bar.Height / 2), Color.White);
+
+                    //energy bar
+                    _spriteBatch.Draw(backBar, new Rectangle(windowWidth - (bar.Width / 2) - 65, 10, 
+                        (int)(player.CurrentEnergy * (backBar.Width / 2) / player.Energy), backBar.Height / 2), Color.Green);
+                    _spriteBatch.Draw(bar, new Rectangle(windowWidth - (bar.Width / 2) - 65, 10, bar.Width / 2, bar.Height / 2), Color.White);
 
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
                         new Vector2(100, 150), Color.LightGray);
@@ -1771,9 +1798,6 @@ namespace Strike_12
                     _spriteBatch.DrawString(displayFont, $"\n# of enemies in wave: {eManager.Enemies.Count}",
                         new Vector2(100, 250), Color.LightGray);
 
-                    _spriteBatch.DrawString(displayFont, player.IsGrounded.ToString(),
-                        new Vector2(100, 350), Color.LightGray);
-
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     //player.Draw(_spriteBatch, playerSprites);
 
@@ -1782,7 +1806,7 @@ namespace Strike_12
                     {
                         if (!incrementing)
                         {
-                            if (percent > 0)
+                            if (percent > 0.3)
                             {
                                 percent -= 0.4f;
                             }
@@ -1864,33 +1888,52 @@ namespace Strike_12
                                     break;
                             }
 
-                            playerAnimation.Draw(_spriteBatch, playerDash, player.Size, flipSprite, rotation, 64, percent);
+                            playerAnimation.Draw(_spriteBatch, sprite, player.Size, flipSprite, rotation, 64, percent);
 
                             break;
                     }
 
                     foreach (Enemy enemy in eManager.Enemies)
                     {
-                        if (enemy is Enemy)
+                        if (enemy is BulletEnemy)
+                        {
+                            enemy.Animation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                        }
+                        else if (enemy is FollowEnemy)
+                        {
+                            enemy.Animation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                        }
+                        else if (enemy is Enemy)
                         {
                             EnemyStates enemyState = enemy.State;
                             switch (enemyState)
                             {
                                 case (EnemyStates.moveRight):
-                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.FlipHorizontally, 0, 64, 1f);
+                                    enemy.Animation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.FlipHorizontally, 0, 64, 1f);
                                     break;
                                 case (EnemyStates.moveLeft):
-                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                                    enemy.Animation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                                     break;
                             }
                         }
                         else if (enemy is BulletEnemy)
                         {
-                            enemyAnimation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                            enemy.Animation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                         }
                         else if (enemy is FollowEnemy)
                         {
-                            enemyAnimation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                            enemy.Animation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                        }
+                        else if (enemy is BounceEnemy)
+                        {
+                            bounceRotate++;
+
+                            if (bounceRotate > 360)
+                            {
+                                bounceRotate = 0;
+                            }
+
+                            enemy.Animation.Draw(_spriteBatch, enemyBounce, enemy.Size, SpriteEffects.None, bounceRotate, 64, 1f);
                         }
                         else
                         {
@@ -1925,14 +1968,18 @@ namespace Strike_12
                        new Vector2(100, 150), Color.LightGray);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
                        new Vector2(100, 100), Color.LightGray);
+                    _spriteBatch.Draw(bar, new Rectangle(65, 10, bar.Width / 2, bar.Height / 2), Color.White);
+                    _spriteBatch.Draw(bar, new Rectangle(windowWidth - (bar.Width / 2) - 65, 10, bar.Width / 2, bar.Height / 2), Color.White);
                     break;
 
                 //text for shop screen
                 case GameState.Shop:
 
                     _spriteBatch.Draw(shopWall, new Vector2(0, 0), Color.White);
-                    _spriteBatch.Draw(shopKeeper, new Vector2(450, 100), Color.White);
+                    //_spriteBatch.Draw(shopKeeper, new Vector2(450, 100), Color.White);
+                    shopKeeperAnimation.Draw(_spriteBatch, shopKeeper, new Rectangle(450, 100, shopKeeper.Width / 14, shopKeeper.Height), SpriteEffects.None, 0f, shopKeeper.Width/14, 1f);
                     _spriteBatch.Draw(shopFG, new Vector2(0, 0), Color.White);
+                    catAnimation.Draw(_spriteBatch, cat, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
 
