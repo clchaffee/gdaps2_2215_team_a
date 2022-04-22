@@ -157,6 +157,18 @@
 /processorParam:TextureFormat=Color
 /build:CatNose.png
 
+#begin controls.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:controls.png
+
 #begin Dash.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -302,6 +314,18 @@
 /processorParam:TextureFormat=Color
 /build:HourHand.png
 
+#begin LaserEnemy.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:LaserEnemy.png
+
 #begin Logo (1).png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -327,17 +351,6 @@
 /build:Logo.png
 
 #begin Menu.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Menu.png
-
 #begin MinuteHand1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -348,6 +361,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/build:Menu.png
 /build:MinuteHand1.png
 
 #begin MinuteHand2.png

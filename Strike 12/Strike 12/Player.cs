@@ -503,7 +503,7 @@ namespace Strike_12
                         }
                         else
                         {
-                            energy--;
+                            energy -= 2;
                             dCounter = 10;
                         }
                     }
