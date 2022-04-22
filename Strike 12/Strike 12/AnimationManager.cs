@@ -66,7 +66,7 @@ namespace Strike_12
         // --- DAM Methods
 
         // Update()
-        public void Update(GameTime gameTime, int frameAmount, double frameRate)
+        public void     Update(GameTime gameTime, int frameAmount, double frameRate)
         {
             currentTime = gameTime.TotalGameTime.TotalSeconds;
 
@@ -101,6 +101,12 @@ namespace Strike_12
                 Vector2.Zero,
                 effect,
                 0f); 
+        }
+
+        public void Reset()
+        {
+            frames = 0;
+            currentTime = 0;
         }
     }
 }

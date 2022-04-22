@@ -64,6 +64,10 @@ namespace Strike_12
             //    NumEnemies--;
             //}
             //when a bounce enemy spawns, removes 4 from the list
+            if(enemy is Enemy)
+            {
+                enemy.MoveSpeed = rng.Next(3, 8);
+            }
             if (enemy is BounceEnemy && Enemies.Count > 8)
             {
                 NumEnemies -= 2;
