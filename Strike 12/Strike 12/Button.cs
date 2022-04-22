@@ -128,8 +128,28 @@ namespace Strike_12
         /// <param name="spriteBatch"></param>
         /// <param name="spriteFont"></param>
         /// <param name="texture"></param>
-        public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont, Texture2D select)
+        public void Draw(SpriteBatch spriteBatch, SpriteFont spriteFont, Texture2D select, Texture2D sign)
         {
+            switch (type)
+            {
+                case "Health":
+                    spriteBatch.Draw(sign, new Vector2(size.X - 10, size.Y + size.Height), Color.White);
+                    break;
+                case "Speed":
+                    spriteBatch.Draw(sign, new Vector2(size.X - 10, size.Y + size.Height), Color.White);
+                    break;
+                case "Energy":
+                    spriteBatch.Draw(sign, new Vector2(size.X - 10, size.Y + size.Height), Color.White);
+                    break;
+                case "Dash":
+                    spriteBatch.Draw(sign, new Vector2(size.X - 10, size.Y + size.Height), Color.White);
+                    break;
+                case "Time Stop":
+                    spriteBatch.Draw(sign, new Vector2(size.X - 10, size.Y + size.Height), Color.White);
+                    break;
+                default:
+                    break;
+            }
             //switch for states of the buttons
             //as of now, only changes colors
             switch (state)
@@ -142,10 +162,6 @@ namespace Strike_12
                         spriteBatch.Draw(texture, size, Color.White);
                         spriteBatch.DrawString(spriteFont, $"MEOW ^-3-^",
                                  new Vector2(size.X + 50, size.Y - 100), Color.LightGray);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(texture, size, Color.Green);
                     }
                     break;
 

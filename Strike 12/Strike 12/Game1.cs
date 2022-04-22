@@ -1246,8 +1246,8 @@ namespace Strike_12
                     _spriteBatch.Draw(arenaBG, new Rectangle(0, 75, titleBG.Width, titleBG.Height), Color.White);
 
                     //draw buttons
-                    buttons[0].Draw(_spriteBatch, displayFont, buttonSelect);
-                    buttons[1].Draw(_spriteBatch, displayFont, buttonSelect);
+                    buttons[0].Draw(_spriteBatch, displayFont, buttonSelect, smallSign);
+                    buttons[1].Draw(_spriteBatch, displayFont, buttonSelect, smallSign);
                     break;
 
                 // text for control screen
@@ -1299,7 +1299,7 @@ namespace Strike_12
                             new Vector2(100, 575), Color.Black);
                     }
 
-                    buttons[2].Draw(_spriteBatch, displayFont, buttonSelect);
+                    buttons[2].Draw(_spriteBatch, displayFont, buttonSelect, smallSign);
 
                     break;
 
@@ -1417,7 +1417,7 @@ namespace Strike_12
                     //draws each button
                     for (int i = 3; i < buttons.Count; i++)
                     {
-                        buttons[i].Draw(_spriteBatch, displayFont, buttonSelect);
+                        buttons[i].Draw(_spriteBatch, displayFont, buttonSelect, smallSign);
                         //if the player doesnt have enough points to by the item
                         if (buttons[i].IsHighlight && shop.Points < buttons[i].Cost)
                         {
