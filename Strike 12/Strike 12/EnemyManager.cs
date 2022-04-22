@@ -22,7 +22,7 @@ namespace Strike_12
         public double limitation { get; set; } = .1;
 
 
-        public int WaveNum { get; set; } = 1;
+        public int WaveNum { get; set; } = 12;
 
         public void Initialize()
         {
@@ -68,17 +68,17 @@ namespace Strike_12
             {
                 enemy.MoveSpeed = rng.Next(3, 8);
             }
-            if (enemy is BounceEnemy && Enemies.Count > 8)
+            if (enemy is BounceEnemy && NumEnemies > 5)
             {
                 NumEnemies -= 2;
             }
             //when a follow enemy spawns, removes 8 from the list
-            if (enemy is FollowEnemy && Enemies.Count > 12)
+            if (enemy is FollowEnemy && NumEnemies > 2)
             {
                 NumEnemies -= 5;
             }
             //when a laser enemy spawns, removes 16 from the list
-            if (enemy is LaserEnemy && Enemies.Count > 16)
+            if (enemy is LaserEnemy && NumEnemies > 2)
             {
                 NumEnemies -= 10;
             }

@@ -546,13 +546,18 @@ namespace Strike_12
                     {
                         if (energyTimer > 60)
                         {
-                            player.CurrentEnergy++;
+                            player.CurrentEnergy += 2;
                             energyTimer = 0;
                         }
                         else
                         {
                             energyTimer++;
                         }
+                    }
+
+                    if (player.CurrentEnergy > 60)
+                    {
+                        player.CurrentEnergy = 0;
                     }
 
                     isCollidingUp = false;
@@ -727,19 +732,19 @@ namespace Strike_12
                             {
                                 ((FollowEnemy)enemy).Update(gameTime, player);
 
-                                enemy.AnimationUpdate(gameTime, 3, 0.9);
+                                enemy.AnimationUpdate(gameTime, 3, 0.4);
                             }
                             else if (enemy is LaserEnemy)
                             {
                                 ((LaserEnemy)enemy).Update(gameTime, player.Size.Y);
 
-                                enemy.AnimationUpdate(gameTime, 3, 0.9);
+                                enemy.AnimationUpdate(gameTime, 3, 0.6);
                             }
                             else if (enemy is BounceEnemy)
                             {
                                 enemy.Update(gameTime);
 
-                                enemy.AnimationUpdate(gameTime, 3, 0.9);
+                                enemy.AnimationUpdate(gameTime, 3, 0.6);
                             }
                             else
                             {
@@ -1417,11 +1422,17 @@ namespace Strike_12
                                     if (interval == 0)
                                     {
                                         int spawned = eManager.SpawnFormula(dampener, interval, Interval);
+                                        int tooMany = 0;
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             if (rng.Next(0, 100) < 50)
-                                            {
+                                            {                                                
                                                 eManager.WaveProgress(new LaserEnemy(enemySprites, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.SizeY), Interval);
+                                                tooMany++;
+                                                if(tooMany > 4)
+                                                {
+                                                    eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                                }
                                             }
                                             else
                                             {
@@ -1431,16 +1442,20 @@ namespace Strike_12
                                         interval += 5;
                                         Interval++;
                                     }
-
-
                                     else
                                     {
+                                        int tooMany = 0;
                                         int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             if (rng.Next(0, 100) < 50)
                                             {
-                                                eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                                eManager.WaveProgress(new LaserEnemy(enemySprites, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.SizeY), Interval);
+                                                tooMany++;
+                                                if (tooMany > 3)
+                                                {
+                                                    eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                                }
                                             }
                                             else
                                             {
@@ -1918,12 +1933,12 @@ namespace Strike_12
                     {
                         if (enemy is BounceEnemy)
                         {
-                            bounceRotate++;
+                            //    bounceRotate++;
 
-                            if (bounceRotate > 360)
-                            {
-                                bounceRotate = 0;
-                            }
+                            //    if (bounceRotate > 360)
+                            //    {
+                            //        bounceRotate = 0;
+                            //    }
 
                             enemy.Animation.Draw(_spriteBatch, enemyBounce, enemy.Size, SpriteEffects.None, bounceRotate, 64, 1f);
                         }
@@ -1937,7 +1952,7 @@ namespace Strike_12
                         }
                         else if (enemy is LaserEnemy)
                         {
-                            enemy.Draw(_spriteBatch, enemySprites);
+                            enemy.Animation.Draw(_spriteBatch, enemyLaser, enemy.Size, SpriteEffects.None, 0, enemy.Size.Width, 1f);
                         }
                         else if (enemy is Enemy)
                         {
