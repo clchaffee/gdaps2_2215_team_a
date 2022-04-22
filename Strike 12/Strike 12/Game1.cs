@@ -59,6 +59,9 @@ namespace Strike_12
 
         // enemy assets
         private Texture2D enemySprites;
+        private Texture2D enemyFollow;
+        private Texture2D enemyBase;
+        private Texture2D enemyBullet;
 
         // Enemy types for testing purposes
         private Enemy enemy;
@@ -118,6 +121,10 @@ namespace Strike_12
         private Texture2D titleBG;
         private Texture2D arenaBG;
 
+        private Texture2D clockMinute;
+        private Texture2D clockHour;
+        private Texture2D Shade;
+
         //sets the default state as the menu
         GameState state = GameState.Menu;
 
@@ -134,6 +141,8 @@ namespace Strike_12
 
         // Animation Fields
         AnimationManager playerAnimation;
+        AnimationManager enemyAnimation;
+        AnimationManager clockAnimation;
         Texture2D playerIdle;
         Texture2D playerWalk;
         Texture2D playerCrouch;
@@ -310,6 +319,16 @@ namespace Strike_12
             playerCrouch = Content.Load<Texture2D>("playerCrouch");
             playerDash = Content.Load<Texture2D>("Dash");
             playerDashAlt = Content.Load<Texture2D>("DashAlt");
+
+            enemyAnimation = new AnimationManager();
+            enemyBase = Content.Load<Texture2D>("Enemy");
+            enemyBullet = Content.Load<Texture2D>("BulletEnemy");
+            enemyFollow = Content.Load<Texture2D>("FollowEnemy");
+
+            clockAnimation = new AnimationManager();
+            clockHour = Content.Load<Texture2D>("HourHand");
+            clockMinute = Content.Load<Texture2D>("MinuteHand");
+            Shade = Content.Load<Texture2D>("Ugh");
         }
 
         /// <summary>
@@ -411,6 +430,9 @@ namespace Strike_12
 
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
+
+                    // ClockAnimation
+                    clockAnimation.Update(gameTime, 30, 1);
 
                     //debug controls for Annalee while working on shop
                     if (kbState.IsKeyDown(Keys.Back) && prevKbState.IsKeyUp(Keys.Back))
@@ -674,6 +696,8 @@ namespace Strike_12
                             if (enemy is FollowEnemy)
                             {
                                 ((FollowEnemy)enemy).Update(gameTime, player);
+
+                                enemyAnimation.Update(gameTime, 3, 0.9);
                             }
                             else if (enemy is LaserEnemy)
                             {
@@ -682,6 +706,15 @@ namespace Strike_12
                             else
                             {
                                 enemy.Update(gameTime);
+
+                                if (enemy is BulletEnemy)
+                                {
+                                    enemyAnimation.Update(gameTime, 5, 0.9);
+                                }
+                                else if (enemy is Enemy)
+                                {
+                                    enemyAnimation.Update(gameTime, 4, .04);
+                                }
                             }
                         }
                     }
@@ -1303,11 +1336,11 @@ namespace Strike_12
                     switch (state)
                     {
                         case GameState.Menu:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f, 64);
                             break;
 
                         case GameState.Start:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f, 64);
                             break;
                     }
 
@@ -1375,6 +1408,7 @@ namespace Strike_12
                 case GameState.Arena:
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0, 0), Color.White);
+                    clockAnimation.Draw(_spriteBatch, clockMinute, new Rectangle(0, 0, windowWidth/30, windowHeight), SpriteEffects.None, 0f, windowWidth);
                     // Draw the tiles
                     levels[lvlNum].Draw(_spriteBatch, tileSprites);
 
@@ -1400,23 +1434,23 @@ namespace Strike_12
                     {
                         case PlayerStates.moveRight:
                         case PlayerStates.jumpRight:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f, 64);
                             break;
                         case PlayerStates.moveLeft:
                         case PlayerStates.jumpLeft:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.FlipHorizontally, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.FlipHorizontally, 0f, 64);
                             break;
                         case PlayerStates.faceRight:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f, 64);
                             break;
                         case PlayerStates.faceLeft:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally, 0f, 64);
                             break;
                         case PlayerStates.crouchLeft:
-                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.FlipHorizontally, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.FlipHorizontally, 0f, 64);
                             break;
                         case PlayerStates.crouchRight:
-                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None, 0f);
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None, 0f, 64);
                             break;
                         case PlayerStates.airdash:
 
@@ -1451,15 +1485,42 @@ namespace Strike_12
                                     break;
                             }
 
-                            playerAnimation.Draw(_spriteBatch, sprite, player.Size, flipSprite, rotation);
+                            playerAnimation.Draw(_spriteBatch, playerDash, player.Size, flipSprite, rotation, 64);
 
                             break;
                     }
 
                     foreach (Enemy enemy in eManager.Enemies)
                     {
-                        enemy.Draw(_spriteBatch, enemySprites);
+                        if (enemy is Enemy)
+                        {
+                            EnemyStates enemyState = enemy.State;
+                            switch (enemyState)
+                            {
+                                case (EnemyStates.moveRight):
+                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.FlipHorizontally, 0, 64);
+                                    break;
+                                case (EnemyStates.moveLeft):
+                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.None, 0, 64);
+                                    break;
+                            }
+                        }
+                        else if (enemy is BulletEnemy)
+                        {
+                            enemyAnimation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64);
+                        }
+                        else if (enemy is FollowEnemy)
+                        {
+                            enemyAnimation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64);
+                        }
+                        else
+                        {
+                            enemy.Draw(_spriteBatch, enemySprites);
+                        }
+
                     }
+
+                    _spriteBatch.Draw(Shade, new Rectangle(0, 0, Shade.Width, Shade.Height), Color.White);
 
                     break;
 

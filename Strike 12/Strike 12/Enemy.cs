@@ -61,6 +61,11 @@ namespace Strike_12
             set { isGrounded = value; }
         }
 
+        public EnemyStates State
+        {
+            get { return enemyState; }
+        }
+
         // ----- | Methods | -----
         // -- Methods Overriden from parent class
         /// <summary>

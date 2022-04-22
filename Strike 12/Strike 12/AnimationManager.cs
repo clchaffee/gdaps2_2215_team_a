@@ -86,13 +86,13 @@ namespace Strike_12
         }
 
         // Draw()
-        public void Draw(SpriteBatch _spriteBatch, Texture2D texture, Rectangle rect, SpriteEffects effect, float rotation)
+        public void Draw(SpriteBatch _spriteBatch, Texture2D texture, Rectangle rect, SpriteEffects effect, float rotation, int width)
         {
             _spriteBatch.Draw(
                 texture,
                 rect,
                 new Rectangle(
-                    0 + (64 * (int)Math.Floor(frames)),
+                    0 + (width * (int)Math.Floor(frames)),
                     0,
                     rect.Width,
                     rect.Height),
