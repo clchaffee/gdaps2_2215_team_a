@@ -446,7 +446,7 @@ namespace Strike_12
                 case GameState.Arena:
 
                     // ClockAnimation
-                    clockAnimation.Update(gameTime, 30, 1);
+                    clockAnimation.Update(gameTime, 12, 0.00055555556);
 
                     //debug controls for Annalee while working on shop
                     if (kbState.IsKeyDown(Keys.Back) && prevKbState.IsKeyUp(Keys.Back))
@@ -1210,6 +1210,7 @@ namespace Strike_12
 
                     //level reset
                     lvlNum = 0;
+                    clockAnimation.Reset();
 
                     //resets data from Arena
                     eManager.Enemies.Clear();
@@ -1432,7 +1433,7 @@ namespace Strike_12
                 case GameState.Arena:
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0, 0), Color.White);
-                    clockAnimation.Draw(_spriteBatch, clockMinute, new Rectangle(0, 0, clockMinute.Width / 30, clockMinute.Height), SpriteEffects.None, 0f, clockMinute.Width / 30, 1f);
+                    clockAnimation.Draw(_spriteBatch, clockHour, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
                     // Draw the tiles
                     levels[lvlNum].Draw(_spriteBatch, tileSprites);
 
