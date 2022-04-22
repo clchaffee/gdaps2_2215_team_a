@@ -360,14 +360,9 @@ namespace Strike_12
 
 
             // If W is pressed, player jumps, with addition of velocity gravity, and updates player state accordingly
-            if (previousKBState.IsKeyUp(Keys.Space) && kbState.IsKeyDown(Keys.Space) && !isCrouching)
+            if (previousKBState.IsKeyUp(Keys.W) && kbState.IsKeyDown(Keys.W) && !isCrouching)
             {
                 lastJump = gameTime.TotalGameTime.TotalMinutes;
-
-                //if (velocity.Y == 0)
-                //{
-                //    canJump = false;
-                //}
 
                 if (VelocityY == 0 && (lastJump + buffer > gameTime.TotalGameTime.TotalMinutes) && canJump)
                 {

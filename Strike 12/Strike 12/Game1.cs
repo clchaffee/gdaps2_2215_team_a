@@ -1238,7 +1238,7 @@ namespace Strike_12
 
                 // text for control screen
                 case GameState.Controls:
-                    _spriteBatch.DrawString(titleFont, "Press Space to Jump\nPress A to Move Left\nPress D to Move Right\nPress S to Crouch" +
+                    _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right\nPress S to Crouch" +
                         "\nPress Left Shift and a direction to airdash (WHEN UNLOCKED)" +
                         "\nPress Q to stop time for a short period (WHEN UNLOCKED)\n",
                         new Vector2(100, 50), Color.Black);
