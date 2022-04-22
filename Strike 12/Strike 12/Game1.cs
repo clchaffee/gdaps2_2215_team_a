@@ -544,13 +544,18 @@ namespace Strike_12
                     {
                         if (energyTimer > 60)
                         {
-                            player.CurrentEnergy++;
+                            player.CurrentEnergy += 2;
                             energyTimer = 0;
                         }
                         else
                         {
                             energyTimer++;
                         }
+                    }
+
+                    if (player.CurrentEnergy > 60)
+                    {
+                        player.CurrentEnergy = 0;
                     }
 
                     isCollidingUp = false;
