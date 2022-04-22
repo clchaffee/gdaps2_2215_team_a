@@ -185,6 +185,12 @@ namespace Strike_12
             get { return moveDirection; }
         }
 
+        public int ICounter
+        {
+            get { return iCounter; }
+            set { iCounter = value; }
+        }
+
         // ------------------------------------------
 
         public float VelocityX
@@ -236,10 +242,9 @@ namespace Strike_12
         /// <returns></returns>
         public bool TakeDamage(GameTime gameTime)
         {
-            iCounter++;
-            if (iCounter == 10)
+            if (iCounter == 0)
             {
-                iCounter = 0;
+                iCounter = 60;
                 return true;
             }
             else

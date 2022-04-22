@@ -86,7 +86,7 @@ namespace Strike_12
         }
 
         // Draw()
-        public void Draw(SpriteBatch _spriteBatch, Texture2D texture, Rectangle rect, SpriteEffects effect, float rotation, int width)
+        public void Draw(SpriteBatch _spriteBatch, Texture2D texture, Rectangle rect, SpriteEffects effect, float rotation, int width, float percent)
         {
             _spriteBatch.Draw(
                 texture,
@@ -96,12 +96,11 @@ namespace Strike_12
                     0,
                     rect.Width,
                     rect.Height),
-                Color.White,
+                Color.White * percent,
                 rotation,
                 Vector2.Zero,
                 effect,
                 0f); 
-
         }
     }
 }
