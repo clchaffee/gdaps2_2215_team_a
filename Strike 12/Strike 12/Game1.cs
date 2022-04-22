@@ -329,7 +329,7 @@ namespace Strike_12
             /*        NOT FOR SPRINT 3
             buttons.Add(new Button("heal", 
                 buttonTexture, 
-                new Rectangle(1250, 300, 100, 50), 
+                new Rectangle(1250, 300, 100, 50),
                 10));
 
             buttons.Add(new Button("slow", 
