@@ -1345,11 +1345,11 @@ namespace Strike_12
                     switch (state)
                     {
                         case GameState.Menu:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f, 64, 1f);
                             break;
 
                         case GameState.Start:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f, 64, 1f);
                             break;
                     }
 
@@ -1417,7 +1417,7 @@ namespace Strike_12
                 case GameState.Arena:
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0, 0), Color.White);
-                    clockAnimation.Draw(_spriteBatch, clockMinute, new Rectangle(0, 0, windowWidth/30, windowHeight), SpriteEffects.None, 0f, windowWidth);
+                    clockAnimation.Draw(_spriteBatch, clockMinute, new Rectangle(0, 0, windowWidth/30, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
                     // Draw the tiles
                     levels[lvlNum].Draw(_spriteBatch, tileSprites);
 
@@ -1439,27 +1439,59 @@ namespace Strike_12
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     //player.Draw(_spriteBatch, playerSprites);
 
+                    // Update i-frame flash percent
+                    if (playerInvincible)
+                    {
+                        if (!incrementing)
+                        {
+                            if (percent > 0)
+                            {
+                                percent -= 0.4f;
+                            }
+                            else
+                            {
+                                incrementing = true;
+                            }
+                        }
+                        else
+                        {
+                            if (percent < 1)
+                            {
+                                percent += 0.4f;
+                            }
+                            else
+                            {
+                                incrementing = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        percent = 1f;
+                    }
+
+                    // Player switch statement
                     switch (playerState)
                     {
                         case PlayerStates.moveRight:
                         case PlayerStates.jumpRight:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f, 64, percent);
                             break;
                         case PlayerStates.moveLeft:
                         case PlayerStates.jumpLeft:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.FlipHorizontally, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.FlipHorizontally, 0f, 64, percent);
                             break;
                         case PlayerStates.faceRight:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f, 64, percent);
                             break;
                         case PlayerStates.faceLeft:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally, 0f, 64, percent);
                             break;
                         case PlayerStates.crouchLeft:
-                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.FlipHorizontally, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.FlipHorizontally, 0f, 64, percent);
                             break;
                         case PlayerStates.crouchRight:
-                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None, 0f, 64, percent);
                             break;
                         case PlayerStates.airdash:
 
@@ -1494,7 +1526,7 @@ namespace Strike_12
                                     break;
                             }
 
-                            playerAnimation.Draw(_spriteBatch, playerDash, player.Size, flipSprite, rotation, 64);
+                            playerAnimation.Draw(_spriteBatch, playerDash, player.Size, flipSprite, rotation, 64, percent);
 
                             break;
                     }
@@ -1507,20 +1539,20 @@ namespace Strike_12
                             switch (enemyState)
                             {
                                 case (EnemyStates.moveRight):
-                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.FlipHorizontally, 0, 64);
+                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.FlipHorizontally, 0, 64, 1f);
                                     break;
                                 case (EnemyStates.moveLeft):
-                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.None, 0, 64);
+                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                                     break;
                             }
                         }
                         else if (enemy is BulletEnemy)
                         {
-                            enemyAnimation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64);
+                            enemyAnimation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                         }
                         else if (enemy is FollowEnemy)
                         {
-                            enemyAnimation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64);
+                            enemyAnimation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                         }
                         else
                         {
