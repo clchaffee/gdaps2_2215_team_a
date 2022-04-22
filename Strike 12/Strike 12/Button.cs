@@ -187,12 +187,12 @@ namespace Strike_12
                             spriteBatch.DrawString(spriteFont, "\nIncreases your total ENERGY", text, Color.White);
                             break;
                         case "Dash":
-                            spriteBatch.DrawString(spriteFont, "RIGHT SHIFT to DASH \n" +
+                            spriteBatch.DrawString(spriteFont, "LEFT SHIFT to DASH \n" +
                             "any direction you'd like.\n\n" +
                             "***Uses Energy***", text, Color.White);
                             break;
                         case "Time Stop":
-                            spriteBatch.DrawString(spriteFont, "SPACE to STOP TIME \n" +
+                            spriteBatch.DrawString(spriteFont, "PRESS Q to STOP TIME \n" +
                             "freezes all enemies for \na few seconds.\n\n" +
                             "***Uses Energy***", text, Color.White);
                             break;
