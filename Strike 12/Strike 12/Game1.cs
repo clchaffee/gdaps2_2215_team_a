@@ -1449,10 +1449,10 @@ namespace Strike_12
 
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
                         new Vector2(100, 150), Color.LightGray);
-                    _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
-                       new Vector2(100, 50), Color.LightGray);
-                    _spriteBatch.DrawString(displayFont, $"\nEnergy: {player.CurrentEnergy}",
-                       new Vector2(100, 100), Color.LightGray);
+                    //_spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
+                    //   new Vector2(100, 50), Color.LightGray);
+                    //_spriteBatch.DrawString(displayFont, $"\nEnergy: {player.CurrentEnergy}",
+                    //   new Vector2(100, 100), Color.LightGray);
 
                     _spriteBatch.DrawString(displayFont, $"\nWave: {eManager.WaveNum}",
                         new Vector2(100, 200), Color.Black);
