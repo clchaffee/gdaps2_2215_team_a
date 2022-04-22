@@ -35,16 +35,16 @@ namespace Strike_12
         private int fadeOpacity;
         private Texture2D black;
 
-        private int Interval { get; set; } = 0;
+        public int Interval { get; set; } = 0;
         private bool easy = true;
         private bool medium = false;
         private bool hard = false;
         private bool impossible = false;
         private bool collidable = true;
 
-        int count;
-        bool spawnCap = true;
-        int waitTime;
+        private int count;
+        private bool spawnCap = true;
+        private int waitTime;
 
         // player assets
         private Texture2D playerSprites;
@@ -52,16 +52,22 @@ namespace Strike_12
         private int pStartX;
         private int pStartY;
 
-        bool isCollidingUp;
-        bool isCollidingDown;
-        bool isCollidingRight;
-        bool isCollidingLeft;
+        private bool isCollidingUp;
+        private bool isCollidingDown;
+        private bool isCollidingRight;
+        private bool isCollidingLeft;
+
+        private bool playerInvincible = false;
+
+        private float percent = 0f;
+        private bool incrementing = false;
 
         // enemy assets
         private Texture2D enemySprites;
         private Texture2D enemyFollow;
         private Texture2D enemyBase;
         private Texture2D enemyBullet;
+        private Texture2D enemyBounce;
 
         // Enemy types for testing purposes
         private Enemy enemy;
@@ -141,8 +147,8 @@ namespace Strike_12
 
         // Animation Fields
         AnimationManager playerAnimation;
-        AnimationManager enemyAnimation;
         AnimationManager clockAnimation;
+        AnimationManager shopKeeperAnimation;
         Texture2D playerIdle;
         Texture2D playerWalk;
         Texture2D playerCrouch;
@@ -202,7 +208,7 @@ namespace Strike_12
             //Shop
             shopWall = Content.Load<Texture2D>("ShopWall");
             shopFG = Content.Load<Texture2D>("ShopFG");
-            shopKeeper = Content.Load<Texture2D>("ShopKeeper");
+            shopKeeper = Content.Load<Texture2D>("shopKeeperSheet");
             sign = Content.Load<Texture2D>("sign");
             smallSign = Content.Load<Texture2D>("sign-export");
             shelf = Content.Load<Texture2D>("shelf");
@@ -320,7 +326,6 @@ namespace Strike_12
             playerDash = Content.Load<Texture2D>("Dash");
             playerDashAlt = Content.Load<Texture2D>("DashAlt");
 
-            enemyAnimation = new AnimationManager();
             enemyBase = Content.Load<Texture2D>("Enemy");
             enemyBullet = Content.Load<Texture2D>("BulletEnemy");
             enemyFollow = Content.Load<Texture2D>("FollowEnemy");
@@ -328,6 +333,7 @@ namespace Strike_12
             clockAnimation = new AnimationManager();
             clockHour = Content.Load<Texture2D>("HourHand");
             clockMinute = Content.Load<Texture2D>("MinuteHand");
+            shopKeeperAnimation = new AnimationManager();
             Shade = Content.Load<Texture2D>("atmosphere");
         }
 
@@ -667,20 +673,24 @@ namespace Strike_12
                                     enemy.IsCollidingLeft(enemy, player, player.VelocityX) ||
                                     enemy.IsCollidingRight(enemy, player, player.VelocityX))
                                 {
-
                                     if (player.TakeDamage(gameTime))
                                     {
                                         player.Health -= 1;
-                                    }
-
-
-                                    else if (enemy.IsCollidingTop(enemy, player))
-                                    {
-                                        //player.Jump();
+                                        playerInvincible = true;
                                     }
                                 }
                             }
                         }
+                    }
+
+                    // Update I-Frames Counter
+                    if (player.ICounter > 0)
+                    {
+                        player.ICounter--;
+                    }
+                    else
+                    {
+                        playerInvincible = false;
                     }
 
                     // Temp player and enemy update call
@@ -697,7 +707,7 @@ namespace Strike_12
                             {
                                 ((FollowEnemy)enemy).Update(gameTime, player);
 
-                                enemyAnimation.Update(gameTime, 3, 0.9);
+                                enemy.AnimationUpdate(gameTime, 3, 0.9);
                             }
                             else if (enemy is LaserEnemy)
                             {
@@ -709,11 +719,11 @@ namespace Strike_12
 
                                 if (enemy is BulletEnemy)
                                 {
-                                    enemyAnimation.Update(gameTime, 5, 0.9);
+                                    enemy.AnimationUpdate(gameTime, 5, 0.6);
                                 }
                                 else if (enemy is Enemy)
                                 {
-                                    enemyAnimation.Update(gameTime, 4, .04);
+                                    enemy.AnimationUpdate(gameTime, 4, .04);
                                 }
                             }
                         }
@@ -741,24 +751,25 @@ namespace Strike_12
                                 case 1:
                                     //eManager.SpawnFormula(.09);
                                     //eManager.Enemies.Clear();
-                                    if(interval == 0)
+                                    if(Interval == 0)
                                     {
-                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
                                         }
                                         interval += 5;
+                                        Interval++;
                                     }
                                     else
                                     {
-                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
                                         }
                                         interval += 5;
-
+                                        Interval++;
                                     }
                                     
 
@@ -799,12 +810,9 @@ namespace Strike_12
                                 case 2:
                                     //eManager.SpawnFormula(.09);
                                     //eManager.Enemies.Clear();
-                                    if (interval == 0)
+                                    if (Interval == 0)
                                     {
-                                        eManager.Start += 5;
-                                        eManager.End += 5;
-                                        dampener -= .001;
-                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             if (rng.Next(0, 100) < 80)
@@ -817,10 +825,11 @@ namespace Strike_12
                                             }
                                         }
                                         interval += 5;
+                                        Interval++;
                                     }
                                     else
                                     {
-                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             if (rng.Next(0, 100) > 39)
@@ -833,18 +842,15 @@ namespace Strike_12
                                             }
                                         }
                                         interval += 5;
-
+                                        Interval++;
                                     }
                                     break;
 
                                 //wave 3: 60% for normal, 40% for bullet
                                 case 3:
                                     if (interval == 0)
-                                    {
-                                        eManager.Start += 5;
-                                        eManager.End += 5;
-                                        dampener -= .001;
-                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                    { 
+                                        int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             if (rng.Next(0, 100) < 60)
@@ -857,10 +863,11 @@ namespace Strike_12
                                             }
                                         }
                                         interval += 5;
+                                        Interval++;
                                     }
                                     else
                                     {
-                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             if (rng.Next(0, 100) > 39)
@@ -873,11 +880,8 @@ namespace Strike_12
                                             }
                                         }
                                         interval += 5;
-
+                                        Interval++;
                                     }
-                                    eManager.Start += 5;
-                                    eManager.End += 5;
-                                    dampener -= .001;
                                     break;
 /*
                                 //wave 4: 40% normal, 40% projectile, 20% bounce
@@ -1092,7 +1096,7 @@ namespace Strike_12
                             count++;
                             spawnCap = false;
                             waitTime = 59;
-                            if (interval != 0 && interval %6 == 0)
+                             if (Interval == 7)
                             {
                                 eManager.Start += 5;
                                 eManager.End += 5;
@@ -1101,6 +1105,8 @@ namespace Strike_12
                                 eManager.NumEnemies = 0;
                                 eManager.WaveNum++;
                                 spawnCap = true;
+                                dampener -= .001;
+                                interval = (eManager.WaveNum - 1) * 5;
                             }
                             //else if (Interval == 7)
                             //{
@@ -1181,10 +1187,13 @@ namespace Strike_12
                     {
                         enemy.Reset();
                     }
-                    eManager.Start += 0;
-                    eManager.End += 30;
+                    eManager.Start = 0;
+                    eManager.End = 30;
+                    interval = 0;
                     Interval = 0;
                     eManager.NumEnemies = 0;
+                    eManager.Enemies.Clear();
+                    dampener = .04;
                     eManager.WaveNum = 1;
 
                     //level reset
@@ -1216,6 +1225,8 @@ namespace Strike_12
                 //if enter is pressed in the shop, returns to arena; if space is pressed brings up the menu
                 case GameState.Shop:
                     player.Health = shop.MaxHealth;
+
+                    shopKeeperAnimation.Update(gameTime, 14, .15);
 
                     // for each button calls update method, checks if pressed and gives upgrade if you have enough points
                     foreach (Button button in buttons)
@@ -1336,11 +1347,11 @@ namespace Strike_12
                     switch (state)
                     {
                         case GameState.Menu:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f, 64, 1f);
                             break;
 
                         case GameState.Start:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f, 64, 1f);
                             break;
                     }
 
@@ -1408,7 +1419,7 @@ namespace Strike_12
                 case GameState.Arena:
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0, 0), Color.White);
-                    clockAnimation.Draw(_spriteBatch, clockMinute, new Rectangle(0, 0, windowWidth/30, windowHeight), SpriteEffects.None, 0f, windowWidth);
+                    clockAnimation.Draw(_spriteBatch, clockMinute, new Rectangle(0, 0, clockMinute.Width / 30, clockMinute.Height), SpriteEffects.None, 0f, clockMinute.Width / 30, 1f);
                     // Draw the tiles
                     levels[lvlNum].Draw(_spriteBatch, tileSprites);
 
@@ -1424,33 +1435,62 @@ namespace Strike_12
                     _spriteBatch.DrawString(displayFont, $"\n# of enemies in wave: {eManager.Enemies.Count}",
                         new Vector2(100, 250), Color.LightGray);
 
-                    _spriteBatch.DrawString(displayFont, player.IsGrounded.ToString(),
-                        new Vector2(100, 350), Color.LightGray);
-
                     // Temp player draw call (should, in theory, be handled by the animation manager later down the line)
                     //player.Draw(_spriteBatch, playerSprites);
 
+                    // Update i-frame flash percent
+                    if (playerInvincible)
+                    {
+                        if (!incrementing)
+                        {
+                            if (percent > 0.3)
+                            {
+                                percent -= 0.4f;
+                            }
+                            else
+                            {
+                                incrementing = true;
+                            }
+                        }
+                        else
+                        {
+                            if (percent < 1)
+                            {
+                                percent += 0.4f;
+                            }
+                            else
+                            {
+                                incrementing = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        percent = 1f;
+                    }
+
+                    // Player switch statement
                     switch (playerState)
                     {
                         case PlayerStates.moveRight:
                         case PlayerStates.jumpRight:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.None, 0f, 64, percent);
                             break;
                         case PlayerStates.moveLeft:
                         case PlayerStates.jumpLeft:
-                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.FlipHorizontally, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerWalk, player.Size, SpriteEffects.FlipHorizontally, 0f, 64, percent);
                             break;
                         case PlayerStates.faceRight:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.None, 0f, 64, percent);
                             break;
                         case PlayerStates.faceLeft:
-                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerIdle, player.Size, SpriteEffects.FlipHorizontally, 0f, 64, percent);
                             break;
                         case PlayerStates.crouchLeft:
-                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.FlipHorizontally, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.FlipHorizontally, 0f, 64, percent);
                             break;
                         case PlayerStates.crouchRight:
-                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None, 0f, 64);
+                            playerAnimation.Draw(_spriteBatch, playerCrouch, player.Size, SpriteEffects.None, 0f, 64, percent);
                             break;
                         case PlayerStates.airdash:
 
@@ -1485,33 +1525,41 @@ namespace Strike_12
                                     break;
                             }
 
-                            playerAnimation.Draw(_spriteBatch, playerDash, player.Size, flipSprite, rotation, 64);
+                            playerAnimation.Draw(_spriteBatch, sprite, player.Size, flipSprite, rotation, 64, percent);
 
                             break;
                     }
 
                     foreach (Enemy enemy in eManager.Enemies)
                     {
-                        if (enemy is Enemy)
+                        if (enemy is BulletEnemy)
+                        {
+                            enemy.Animation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                        }
+                        else if (enemy is FollowEnemy)
+                        {
+                            enemy.Animation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                        }
+                        else if (enemy is Enemy)
                         {
                             EnemyStates enemyState = enemy.State;
                             switch (enemyState)
                             {
                                 case (EnemyStates.moveRight):
-                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.FlipHorizontally, 0, 64);
+                                    enemy.Animation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.FlipHorizontally, 0, 64, 1f);
                                     break;
                                 case (EnemyStates.moveLeft):
-                                    enemyAnimation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.None, 0, 64);
+                                    enemy.Animation.Draw(_spriteBatch, enemyBase, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                                     break;
                             }
                         }
                         else if (enemy is BulletEnemy)
                         {
-                            enemyAnimation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64);
+                            enemy.Animation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                         }
                         else if (enemy is FollowEnemy)
                         {
-                            enemyAnimation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64);
+                            enemy.Animation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                         }
                         else
                         {
@@ -1552,7 +1600,8 @@ namespace Strike_12
                 case GameState.Shop:
 
                     _spriteBatch.Draw(shopWall, new Vector2(0, 0), Color.White);
-                    _spriteBatch.Draw(shopKeeper, new Vector2(450, 100), Color.White);
+                    //_spriteBatch.Draw(shopKeeper, new Vector2(450, 100), Color.White);
+                    shopKeeperAnimation.Draw(_spriteBatch, shopKeeper, new Rectangle(450, 100, shopKeeper.Width / 14, shopKeeper.Height), SpriteEffects.None, 0f, shopKeeper.Width/14, 1f);
                     _spriteBatch.Draw(shopFG, new Vector2(0, 0), Color.White);
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
