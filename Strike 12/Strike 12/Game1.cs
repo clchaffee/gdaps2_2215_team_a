@@ -20,6 +20,9 @@ namespace Strike_12
         GameOver,
         GameWinner
     }
+    /// <summary>
+    /// best unupgraded time: Colby with 81.43s
+    /// </summary>
     public class Game1 : Game
     {
         //fields
@@ -99,6 +102,7 @@ namespace Strike_12
         private Texture2D sign;
         private Texture2D smallSign;
         private Texture2D shelf;
+        private Texture2D controls;
 
         private string comment;
 
@@ -217,6 +221,7 @@ namespace Strike_12
             bar = Content.Load<Texture2D>("bar");
             healthSprite = Content.Load<Texture2D>("health-sprite");
             energySprite = Content.Load<Texture2D>("energy-sprite");
+            controls = Content.Load<Texture2D>("controls");
 
             //Shop
             shopWall = Content.Load<Texture2D>("ShopWall");
@@ -545,13 +550,18 @@ namespace Strike_12
                     {
                         if (energyTimer > 60)
                         {
-                            player.CurrentEnergy++;
+                            player.CurrentEnergy += 2;
                             energyTimer = 0;
                         }
                         else
                         {
                             energyTimer++;
                         }
+                    }
+
+                    if (player.CurrentEnergy > 60)
+                    {
+                        player.CurrentEnergy = 0;
                     }
 
                     isCollidingUp = false;
@@ -726,19 +736,19 @@ namespace Strike_12
                             {
                                 ((FollowEnemy)enemy).Update(gameTime, player);
 
-                                enemy.AnimationUpdate(gameTime, 3, 0.9);
+                                enemy.AnimationUpdate(gameTime, 3, 0.4);
                             }
                             else if (enemy is LaserEnemy)
                             {
                                 ((LaserEnemy)enemy).Update(gameTime, player.Size.Y);
 
-                                enemy.AnimationUpdate(gameTime, 3, 0.9);
+                                enemy.AnimationUpdate(gameTime, 3, 0.6);
                             }
                             else if (enemy is BounceEnemy)
                             {
                                 enemy.Update(gameTime);
 
-                                enemy.AnimationUpdate(gameTime, 3, 0.9);
+                                enemy.AnimationUpdate(gameTime, 3, 0.6);
                             }
                             else
                             {
@@ -1359,6 +1369,10 @@ namespace Strike_12
                                             {
                                                 eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
                                             }
+                                            if(Interval == 3)
+                                            {
+                                                eManager.WaveProgress(new LaserEnemy(enemySprites, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.SizeY), Interval);
+                                            }
                                         }
                                         interval += 5;
                                         Interval++;
@@ -1416,11 +1430,17 @@ namespace Strike_12
                                     if (interval == 0)
                                     {
                                         int spawned = eManager.SpawnFormula(dampener, interval, Interval);
+                                        int tooMany = 0;
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             if (rng.Next(0, 100) < 50)
-                                            {
+                                            {                                                
                                                 eManager.WaveProgress(new LaserEnemy(enemySprites, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.SizeY), Interval);
+                                                tooMany++;
+                                                if(tooMany >= 4)
+                                                {
+                                                    eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                                }
                                             }
                                             else
                                             {
@@ -1430,16 +1450,20 @@ namespace Strike_12
                                         interval += 5;
                                         Interval++;
                                     }
-
-
                                     else
                                     {
+                                        int tooMany = 0;
                                         int spawned = eManager.SpawnFormula(dampener, interval, Interval);
                                         for (int i = 0; i < spawned; i++)
                                         {
                                             if (rng.Next(0, 100) < 50)
                                             {
-                                                eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                                eManager.WaveProgress(new LaserEnemy(enemySprites, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.SizeY), Interval);
+                                                tooMany++;
+                                                if (tooMany >= 4)
+                                                {
+                                                    eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                                }
                                             }
                                             else
                                             {
@@ -1800,6 +1824,12 @@ namespace Strike_12
                     _spriteBatch.Draw(energySprite, new Vector2(windowWidth - energySprite.Width, 0), Color.White);
 
 
+                    if (timer <= 5)
+                    {
+                        _spriteBatch.Draw(controls, new Rectangle(64, windowHeight / 2 + 125, controls.Width * 3, controls.Height * 3), Color.White);
+                    }
+                    
+
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
                         new Vector2(100, 150), Color.LightGray);
                     //_spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
@@ -1911,12 +1941,12 @@ namespace Strike_12
                     {
                         if (enemy is BounceEnemy)
                         {
-                            bounceRotate++;
+                            //    bounceRotate++;
 
-                            if (bounceRotate > 360)
-                            {
-                                bounceRotate = 0;
-                            }
+                            //    if (bounceRotate > 360)
+                            //    {
+                            //        bounceRotate = 0;
+                            //    }
 
                             enemy.Animation.Draw(_spriteBatch, enemyBounce, enemy.Size, SpriteEffects.None, bounceRotate, 64, 1f);
                         }
@@ -1930,7 +1960,7 @@ namespace Strike_12
                         }
                         else if (enemy is LaserEnemy)
                         {
-                            enemy.Draw(_spriteBatch, enemySprites);
+                            enemy.Animation.Draw(_spriteBatch, enemyLaser, enemy.Size, SpriteEffects.None, 0, enemy.Size.Width, 1f);
                         }
                         else if (enemy is Enemy)
                         {
