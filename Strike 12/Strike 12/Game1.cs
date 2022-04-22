@@ -1651,14 +1651,6 @@ namespace Strike_12
                                     player.timeStopPurchased = true;
                                     shop.TimeSlow = true;
                                     break;
-
-                                case "Heal":
-                                    button.Cost += 10;
-                                    break;
-
-                                case "Slow":
-                                    button.Cost += 10;
-                                    break;
                             }
                         }
                     }
