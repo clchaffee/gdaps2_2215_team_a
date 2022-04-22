@@ -788,10 +788,12 @@ namespace Strike_12
                                             if (rng.Next(1, 100) > 50)
                                             {
                                                 eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(64, 384), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                                //eManager.NumEnemies--;
                                             }
                                             else
                                             {
                                                 eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(windowWidth - 128 - 384, windowWidth - 128), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                                //eManager.NumEnemies--;
                                             }
                                         }
                                         interval += 5;
@@ -870,10 +872,12 @@ namespace Strike_12
                                                 if (rng.Next(1, 100) > 50)
                                                 {
                                                     eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(64, 384), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                                    eManager.NumEnemies--;
                                                 }
                                                 else
                                                 {
                                                     eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(windowWidth - 128 - 384, windowWidth - 128), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                                    eManager.NumEnemies--;
                                                 }
                                             }
                                             else
@@ -922,10 +926,12 @@ namespace Strike_12
                                                 if (rng.Next(1, 100) > 50)
                                                 {
                                                     eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(64, 384), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                                    eManager.NumEnemies--;
                                                 }
                                                 else
                                                 {
                                                     eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(windowWidth - 128 - 384, windowWidth - 128), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                                    eManager.NumEnemies--;
                                                 }
                                             }
                                             else
