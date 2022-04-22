@@ -302,6 +302,18 @@
 /processorParam:TextureFormat=Color
 /build:HourHand.png
 
+#begin LaserEnemy.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:LaserEnemy.png
+
 #begin Logo (1).png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -337,18 +349,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Menu.png
-
-#begin MinuteHand.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:MinuteHand.png
 
 #begin MinuteHand.png
 /importer:TextureImporter
