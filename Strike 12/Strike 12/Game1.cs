@@ -20,6 +20,9 @@ namespace Strike_12
         GameOver,
         GameWinner
     }
+    /// <summary>
+    /// best unupgraded time: Colby with 81.43s
+    /// </summary>
     public class Game1 : Game
     {
         //fields
@@ -68,6 +71,7 @@ namespace Strike_12
         private Texture2D enemyBase;
         private Texture2D enemyBullet;
         private Texture2D enemyBounce;
+        private Texture2D enemyLaser;
 
         // Enemy types for testing purposes
         private Enemy enemy;
@@ -342,6 +346,7 @@ namespace Strike_12
             enemyBullet = Content.Load<Texture2D>("BulletEnemy");
             enemyFollow = Content.Load<Texture2D>("FollowEnemy");
             enemyBounce = Content.Load<Texture2D>("BounceEnemy");
+            enemyLaser = Content.Load<Texture2D>("LaserEnemy");
 
             bounceRotate = 0;
 
@@ -730,6 +735,8 @@ namespace Strike_12
                             else if (enemy is LaserEnemy)
                             {
                                 ((LaserEnemy)enemy).Update(gameTime, player.Size.Y);
+
+                                enemy.AnimationUpdate(gameTime, 3, 0.9);
                             }
                             else if (enemy is BounceEnemy)
                             {
@@ -1908,7 +1915,14 @@ namespace Strike_12
                     {
                         if (enemy is BounceEnemy)
                         {
-                            enemy.Animation.Draw(_spriteBatch, enemyBounce, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                            bounceRotate++;
+
+                            if (bounceRotate > 360)
+                            {
+                                bounceRotate = 0;
+                            }
+
+                            enemy.Animation.Draw(_spriteBatch, enemyBounce, enemy.Size, SpriteEffects.None, bounceRotate, 64, 1f);
                         }
                         else if (enemy is BulletEnemy)
                         {
@@ -1917,6 +1931,10 @@ namespace Strike_12
                         else if (enemy is FollowEnemy)
                         {
                             enemy.Animation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                        }
+                        else if (enemy is LaserEnemy)
+                        {
+                            enemy.Draw(_spriteBatch, enemySprites);
                         }
                         else if (enemy is Enemy)
                         {
@@ -1931,19 +1949,6 @@ namespace Strike_12
                                     break;
                             }
                         }
-                        //else if (enemy is BulletEnemy)
-                        //{
-                        //    enemy.Animation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64, 1f);
-                        //}
-                        //else if (enemy is FollowEnemy)
-                        //{
-                        //    enemy.Animation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
-                        //}
-                        else
-                        {
-                            enemy.Draw(_spriteBatch, enemySprites);
-                        }
-
                     }
 
                     _spriteBatch.Draw(Shade, new Rectangle(0, 0, Shade.Width, Shade.Height), Color.White);
