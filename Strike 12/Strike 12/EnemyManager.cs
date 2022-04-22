@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Strike_12
 {
-    class EnemyManager 
+    class EnemyManager
     {
         public List<Enemy> Enemies { get; set; }//= new List<Enemy>()
         public double Count { get; set; }
@@ -18,7 +18,7 @@ namespace Strike_12
         Random rng = new Random();
         public int Start { get; set; } = 0;
         public int End { get; set; } = 30;
-        public List<decimal> NumEnemies { get; set; } = new List<decimal>();
+        public int NumEnemies { get; set; } = 0;
         public double limitation { get; set; } = .1;
 
 
@@ -35,7 +35,7 @@ namespace Strike_12
             this.wWidth = wWidth;
             this.wHeight = wHeight;
         }
-        
+
         public void SpawnEnemy(Enemy enemy)
         {
             Enemies.Add(enemy);
@@ -55,48 +55,49 @@ namespace Strike_12
             //WaveNum++;
             //SpawnFormula();
 
-            SpawnEnemy(enemy);
+
 
 
             //when a bullet enemy spawns, removes 2 from the list
             //if (enemy is BulletEnemy && Enemies.Count > 4)
             //{
-            //    Enemies.RemoveRange(0, 1);
+            //    NumEnemies--;
             //}
             //when a bounce enemy spawns, removes 4 from the list
             if (enemy is BounceEnemy && Enemies.Count > 8)
             {
-                Enemies.RemoveRange(0, 2);
+                NumEnemies -= 2;
             }
             //when a follow enemy spawns, removes 8 from the list
             if (enemy is FollowEnemy && Enemies.Count > 12)
             {
-                Enemies.RemoveRange(0, 5);
+                NumEnemies -= 5;
             }
             //when a laser enemy spawns, removes 16 from the list
             if (enemy is LaserEnemy && Enemies.Count > 16)
             {
-                Enemies.RemoveRange(0, 10);
+                NumEnemies -= 10;
             }
 
-
+            SpawnEnemy(enemy);
 
 
         }
 
-        public List<decimal> SpawnFormula(double dampener)
+        public int SpawnFormula(double dampener, int interval)
         {
-            for (int i = Start; i < End; i++)
+            NumEnemies += (int)Math.Ceiling(Math.Exp(interval * dampener));
+            NumEnemies += (int)Math.Ceiling(Math.Exp(((Start + End) / 15) * 2 * dampener));
+
+            if (interval > 1)
             {
-                if (i % 5 == 0)
-                {
+                //NumEnemies -= SpawnFormula(dampener, (interval - 5));
 
-                    decimal value = Math.Ceiling((decimal)Math.Exp(i * dampener));
+                NumEnemies -= (int)Math.Ceiling(Math.Exp((interval - 5)* dampener));
+                NumEnemies -= (int)Math.Ceiling(Math.Exp(((Start + End) / 15) * 2 * dampener));
 
-                    NumEnemies.Add(value); 
-
-                }
             }
+
             return NumEnemies;
 
         }

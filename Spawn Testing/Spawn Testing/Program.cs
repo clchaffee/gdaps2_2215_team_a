@@ -21,6 +21,8 @@ namespace Spawn_Testing
             int wave = 1;
             double limiter = .04;
             List<decimal> rValue = new List<decimal>();
+            int valueTotal = 0;
+            int interval = 0;
 
             Console.WriteLine("Intervals with ADDING the number of enemies:\n");
 
@@ -36,17 +38,29 @@ namespace Spawn_Testing
 
             while (wave < 13)
             {
-                Console.WriteLine($"Wave : {wave}");
-                SpawnRateAdd(start, end);
-                foreach (decimal d in rValue)
+                for (int i = 0; i < 6; i++)
                 {
-                    Console.WriteLine($"Interval {rValue.IndexOf(d) + 1}: {d}");
+                    Console.WriteLine($"Interval {i + 1}: {SpawnRateAdd(interval)}");
+
+                    interval += 5;
                 }
+                Console.WriteLine();
+                //Console.WriteLine($"Wave : {wave}");
+                //SpawnRateAdd();
+                //foreach (decimal d in rValue)
+                //{
+                //    Console.WriteLine($"Interval {rValue.IndexOf(d) + 1}: {d}");
+                //}
+
+
+
                 start = start + 5;
                 end = end + 5;
                 wave++;
                 limiter -= .001;
-                rValue.Clear();
+                //rValue.Clear();
+                valueTotal = 0;
+                interval = start;
             }
             #region //replacing
             //Console.WriteLine("Wave 2:");
@@ -77,39 +91,33 @@ namespace Spawn_Testing
             #endregion
 
 
-            List<decimal> SpawnRateAdd(int s, int e)
+            int SpawnRateAdd(int interval)
             {
-                decimal value = 0;
-                for (int i = start; i < end; i++)
-                {
-                    if (i % 5 == 0)
-                    {
-                        if (wave > 1)
-                        {
-                            value += Math.Ceiling((decimal)Math.Exp(((start + end) / 15) * .05));
-                        }
+
+                        //if (wave > 1)
+                        //{
+                            valueTotal += (int)Math.Ceiling((decimal)Math.Exp(((start + end) / 15) * 2*limiter));
+                        //}
                         //if (wave < 6)
                         //{
-                            value += Math.Ceiling((decimal)Math.Exp(i * limiter));
-                            //if (i > 1)
-                            //{
-                            //    value -= Math.Ceiling((decimal)Math.Exp((i - 5) * .05));
-                            //}
+                            valueTotal += (int)Math.Ceiling((decimal)Math.Exp(interval * limiter));
+                        //if (i > 1)
+                        //{
+                        //    value -= Math.Ceiling((decimal)Math.Exp((i - 5) * .05));
+                        //}
                         //}
                         //else
                         //{
-                            //value += Math.Ceiling((decimal)Math.Exp(i * .06));
-                            //if (i > 1)
-                            //{
-                            //    value -= Math.Ceiling((decimal)Math.Exp((i - 5) * .01));
-                            //}
+                        //value += Math.Ceiling((decimal)Math.Exp(i * .06));
+                        //if (i > 1)
+                        //{
+                        //value -= Math.Ceiling((decimal)Math.Exp((i - 5) * .005));
+                        //}
                         //}
 
 
-                        rValue.Add(value);
-                    }
-                }
-                return rValue;
+                        //rValue.Add(value);
+                return valueTotal;
             }
 
             List<decimal> SpawnRateReplace(int s, int e)
