@@ -728,6 +728,8 @@ namespace Strike_12
                             }
                             else if (enemy is BounceEnemy)
                             {
+                                enemy.Update(gameTime);
+
                                 enemy.AnimationUpdate(gameTime, 3, 0.9);
                             }
                             else
@@ -1410,7 +1412,7 @@ namespace Strike_12
                                         {
                                             if (rng.Next(0, 100) < 50)
                                             {
-                                                eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                                eManager.WaveProgress(new LaserEnemy(enemySprites, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.SizeY), Interval);
                                             }
                                             else
                                             {
@@ -1794,7 +1796,7 @@ namespace Strike_12
                        new Vector2(100, 100), Color.LightGray);
 
                     _spriteBatch.DrawString(displayFont, $"\nWave: {eManager.WaveNum}",
-                        new Vector2(100, 200), Color.Black);
+                        new Vector2(100, 200), Color.White);
                     _spriteBatch.DrawString(displayFont, $"\n# of enemies in wave: {eManager.Enemies.Count}",
                         new Vector2(100, 250), Color.LightGray);
 
@@ -1895,7 +1897,11 @@ namespace Strike_12
 
                     foreach (Enemy enemy in eManager.Enemies)
                     {
-                        if (enemy is BulletEnemy)
+                        if (enemy is BounceEnemy)
+                        {
+                            enemy.Animation.Draw(_spriteBatch, enemyBounce, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                        }
+                        else if (enemy is BulletEnemy)
                         {
                             enemy.Animation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64, 1f);
                         }
@@ -1916,25 +1922,14 @@ namespace Strike_12
                                     break;
                             }
                         }
-                        else if (enemy is BulletEnemy)
-                        {
-                            enemy.Animation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64, 1f);
-                        }
-                        else if (enemy is FollowEnemy)
-                        {
-                            enemy.Animation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
-                        }
-                        else if (enemy is BounceEnemy)
-                        {
-                            bounceRotate++;
-
-                            if (bounceRotate > 360)
-                            {
-                                bounceRotate = 0;
-                            }
-
-                            enemy.Animation.Draw(_spriteBatch, enemyBounce, enemy.Size, SpriteEffects.None, bounceRotate, 64, 1f);
-                        }
+                        //else if (enemy is BulletEnemy)
+                        //{
+                        //    enemy.Animation.Draw(_spriteBatch, enemyBullet, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                        //}
+                        //else if (enemy is FollowEnemy)
+                        //{
+                        //    enemy.Animation.Draw(_spriteBatch, enemyFollow, enemy.Size, SpriteEffects.None, 0, 64, 1f);
+                        //}
                         else
                         {
                             enemy.Draw(_spriteBatch, enemySprites);
