@@ -84,12 +84,13 @@ namespace Strike_12
 
         }
 
-        public int SpawnFormula(double dampener, int interval)
+        public int SpawnFormula(double dampener, int interval, int intNum)
         {
             NumEnemies += (int)Math.Ceiling(Math.Exp(interval * dampener));
             NumEnemies += (int)Math.Ceiling(Math.Exp(((Start + End) / 15) * 2 * dampener));
+            
 
-            if (interval > 1)
+            if (intNum != 0)
             {
                 //NumEnemies -= SpawnFormula(dampener, (interval - 5));
 
