@@ -369,7 +369,7 @@ namespace Strike_12
                 //    canJump = false;
                 //}
 
-                if (/*VelocityY == 0*/ isGrounded && (lastJump + buffer > gameTime.TotalGameTime.TotalMinutes) && canJump)
+                if (VelocityY == 0 && (lastJump + buffer > gameTime.TotalGameTime.TotalMinutes) && canJump)
                 {
                     canJump = false;
                     isGrounded = false;
@@ -392,7 +392,7 @@ namespace Strike_12
             }
 
             // Crouching
-            if (kbState.IsKeyDown(Keys.S) && !previousKBState.IsKeyDown(Keys.S) /*&& isGrounded*/)
+            if (kbState.IsKeyDown(Keys.S) && !previousKBState.IsKeyDown(Keys.S) && playerState != PlayerStates.airdash)
             {
                 size = new Rectangle(size.X, size.Y, size.Width, 64);
                 position.Y += 64;
@@ -518,6 +518,7 @@ namespace Strike_12
                     if (kbState.IsKeyDown(Keys.W))
                     {
                         moveDirection = Keys.W;
+                        size = new Rectangle(size.X, size.Y, 64, 128);
                     }
                     else if (kbState.IsKeyDown(Keys.A))
                     {
@@ -527,6 +528,7 @@ namespace Strike_12
                     else if (kbState.IsKeyDown(Keys.S))
                     {
                         moveDirection = Keys.S;
+                        size = new Rectangle(size.X, size.Y, 64, 128);
                     }
                     else if (kbState.IsKeyDown(Keys.D))
                     {
@@ -540,7 +542,7 @@ namespace Strike_12
 
             // Okay so come back to this and check this out
             // checks for if the player is above a platform or ground, and resets grounded to false
-            //IsGrounded = false;
+            IsGrounded = false;
 
             // Update the player's "size" position and float position using the player's velocity after
             // calculations (X - Direction)
@@ -641,22 +643,6 @@ namespace Strike_12
                     collider.Size.Left < collided.Size.Right);
         }
 
-        public void Jump()
-        {
-            isGrounded = false;
-            position.Y -= 60f;
-            velocity.Y = -20f;
-
-            if (previousPlayerState == PlayerStates.faceRight || previousPlayerState == PlayerStates.jumpRight)
-            {
-                playerState = PlayerStates.jumpRight;
-            }
-            else if (previousPlayerState == PlayerStates.faceLeft || previousPlayerState == PlayerStates.jumpLeft)
-            {
-                playerState = PlayerStates.jumpLeft;
-            }
-        }
-
         /// <summary>
         /// This method resets the player to its starting state for resetting the game
         /// </summary>
@@ -671,6 +657,7 @@ namespace Strike_12
             timeStopActive = false;
             energy = maxEnergy;
             Health = maxHealth;
+            size = new Rectangle(((int)position.X), ((int)position.Y), 64, 128);
         }
     }
 }

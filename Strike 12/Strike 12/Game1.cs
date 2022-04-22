@@ -511,7 +511,7 @@ namespace Strike_12
                         {
                             if (levels[lvlNum][i, j] != null)
                             {
-                                // Check for top collisions
+                                //// Check for top collisions
                                 if (player.IsCollidingTop(player, levels[lvlNum][i, j]) &&
                                     (!isCollidingUp) && (levels[lvlNum][i, j].Type != "leftWall" && levels[lvlNum][i, j].Type != "rightWall"))
                                 {
@@ -520,28 +520,12 @@ namespace Strike_12
                                         player.SizeY -= 1;
                                     }
 
-
-
                                     player.VelocityY = 0;
                                     player.PositionY = player.SizeY;
 
                                     player.IsGrounded = true;
                                     isCollidingUp = true;
                                 }
-                                //else if (isCollidingUp)
-                                //{
-                                //    //if (player.Size.Bottom > levels[lvlNum][i, j].Size.Top)
-                                //    //{
-                                //    //    isCollidingUp = false;
-                                //    //    player.IsGrounded = false;
-                                //    //}
-
-                                //    if (!player.IsCollidingTop(player, levels[lvlNum][i, j]))
-                                //    {
-                                //        //isCollidingUp = false;
-                                //        //player.IsGrounded = false;
-                                //    }
-                                //}
 
                                 // Check for bottom collisions
                                 if (player.IsCollidingBottom(player, levels[lvlNum][i, j]) &&
@@ -1356,31 +1340,36 @@ namespace Strike_12
 
                             SpriteEffects flipSprite = new SpriteEffects();
                             int rotation = 0;
+                            Texture2D sprite = playerDash;
 
                             switch (player.MoveDirection)
                             {
                                 case Keys.W:
                                     flipSprite = SpriteEffects.None;
-                                    rotation = -90;
+                                    rotation = 0;
+                                    sprite = playerDashAlt;
                                     break;
 
                                 case Keys.S:
                                     flipSprite = SpriteEffects.FlipVertically;
-                                    rotation = 90;
+                                    rotation = 0;
+                                    sprite = playerDashAlt;
                                     break;
 
                                 case Keys.A:
                                     flipSprite = SpriteEffects.FlipHorizontally;
                                     rotation = 0;
+                                    sprite = playerDash;
                                     break;
 
                                 case Keys.D:
                                     flipSprite = SpriteEffects.None;
                                     rotation = 0;
+                                    sprite = playerDash;
                                     break;
                             }
 
-                            playerAnimation.Draw(_spriteBatch, playerDash, player.Size, flipSprite, rotation);
+                            playerAnimation.Draw(_spriteBatch, sprite, player.Size, flipSprite, rotation);
 
                             break;
                     }
