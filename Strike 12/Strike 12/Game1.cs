@@ -140,6 +140,7 @@ namespace Strike_12
         private Texture2D clockMinute1;
         private Texture2D clockMinute2;
         private Texture2D clockHour;
+        private Texture2D clockTop;
         private Texture2D Shade;
         private Texture2D cat;
 
@@ -364,6 +365,7 @@ namespace Strike_12
             clockHour = Content.Load<Texture2D>("HourHand");
             clockMinute1 = Content.Load<Texture2D>("MinuteHand1");
             clockMinute2 = Content.Load<Texture2D>("MinuteHand2");
+            clockTop = Content.Load<Texture2D>("clockTop");
             shopKeeperAnimation = new AnimationManager();
             Shade = Content.Load<Texture2D>("atmosphere");
             cat = Content.Load<Texture2D>("cat");
@@ -432,13 +434,15 @@ namespace Strike_12
                     {
                         clockMin1Animation.Update(gameTime, 15, 0.0166666667);
                     }
-                    else if (clockTimer <=30)
+                    else if (clockTimer <30)
                     {
                         clockMin2Animation.Update(gameTime, 15, 0.0166666667);
                     }
                     else
                     {
                         clockTimer = 0;
+                        clockMin1Animation.Reset();
+                        clockMin2Animation.Reset();
                     }
 
                     //debug controls for Annalee while working on shop
@@ -1737,14 +1741,15 @@ namespace Strike_12
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0, 0), Color.White);
                     clockHourAnimation.Draw(_spriteBatch, clockHour, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
-                    if (clockTimer <= 15)
+                    if (clockTimer <= 15 || clockTimer > 30)
                     {
                         clockMin1Animation.Draw(_spriteBatch, clockMinute1, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
                     }
-                    else if (clockTimer <= 30)
+                    else if (clockTimer < 30)
                     {
                         clockMin2Animation.Draw(_spriteBatch, clockMinute2, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
                     }
+                    _spriteBatch.Draw(clockTop, new Rectangle(50, 50, windowWidth - 100, windowHeight - 100), Color.White);
                     // Draw the tiles
                     levels[lvlNum].Draw(_spriteBatch, tileSprites);
 
