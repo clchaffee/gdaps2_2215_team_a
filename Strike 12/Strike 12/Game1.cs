@@ -522,7 +522,7 @@ namespace Strike_12
 
 
                     // Increment the player's energy if it is currently under the maximum
-                    if (player.CurrentEnergy < player.Energy)
+                    if (player.CurrentEnergy < player.Energy && !player.TimeStopActive)
                     {
                         if (energyTimer > 60)
                         {
@@ -1131,20 +1131,6 @@ namespace Strike_12
                         state = GameState.GameOver;
                     }
 
-                    // If time is stopped, increased the stopped time timer (aka, the stoppedTimer)
-                    if (player.TimeStopActive)
-                    {
-                        if (stoppedTimer < 180)
-                        {
-                            stoppedTimer++;
-                        }
-                        else
-                        {
-                            player.TimeStopActive = false;
-                            stoppedTimer = 0;
-                        }
-                    }
-
                     break;
 
                 // Game Winner: appears when timer is greater than 30
@@ -1183,6 +1169,10 @@ namespace Strike_12
                 case GameState.GameOver:
                     player.Reset();
                     player.Deaths++;
+
+                    // Ensure that the player isn't invincible
+                    playerInvincible = false;
+
                     foreach (Enemy enemy in eManager.Enemies)
                     {
                         enemy.Reset();
