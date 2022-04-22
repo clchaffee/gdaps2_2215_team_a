@@ -20,6 +20,9 @@ namespace Strike_12
         GameOver,
         GameWinner
     }
+    /// <summary>
+    /// best unupgraded time: Colby with 81.43s
+    /// </summary>
     public class Game1 : Game
     {
         //fields
