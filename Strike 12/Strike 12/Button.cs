@@ -163,6 +163,10 @@ namespace Strike_12
                         spriteBatch.DrawString(spriteFont, $"MEOW ^-3-^",
                                  new Vector2(size.X + 50, size.Y - 100), Color.LightGray);
                     }
+                    else
+                    {
+                        spriteBatch.Draw(texture, size, Color.LightSlateGray);
+                    }
                     break;
 
                 case (State.Highlighted):

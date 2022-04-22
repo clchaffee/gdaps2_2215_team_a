@@ -111,7 +111,12 @@ namespace Strike_12
         private Tile tile;
         private List<LevelEditor> levels;
         private int lvlNum;
+
+        private Texture2D backBar;
         private Texture2D bar;
+
+        private int healthMath;
+        private int energyMath;
 
         // Other Assets
         private Texture2D arenaBackground;
@@ -188,6 +193,8 @@ namespace Strike_12
             titleBG = Content.Load<Texture2D>("NewTitle");
             arenaBG = Content.Load<Texture2D>("Arena");
             arenaBackground = Content.Load<Texture2D>("ArenaBG");
+
+            backBar = Content.Load<Texture2D>("backbar");
             bar = Content.Load<Texture2D>("bar");
 
             //Shop
@@ -245,6 +252,8 @@ namespace Strike_12
             //lEnemy = new LaserEnemy(buttonTexture, new Rectangle(0, 0, 64, 128), windowWidth, windowHeight, player.Size.Y);
             //eManager.SpawnEnemy(lEnemy);
 
+            healthMath = player.Health * (backBar.Width / 2) / player.MaxHealth;
+            energyMath = ((int)(player.CurrentEnergy * (backBar.Width / 2) / player.Energy));
 
             // -- LEVEL LOADING --
             levels = new List<LevelEditor>();
@@ -412,14 +421,10 @@ namespace Strike_12
                 // when in the arena, "dies" when you press space, entering the shop
                 case GameState.Arena:
 
-                    //debug controls for Annalee while working on shop
+                    //debug controls for teleport shop
                     if (kbState.IsKeyDown(Keys.Back) && prevKbState.IsKeyUp(Keys.Back))
                     {
                         state = GameState.GameOver;
-                    }
-                    if (kbState.IsKeyDown(Keys.P) && prevKbState.IsKeyUp(Keys.P))
-                    {
-                        shop.Points += 100;
                     }
 
                     //resets fading
@@ -1184,6 +1189,12 @@ namespace Strike_12
                 case GameState.Shop:
                     player.Health = shop.MaxHealth;
 
+                    //debug key for money
+                    if (kbState.IsKeyDown(Keys.P) && prevKbState.IsKeyUp(Keys.P))
+                    {
+                        shop.Points += 1000;
+                    }
+
                     // for each button calls update method, checks if pressed and gives upgrade if you have enough points
                     foreach (Button button in buttons)
                     {
@@ -1378,6 +1389,16 @@ namespace Strike_12
                     // Draw the tiles
                     levels[lvlNum].Draw(_spriteBatch, tileSprites);
 
+                    //health bar
+                    _spriteBatch.Draw(backBar, new Rectangle(65, 10, 
+                        player.Health * (backBar.Width / 2) / player.MaxHealth, backBar.Height / 2), Color.Red);
+                    _spriteBatch.Draw(bar, new Rectangle(65, 10, bar.Width / 2, bar.Height / 2), Color.White);
+
+                    //energy bar
+                    _spriteBatch.Draw(backBar, new Rectangle(windowWidth - (bar.Width / 2) - 65, 10, 
+                        (int)(player.CurrentEnergy * (backBar.Width / 2) / player.Energy), backBar.Height / 2), Color.Green);
+                    _spriteBatch.Draw(bar, new Rectangle(windowWidth - (bar.Width / 2) - 65, 10, bar.Width / 2, bar.Height / 2), Color.White);
+
                     _spriteBatch.DrawString(displayFont, $"\nTime Passed: {String.Format("{0:0.00}", timer)}",
                         new Vector2(100, 150), Color.LightGray);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
@@ -1485,6 +1506,8 @@ namespace Strike_12
                        new Vector2(100, 150), Color.LightGray);
                     _spriteBatch.DrawString(displayFont, $"\nPlayer Health: {player.Health}",
                        new Vector2(100, 100), Color.LightGray);
+                    _spriteBatch.Draw(bar, new Rectangle(65, 10, bar.Width / 2, bar.Height / 2), Color.White);
+                    _spriteBatch.Draw(bar, new Rectangle(windowWidth - (bar.Width / 2) - 65, 10, bar.Width / 2, bar.Height / 2), Color.White);
                     break;
 
                 //text for shop screen
