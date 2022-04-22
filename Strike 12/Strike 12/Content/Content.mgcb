@@ -326,6 +326,18 @@
 /processorParam:TextureFormat=Color
 /build:ShopKeeper.png
 
+#begin shopKeeperSheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:shopKeeperSheet.png
+
 #begin ShopWall.png
 /importer:TextureImporter
 /processor:TextureProcessor

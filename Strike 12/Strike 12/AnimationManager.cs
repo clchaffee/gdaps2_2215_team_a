@@ -103,5 +103,23 @@ namespace Strike_12
                 0f); 
 
         }
+
+        public void DrawShopKeeper(SpriteBatch _spriteBatch, Texture2D texture, Rectangle rect, SpriteEffects effect, float rotation)
+        {
+            _spriteBatch.Draw(
+                texture,
+                rect,
+                new Rectangle(
+                    0 + (130 * (int)Math.Floor(frames)),
+                    0,
+                    rect.Width,
+                    rect.Height),
+                Color.White,
+                rotation,
+                Vector2.Zero,
+                effect,
+                0f);
+
+        }
     }
 }
