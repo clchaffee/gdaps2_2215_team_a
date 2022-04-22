@@ -74,6 +74,8 @@ namespace Strike_12
         private EnemyManager eManager;
         private EnemyManager bManager;
         int wave = 1;
+        private double dampener = .04;
+        int interval = 0;
 
         //variables for the shop
         private Shop shop;
@@ -341,6 +343,12 @@ namespace Strike_12
                         state = GameState.Controls;
                     }
 
+                    //TODO: god mode here
+                    if (kbState.IsKeyDown(Keys.OemTilde) && prevKbState.IsKeyUp(Keys.OemTilde))
+                    {
+                        collidable = false;
+                    }
+
                     buttons[0].Update(gameTime);
                     buttons[1].Update(gameTime);
 
@@ -511,7 +519,7 @@ namespace Strike_12
                         {
                             if (levels[lvlNum][i, j] != null)
                             {
-                                // Check for top collisions
+                                //// Check for top collisions
                                 if (player.IsCollidingTop(player, levels[lvlNum][i, j]) &&
                                     (!isCollidingUp) && (levels[lvlNum][i, j].Type != "leftWall" && levels[lvlNum][i, j].Type != "rightWall"))
                                 {
@@ -520,28 +528,12 @@ namespace Strike_12
                                         player.SizeY -= 1;
                                     }
 
-
-
                                     player.VelocityY = 0;
                                     player.PositionY = player.SizeY;
 
                                     player.IsGrounded = true;
                                     isCollidingUp = true;
                                 }
-                                //else if (isCollidingUp)
-                                //{
-                                //    //if (player.Size.Bottom > levels[lvlNum][i, j].Size.Top)
-                                //    //{
-                                //    //    isCollidingUp = false;
-                                //    //    player.IsGrounded = false;
-                                //    //}
-
-                                //    if (!player.IsCollidingTop(player, levels[lvlNum][i, j]))
-                                //    {
-                                //        //isCollidingUp = false;
-                                //        //player.IsGrounded = false;
-                                //    }
-                                //}
 
                                 // Check for bottom collisions
                                 if (player.IsCollidingBottom(player, levels[lvlNum][i, j]) &&
@@ -704,24 +696,41 @@ namespace Strike_12
                     //adds one to the count in the manager every frame
                     eManager.Count++;
 
-                    // TODO: properly update the spawning method/algorithm
 
                     if ((int)timer % 5 == 0 && !player.TimeStopActive)
                     {
                         if (spawnCap)
                         {
+                            #region //waves
                             switch (eManager.WaveNum)
                             {
                                 //wave 1 always spawns regular enemies
                                 case 1:
-                                    eManager.SpawnFormula(.09);
-                                    eManager.Enemies.Clear();
-                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    //eManager.SpawnFormula(.09);
+                                    //eManager.Enemies.Clear();
+                                    if(interval == 0)
                                     {
-                                        eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        for (int i = 0; i < spawned; i++)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                        interval += 5;
                                     }
+                                    else
+                                    {
+                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        for (int i = 0; i < spawned; i++)
+                                        {
+                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                        }
+                                        interval += 5;
+
+                                    }
+                                    
 
                                     break;
+                                #region //old spawning
                                 //    if (medium == true)
                                 //    {
                                 //        eManager.SpawnFormula(.1);
@@ -749,44 +758,95 @@ namespace Strike_12
                                 //        }
                                 //    }
                                 //    break;
-
+                                #endregion
 
                                 //wave 2 has a 20 percent chance to spawn a bullet enemy
+                                
+                                
                                 case 2:
-                                    eManager.SpawnFormula(.1);
+                                    //eManager.SpawnFormula(.09);
                                     //eManager.Enemies.Clear();
-                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    if (interval == 0)
                                     {
-                                        if (rng.Next(0, 100) < 70)
+                                        eManager.Start += 5;
+                                        eManager.End += 5;
+                                        dampener -= .001;
+                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        for (int i = 0; i < spawned; i++)
                                         {
-                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                            if (rng.Next(0, 100) < 80)
+                                            {
+                                                eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                            }
+                                            else
+                                            {
+                                                eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                            }
                                         }
-                                        else
-                                        {
-                                            eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, (int)player.PositionX, (int)player.PositionY), Interval);
-                                        }
+                                        interval += 5;
                                     }
+                                    else
+                                    {
+                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        for (int i = 0; i < spawned; i++)
+                                        {
+                                            if (rng.Next(0, 100) > 39)
+                                            {
+                                                eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                            }
+                                            else
+                                            {
+                                                eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                            }
+                                        }
+                                        interval += 5;
 
+                                    }
                                     break;
 
                                 //wave 3: 60% for normal, 40% for bullet
                                 case 3:
-                                    eManager.SpawnFormula(.1);
-                                    //eManager.Enemies.Clear();
-                                    for (int i = 0; i < eManager.NumEnemies[Interval]; i++)
+                                    if (interval == 0)
                                     {
-                                        if (rng.Next(0, 100) > 39)
+                                        eManager.Start += 5;
+                                        eManager.End += 5;
+                                        dampener -= .001;
+                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        for (int i = 0; i < spawned; i++)
                                         {
-                                            eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                            if (rng.Next(0, 100) < 60)
+                                            {
+                                                eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                            }
+                                            else
+                                            {
+                                                eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                            }
                                         }
-                                        else
-                                        {
-                                            eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
-                                        }
+                                        interval += 5;
                                     }
+                                    else
+                                    {
+                                        int spawned = eManager.SpawnFormula(dampener, interval);
+                                        for (int i = 0; i < spawned; i++)
+                                        {
+                                            if (rng.Next(0, 100) > 39)
+                                            {
+                                                eManager.WaveProgress(new Enemy(enemySprites, new Rectangle(rng.Next(128, windowWidth - 64 - 64), rng.Next(player.SizeY - 192, windowHeight - 64 - 64), 64, 64), windowWidth, windowHeight), Interval);
+                                            }
+                                            else
+                                            {
+                                                eManager.WaveProgress(new BulletEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
+                                            }
+                                        }
+                                        interval += 5;
 
+                                    }
+                                    eManager.Start += 5;
+                                    eManager.End += 5;
+                                    dampener -= .001;
                                     break;
-
+/*
                                 //wave 4: 40% normal, 40% projectile, 20% bounce
                                 case 4:
                                     eManager.SpawnFormula(.1);
@@ -806,7 +866,7 @@ namespace Strike_12
                                             eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
                                         }
                                     }
-
+                                    dampener -= .001;
                                     break;
 
                                 //wave 5: 30% normal, 30% bounce, 40% bullet
@@ -828,7 +888,7 @@ namespace Strike_12
                                             eManager.WaveProgress(new BounceEnemy(enemySprites, new Rectangle(0, 0, 64, 64), windowWidth, windowHeight, player.SizeX, player.SizeY), Interval);
                                         }
                                     }
-
+                                    dampener -= .001;
                                     break;
 
                                 //Wave 6: 40% normal, 20% bounce, 30% bullet, 10% follow
@@ -854,7 +914,7 @@ namespace Strike_12
                                             eManager.WaveProgress(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight), Interval);
                                         }
                                     }
-
+                                    dampener -= .001;
                                     break;
                                 //wave 7: 20% norm 30% bounce 20% bullet 30% follow
                                 case 7:
@@ -879,6 +939,7 @@ namespace Strike_12
                                             eManager.WaveProgress(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight), Interval);
                                         }
                                     }
+                                    dampener -= .001;
                                     break;
 
                                 //10 norm  40 follow 40 bounce 10 bullet
@@ -904,6 +965,7 @@ namespace Strike_12
                                             eManager.WaveProgress(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight), Interval);
                                         }
                                     }
+                                    dampener -= .001;
                                     break;
 
                                 //50 follow 50 bounce
@@ -921,6 +983,7 @@ namespace Strike_12
                                             eManager.WaveProgress(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight), Interval);
                                         }
                                     }
+                                    dampener -= .001;
                                     break;
 
                                 //60 follow 30 bounce 10 bullet
@@ -943,6 +1006,7 @@ namespace Strike_12
                                             eManager.WaveProgress(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight), Interval);
                                         }
                                     }
+                                    dampener -= .001;
                                     break;
 
                                 case 11:
@@ -964,6 +1028,7 @@ namespace Strike_12
                                             eManager.WaveProgress(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight), Interval);
                                         }
                                     }
+                                    dampener -= .001;
                                     break;
 
                                 //50 follow 50 laser
@@ -981,25 +1046,26 @@ namespace Strike_12
                                             eManager.WaveProgress(new FollowEnemy(enemySprites, new Rectangle(64, 64, 64, 64), windowWidth, windowHeight), Interval);
                                         }
                                     }
+                                    dampener -= .001;
                                     break;
-
+                                */
                                 default:
                                     break;
                             }
+                            #endregion
 
-
-                            Interval++;
+                            
 
                             count++;
                             spawnCap = false;
                             waitTime = 59;
-                            if (Interval == 7)
+                            if (interval != 0 && interval %6 == 0)
                             {
                                 eManager.Start += 5;
                                 eManager.End += 5;
                                 Interval = 0;
                                 eManager.Enemies.Clear();
-                                eManager.NumEnemies.Clear();
+                                eManager.NumEnemies = 0;
                                 eManager.WaveNum++;
                                 spawnCap = true;
                             }
@@ -1085,7 +1151,7 @@ namespace Strike_12
                     eManager.Start += 0;
                     eManager.End += 30;
                     Interval = 0;
-                    eManager.Enemies.Clear();
+                    eManager.NumEnemies = 0;
                     eManager.WaveNum = 1;
 
                     //level reset
@@ -1254,7 +1320,7 @@ namespace Strike_12
 
                 // text for control screen
                 case GameState.Controls:
-                    _spriteBatch.DrawString(titleFont, "Press Space to Jump\nPress A to Move Left\nPress D to Move Right\nPress S to Crouch" +
+                    _spriteBatch.DrawString(titleFont, "Press W to Jump\nPress A to Move Left\nPress D to Move Right\nPress S to Crouch" +
                         "\nPress Left Shift and a direction to airdash (WHEN UNLOCKED)" +
                         "\nPress Q to stop time for a short period (WHEN UNLOCKED)\n",
                         new Vector2(100, 50), Color.Black);
@@ -1356,31 +1422,36 @@ namespace Strike_12
 
                             SpriteEffects flipSprite = new SpriteEffects();
                             int rotation = 0;
+                            Texture2D sprite = playerDash;
 
                             switch (player.MoveDirection)
                             {
                                 case Keys.W:
                                     flipSprite = SpriteEffects.None;
-                                    rotation = -90;
+                                    rotation = 0;
+                                    sprite = playerDashAlt;
                                     break;
 
                                 case Keys.S:
                                     flipSprite = SpriteEffects.FlipVertically;
-                                    rotation = 90;
+                                    rotation = 0;
+                                    sprite = playerDashAlt;
                                     break;
 
                                 case Keys.A:
                                     flipSprite = SpriteEffects.FlipHorizontally;
                                     rotation = 0;
+                                    sprite = playerDash;
                                     break;
 
                                 case Keys.D:
                                     flipSprite = SpriteEffects.None;
                                     rotation = 0;
+                                    sprite = playerDash;
                                     break;
                             }
 
-                            playerAnimation.Draw(_spriteBatch, playerDash, player.Size, flipSprite, rotation);
+                            playerAnimation.Draw(_spriteBatch, sprite, player.Size, flipSprite, rotation);
 
                             break;
                     }
