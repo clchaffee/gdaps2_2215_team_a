@@ -64,26 +64,31 @@ namespace Strike_12
             //    NumEnemies--;
             //}
             //when a bounce enemy spawns, removes 4 from the list
-            if(enemy is Enemy)
-            {
-                enemy.MoveSpeed = rng.Next(3, 8);
-            }
+
             if (enemy is BounceEnemy && NumEnemies > 5)
             {
-                NumEnemies -= 2;
+                NumEnemies -= 3;
+                SpawnEnemy(enemy);
             }
             //when a follow enemy spawns, removes 8 from the list
             if (enemy is FollowEnemy && NumEnemies > 2)
             {
-                NumEnemies -= 5;
+                NumEnemies -= 7;
+                SpawnEnemy(enemy);
             }
             //when a laser enemy spawns, removes 16 from the list
             if (enemy is LaserEnemy && NumEnemies > 2)
             {
-                NumEnemies -= 10;
+                NumEnemies -= 15;
+                SpawnEnemy(enemy);
+            }
+            if(enemy is Enemy)
+            {
+                enemy.MoveSpeed = rng.Next(3, 8);
+                //NumEnemies--;
+                SpawnEnemy(enemy);
             }
 
-            SpawnEnemy(enemy);
 
 
         }
