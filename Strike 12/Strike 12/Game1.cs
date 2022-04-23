@@ -443,6 +443,7 @@ namespace Strike_12
                         clockTimer = 0;
                         clockMin1Animation.Reset();
                         clockMin2Animation.Reset();
+                        clockMin1Animation.Update(gameTime, 15, 0.0166666667);
                     }
 
                     //debug controls for Annalee while working on shop
@@ -1508,35 +1509,18 @@ namespace Strike_12
 
                 // Game Winner: appears when timer is greater than 30
                 case GameState.GameWinner:
-                    player.Reset();
-                    bEnemy.Reset();
-                    foreach (Enemy enemy in eManager.Enemies)
-                    {
-                        enemy.Reset();
-                    }
-
                     //resets data from Arena
                     eManager.Enemies.Clear();
-                    waveLength = 10;
-                    waveDelta = 10;
-                    eManager.Count = 0;
 
-                    //level reset
-                    lvlNum = 0;
-
-                    //you get 5 points per second spent alive in the arena
-                    shop.Points += 5 * (int)timer;
-                    timer = 0;
-                    clockTimer = 0;
+                    timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
 
                     //starts to fade
                     fading = true;
-                    fadeOpacity = fadeOpacity + 3;
-
-                    if (fadeOpacity == 256)
+                    if (fadeOpacity < 256)
                     {
-
+                        fadeOpacity = fadeOpacity + 3;
                     }
+                    
                     break;
 
                 // Game Over: appears when health is less than 1
@@ -1563,6 +1547,8 @@ namespace Strike_12
                     //level reset
                     lvlNum = 0;
                     clockHourAnimation.Reset();
+                    clockMin1Animation.Reset();
+                    clockMin2Animation.Reset();
 
                     //resets data from Arena
                     eManager.Enemies.Clear();
@@ -1724,10 +1710,17 @@ namespace Strike_12
 
                     //draw buttons
                     buttons[0].Draw(_spriteBatch, displayFont, buttonSelect, smallSign);
+
+                    //fade
+                    if (fading)
+                    {
+                        _spriteBatch.Draw(black, new Vector2(0, 0), null, new Color(0, 0, 0, fadeOpacity), 0f, Vector2.Zero, new Vector2(windowWidth, windowHeight), SpriteEffects.None, 0);
+                    }
                     break;
 
                 //text for arena screen
                 case GameState.Arena:
+                case GameState.GameWinner:
 
                     _spriteBatch.Draw(arenaBackground, new Vector2(0, 0), Color.White);
                     clockHourAnimation.Draw(_spriteBatch, clockHour, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
@@ -1911,16 +1904,30 @@ namespace Strike_12
 
                     shadeManager.Draw(_spriteBatch, Shade, new Rectangle(0, 0, Shade.Width, Shade.Height), SpriteEffects.None, 0, windowWidth, 1f);
 
-                    break;
+                    //if you win fades to black and sends message
+                    if (state == GameState.GameWinner)
+                    {
+                        //fade
+                        if (fading)
+                        {
+                            _spriteBatch.Draw(black, new Vector2(0, 0), null, new Color(0, 0, 0, fadeOpacity), 0f, Vector2.Zero, new Vector2(windowWidth, windowHeight), SpriteEffects.None, 0);
+                        }
 
-                //Text for game winner screen
-                case GameState.GameWinner:
-                    _spriteBatch.DrawString(titleFont, "Surprisingly you're here, where no one else has been\n" +
-                        "Thank you for taking the time to play this\n" +
-                        "",
-                        new Vector2(150, 200), Color.White);
-                    _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Space to return to the shop",
-                        new Vector2(100, 400), Color.White);
+                        if (fadeOpacity >= 255)
+                        {
+                            _spriteBatch.DrawString(titleFont, "Surprisingly you're here, where no one else has been\n" +
+                                "Thank you for taking the time to play this\n" +
+                                "",
+                                new Vector2(150, 200), Color.White);
+                        }
+                        if (timer >= 370)
+                        {
+                            _spriteBatch.DrawString(displayFont, "Press Escape to close the game, theres nothing more here, please leave, go touch grass or something.",
+                            new Vector2(100, 400), Color.White);
+                        }
+                        
+                    }
+
                     break;
 
                 // Text for game over state
@@ -1988,12 +1995,6 @@ namespace Strike_12
 
                 default:
                     break;
-            }
-
-            //fade
-            if (fading)
-            {
-                _spriteBatch.Draw(black, new Vector2(0, 0), null, new Color(0, 0, 0, fadeOpacity), 0f, Vector2.Zero, new Vector2(windowWidth, windowHeight), SpriteEffects.None, 0);
             }
 
             //closes the spriteBatch before calling draw
