@@ -430,15 +430,15 @@ namespace Strike_12
 
                     // ClockAnimation
                     clockHourAnimation.Update(gameTime, 12, 0.00055555556);
-                    if (clockTimer <=15)
+                    if (clockTimer <=15 && !player.TimeStopActive)
                     {
                         clockMin1Animation.Update(gameTime, 15, 0.0166666667);
                     }
-                    else if (clockTimer <30)
+                    else if (clockTimer <30 && !player.TimeStopActive)
                     {
                         clockMin2Animation.Update(gameTime, 15, 0.0166666667);
                     }
-                    else
+                    else if (!player.TimeStopActive)
                     {
                         clockTimer = 0;
                         clockMin1Animation.Reset();
@@ -457,12 +457,7 @@ namespace Strike_12
                     fadeOpacity = 0;
 
                     //eManager.FirstWave();
-                    if (player.TimeStopActive)
-                    {
-                        timer = timer;
-                        clockTimer = clockTimer;
-                    }
-                    else
+                    if (!player.TimeStopActive)
                     {
                         timer = timer + gameTime.ElapsedGameTime.TotalSeconds;
                         clockTimer = clockTimer + gameTime.ElapsedGameTime.TotalSeconds;
@@ -1933,6 +1928,16 @@ namespace Strike_12
                 // Text for game over state
                 case GameState.GameOver:
                     _spriteBatch.Draw(arenaBackground, new Vector2(0, 0), Color.White);
+                    clockHourAnimation.Draw(_spriteBatch, clockHour, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
+                    if (clockTimer <= 15 || clockTimer > 30)
+                    {
+                        clockMin1Animation.Draw(_spriteBatch, clockMinute1, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
+                    }
+                    else if (clockTimer < 30)
+                    {
+                        clockMin2Animation.Draw(_spriteBatch, clockMinute2, new Rectangle(0, 0, windowWidth, windowHeight), SpriteEffects.None, 0f, windowWidth, 1f);
+                    }
+                    _spriteBatch.Draw(clockTop, new Rectangle(50, 50, windowWidth - 100, windowHeight - 100), Color.White);
                     // Draw the tiles
                     levels[lvlNum].Draw(_spriteBatch, tileSprites);
 
@@ -1949,6 +1954,9 @@ namespace Strike_12
 
                     _spriteBatch.Draw(bar, new Rectangle(windowWidth - (bar.Width / 2) - 70, 10, bar.Width / 2, bar.Height / 2), Color.White);
                     _spriteBatch.Draw(energySprite, new Vector2(windowWidth - energySprite.Width, 0), Color.White);
+
+                    shadeManager.Draw(_spriteBatch, Shade, new Rectangle(0, 0, Shade.Width, Shade.Height), SpriteEffects.None, 0, windowWidth, 1f);
+
                     break;
 
                 //text for shop screen
@@ -1968,7 +1976,7 @@ namespace Strike_12
                         $"\nEnergy: {player.Energy}\n" +
                         $"\nDeaths: {player.Deaths}" +
                         $"\n{String.Format("Best Time: {0:0.00}", player.BestTime)}" +
-                        $"\nSpendings: {shop.Spendings}",
+                        $"\nLifetime Spendings: ${shop.Spendings}",
                        new Vector2(40, 100), Color.White);
 
                     _spriteBatch.DrawString(displayFont, comment, new Vector2(450, 200), Color.LightGray);
