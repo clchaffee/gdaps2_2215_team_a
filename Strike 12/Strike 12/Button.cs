@@ -142,10 +142,16 @@ namespace Strike_12
                     spriteBatch.Draw(sign, new Vector2(size.X - 10, size.Y + size.Height), Color.White);
                     break;
                 case "Dash":
-                    spriteBatch.Draw(sign, new Vector2(size.X - 10, size.Y + size.Height), Color.White);
+                    if (boughtDash == false)
+                    {
+                        spriteBatch.Draw(sign, new Vector2(size.X - 10, size.Y + size.Height), Color.White);
+                    }
                     break;
                 case "Time Stop":
-                    spriteBatch.Draw(sign, new Vector2(size.X - 10, size.Y + size.Height), Color.White);
+                    if (boughtStop == false)
+                    {
+                        spriteBatch.Draw(sign, new Vector2(size.X - 10, size.Y + size.Height), Color.White);
+                    }
                     break;
                 default:
                     break;
@@ -157,55 +163,99 @@ namespace Strike_12
                 //specific check for checking whether the button is
                 //one of the upgrades or the cat
                 case (State.Pressed):
-                    if (type == "cat")
+                    switch (type)
                     {
-                        spriteBatch.Draw(texture, size, Color.White);
-                        spriteBatch.DrawString(spriteFont, $"MEOW ^-3-^",
-                                 new Vector2(size.X + 50, size.Y - 100), Color.LightGray);
-                    }
-                    else
-                    {
-                        spriteBatch.Draw(texture, size, Color.LightSlateGray);
+                        case "cat":
+                            spriteBatch.Draw(texture, size, Color.White);
+                            spriteBatch.DrawString(spriteFont, $"MEOW ^-3-^",
+                                     new Vector2(size.X + 50, size.Y - 100), Color.LightGray);
+                            break;
+                        case "Dash":
+                            spriteBatch.Draw(texture, size, Color.LightSlateGray);
+                            boughtDash = true;
+                            break;
+                        case "Time Stop":
+                            spriteBatch.Draw(texture, size, Color.LightSlateGray);
+                            boughtStop = true;
+                            break;
+                        default:
+                            spriteBatch.Draw(texture, size, Color.LightSlateGray);
+                            break;
                     }
                     break;
 
                 case (State.Highlighted):
-                    
-                    spriteBatch.Draw(texture, size, Color.White);
-                    spriteBatch.Draw(select, size, Color.DarkGoldenrod);
 
                     //provides simple explanations for each item in the shop
+                    //and small box around them when highlighted
                     switch (type)
                     {
                         case "Health":
                             spriteBatch.DrawString(spriteFont, "\nIncreases your total HEALTH.", text, Color.White);
+                            spriteBatch.Draw(texture, size, Color.White);
+                            spriteBatch.Draw(select, size, Color.DarkGoldenrod);
                             break;
                         case "Speed":
                             spriteBatch.DrawString(spriteFont, "\nIncreases your total SPEED.", text, Color.White);
+                            spriteBatch.Draw(texture, size, Color.White);
+                            spriteBatch.Draw(select, size, Color.DarkGoldenrod);
                             break;
                         case "Energy":
                             spriteBatch.DrawString(spriteFont, "\nIncreases your total ENERGY", text, Color.White);
+                            spriteBatch.Draw(texture, size, Color.White);
+                            spriteBatch.Draw(select, size, Color.DarkGoldenrod);
                             break;
                         case "Dash":
-                            spriteBatch.DrawString(spriteFont, "LEFT SHIFT to DASH \n" +
-                            "any direction you'd like.\n\n" +
-                            "***Uses Energy***", text, Color.White);
+                            if (boughtDash == false)
+                            {
+                                spriteBatch.DrawString(spriteFont, "LEFT SHIFT to DASH \n" +
+                                "any direction you'd like.\n\n" +
+                                "***Uses Energy***", text, Color.White);
+                                spriteBatch.Draw(texture, size, Color.White);
+                                spriteBatch.Draw(select, size, Color.DarkGoldenrod);
+                            }
                             break;
                         case "Time Stop":
-                            spriteBatch.DrawString(spriteFont, "PRESS Q to STOP TIME \n" +
-                            "freezes all enemies for \na few seconds.\n\n" +
-                            "***Uses Energy***", text, Color.White);
+                            if (boughtStop == false)
+                            {
+                                spriteBatch.DrawString(spriteFont, "PRESS Q to STOP TIME \n" +
+                                "freezes all enemies for \na few seconds.\n\n" +
+                                "***Uses Energy***", text, Color.White); 
+                                spriteBatch.Draw(texture, size, Color.White);
+                                spriteBatch.Draw(select, size, Color.DarkGoldenrod);
+                            }
                             break;
                         case "cat":
                             spriteBatch.Draw(texture, size, Color.White);
                             break;
                         default:
+                            spriteBatch.Draw(texture, size, Color.White);
+                            spriteBatch.Draw(select, size, Color.DarkGoldenrod);
                             break;
                     }
                     break;
 
                 case (State.NonHighlighted):
-                    spriteBatch.Draw(texture, size, Color.White);
+                    switch (type)
+                    {
+                        case "Dash":
+                            if (boughtDash == false)
+                            {
+                                spriteBatch.Draw(texture, size, Color.White);
+                            }
+                            break;
+
+                        case "Time Stop":
+                            if (boughtStop == false)
+                            {
+                                spriteBatch.Draw(texture, size, Color.White);
+                            }
+                            break;
+
+                        default:
+                            spriteBatch.Draw(texture, size, Color.White);
+                            break;
+                    }
                     break;
 
                 default:
@@ -215,9 +265,28 @@ namespace Strike_12
             //only button with a cost of zero is the cat
             if (Cost != 0)
             {
-                //prints cost
-                spriteBatch.DrawString(spriteFont, String.Format("{0} \nCost: ${1}", Type, Cost),
-                          new Vector2(size.X, size.Y + size.Height), Color.LightGray);
+                switch (type)
+                {
+                    case "Dash":
+                        if (boughtDash == false)
+                        {
+                            spriteBatch.DrawString(spriteFont, String.Format("{0} \nCost: ${1}", Type, Cost),
+                                  new Vector2(size.X, size.Y + size.Height), Color.LightGray);
+                        }
+                        break;
+                    case "Time Stop":
+                        if (boughtStop == false)
+                        {
+                            spriteBatch.DrawString(spriteFont, String.Format("{0} \nCost: ${1}", Type, Cost),
+                                  new Vector2(size.X, size.Y + size.Height), Color.LightGray);
+                        }
+                        break;
+                    default:
+                        //prints cost
+                        spriteBatch.DrawString(spriteFont, String.Format("{0} \nCost: ${1}", Type, Cost),
+                                  new Vector2(size.X, size.Y + size.Height), Color.LightGray);
+                        break;
+                }
             }
 
         }

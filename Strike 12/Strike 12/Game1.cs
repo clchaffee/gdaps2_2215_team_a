@@ -300,7 +300,7 @@ namespace Strike_12
             shop = new Shop(points);
 
             //other buttons at the start of the list for the start screen
-            buttons.Add(new Button("start", startButton, new Rectangle(windowWidth / 2 - 256 / 2, 450, 256, 124), 0));
+            buttons.Add(new Button("start", startButton, new Rectangle(windowWidth / 2 - 256 / 2, windowHeight/2, 256, 124), 0));
             buttons.Add(new Button("options", optionButton, new Rectangle(windowWidth / 2 - 256 / 2, 600, 256, 124), 0));
             buttons.Add(new Button("menu", menuButton, new Rectangle(300, 800, 256, 124), 0));
 
