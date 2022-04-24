@@ -13,6 +13,18 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin ../../../../../../../../Program Files (x86)/Steam/steamapps/common/Aseprite/textbox.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../../../../../Program Files (x86)/Steam/steamapps/common/Aseprite/textbox.png;textbox.png
+
 #begin Arena.png
 /importer:TextureImporter
 /processor:TextureProcessor

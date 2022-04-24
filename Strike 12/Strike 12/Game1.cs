@@ -103,6 +103,7 @@ namespace Strike_12
         private Texture2D smallSign;
         private Texture2D shelf;
         private Texture2D controls;
+        private Texture2D textBox;
 
         private string comment;
 
@@ -235,6 +236,7 @@ namespace Strike_12
             sign = Content.Load<Texture2D>("sign");
             smallSign = Content.Load<Texture2D>("sign-export");
             shelf = Content.Load<Texture2D>("shelf");
+            textBox = Content.Load<Texture2D>("textbox");
 
             //fading asset
             black = Content.Load<Texture2D>("black");
@@ -1979,7 +1981,8 @@ namespace Strike_12
                         $"\nLifetime Spendings: ${shop.Spendings}",
                        new Vector2(40, 100), Color.White);
 
-                    _spriteBatch.DrawString(displayFont, comment, new Vector2(450, 200), Color.LightGray);
+                    _spriteBatch.Draw(textBox, new Rectangle(270, 175, textBox.Width + 100, textBox.Height + 20), Color.White);
+                    _spriteBatch.DrawString(displayFont, comment, new Vector2(300, 190), Color.Black);
 
                     _spriteBatch.DrawString(displayFont, "Press Enter to return to the arena\nPress Q to quit to the menu",
                         new Vector2(40, 400), Color.White);
@@ -1989,6 +1992,7 @@ namespace Strike_12
                     _spriteBatch.Draw(shelf, new Vector2(1085, 265), Color.White);
                     _spriteBatch.Draw(shelf, new Vector2(1085, 505), Color.White);
 
+                    
                     //draws each button
                     for (int i = 3; i < buttons.Count; i++)
                     {
@@ -1996,7 +2000,7 @@ namespace Strike_12
                         //if the player doesnt have enough points to by the item
                         if (buttons[i].IsHighlight && shop.Points < buttons[i].Cost)
                         {
-                            _spriteBatch.DrawString(displayFont, "Sorry hun, you don't have enough to buy that.", new Vector2(600, 80), Color.White);
+                            _spriteBatch.DrawString(displayFont, "Sorry hun, \nyou don't have enough \nto buy that.", new Vector2(300, 240), Color.Black);
                         }
                     }
                     break;
