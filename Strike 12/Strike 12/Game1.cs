@@ -1888,7 +1888,7 @@ namespace Strike_12
                     //draws stats
                     shop.Draw(_spriteBatch, displayFont);
 
-                    _spriteBatch.DrawString(displayFont, String.Format("\nRobux: ${0}", shop.Points) +
+                    _spriteBatch.DrawString(displayFont, String.Format("\nCoins: ${0}", shop.Points) +
                         $"\nHealth: {player.Health}" +
                         $"\n{String.Format("Speed: {0:0.00}", player.BaseSpeed)}" +
                         $"\nEnergy: {player.Energy}\n" +
