@@ -123,7 +123,6 @@ namespace Strike_12
         /// <summary>
         /// personal draw method for each button that prints out the button based on state
         /// and the printed (updated) cost of said button
-        /// *** TEMP UNTIL ANIMATION MANAGER IS COMPLETE ***
         /// </summary>
         /// <param name="spriteBatch"></param>
         /// <param name="spriteFont"></param>

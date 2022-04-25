@@ -76,14 +76,6 @@ namespace Strike_12
             {
                 size.Y += speed;
             }
-            //else if (playerPos >= size.Y + size.Height && playerPos <= size.Y - size.Height)
-            //{
-            //    blast = true;
-            //}
-
-
-
-
         }
 
         //draws yay

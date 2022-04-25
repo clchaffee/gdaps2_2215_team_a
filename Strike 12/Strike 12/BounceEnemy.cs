@@ -6,13 +6,40 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Strike_12
 {
+    enum PositionX
+    {
+        PositiveX,
+        NegativeX
+    }
+
+    enum PositionY
+    {
+        PositiveY,
+        NegativeY
+    }
+
     class BounceEnemy : BulletEnemy
     {
+
         // ----- Fields -----
         private Texture2D enemySprite;
         private CornerState location;
         private int xSpeed;
         private int ySpeed;
+        private PositionX xPosition;
+        private PositionY yPosition;
+
+
+        // ----- | Properties | -----
+        public PositionX PositionX
+        {
+            get { return this.xPosition; }
+        }
+
+        public PositionY PositionY
+        {
+            get { return this.yPosition; }
+        }
 
         // ----- | Constructor | -----
         // Paramatarized Constructor
@@ -25,27 +52,40 @@ namespace Strike_12
             xSpeed = rng.Next(2, 11);
             ySpeed = rng.Next(2, 11);
 
+
             // Cases for random corner
             switch (location)
             {
                 case CornerState.TLeft:
                     this.size.X = size.Width;
                     this.size.Y = size.Height;
+
+                    xPosition = PositionX.PositiveX;
+                    yPosition = PositionY.PositiveY;
                     break;
 
                 case CornerState.TRight:
                     this.size.X = windowWidth - 128;
                     this.size.Y = size.Height;
+
+                    xPosition = PositionX.NegativeX;
+                    yPosition = PositionY.PositiveY;
                     break;
 
                 case CornerState.BLeft:
                     this.size.X = size.Width;
                     this.size.Y = windowHeight - 128;
+
+                    xPosition = PositionX.PositiveX;
+                    yPosition = PositionY.NegativeY;
                     break;
 
                 case CornerState.BRight:
                     this.size.X = windowWidth - 128;
                     this.size.Y = windowHeight - 128;
+
+                    xPosition = PositionX.NegativeX;
+                    yPosition = PositionY.NegativeY;
                     break;
             }
         }
@@ -82,11 +122,30 @@ namespace Strike_12
             if (size.X > windowWidth - 128 || size.X < 64)
             {
                 xSpeed = -1 * xSpeed;
+
+                if (xPosition == PositionX.PositiveX)
+                {
+                    xPosition = PositionX.NegativeX;
+                }
+                else
+                {
+                    xPosition = PositionX.PositiveX;
+                }
             }
             if (size.Y > windowHeight - 128 || size.Y < 64)
             {
                 ySpeed = -1 * ySpeed;
+
+                if (yPosition == PositionY.PositiveY)
+                {
+                    yPosition = PositionY.NegativeY;
+                }
+                else
+                {
+                    yPosition = PositionY.PositiveY;
+                }
             }
+
         }
 
         // Draw()

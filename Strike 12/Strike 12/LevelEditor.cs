@@ -38,13 +38,6 @@ namespace Strike_12
             get { return tileLayout.GetLength(0); }
         }
 
-        // ----- | Constructor | -----
-
-        // ----- | Properties | -----
-
-        // ----- | Methods | -----
-
-        // TODO: test to see if the load method works
         // Load(int levelNum): takes in an int to and searches for a level to load up.
         public void Load(int levelNum, Texture2D tileSprites, int windowWidth, int windowHeight)
         {

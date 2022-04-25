@@ -651,14 +651,6 @@ namespace Strike_12
             }
         }
 
-        /* public virtual bool CheckTouchingLeft(GameObject collider, GameObject collided)
-         {
-             return (collider.Size.Bottom >  collided.Size.Top &&
-                     collider.Size.Top < collided.Size.Bottom &&
-                     collider.Size.Right + this.velocity.X > collided.Size.Left &&
-                     collider.Size.Left < collided.Size.Right);
-         }*/
-
         public virtual bool CheckTouchingTop(GameObject collider, GameObject collided)
         {
             return (collider.Size.Bottom + this.velocity.Y > collided.Size.Top &&
